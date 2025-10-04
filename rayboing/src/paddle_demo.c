@@ -67,7 +67,7 @@ void DrawStatusText() {
     DrawTextLine(ypos, "Paddle Information");
     ypos += yoffset * 2;
     
-    snprintf(text, size, "Position:  %d", GetPaddlePosition());
+    snprintf(text, size, "Position:  %d", GetPaddlePositionY());
     DrawTextLine(ypos, text);
     ypos += yoffset;
 
