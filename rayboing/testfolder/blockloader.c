@@ -299,35 +299,35 @@ void addBlock(int row, int col, char ch){
 
 void loadTextures(){
 
-    HYPERSPACE_BLK = LoadTexture("blocks/hypspc.png");
-    BULLET_BLK = LoadTexture("blocks/grnblk.png");// Green block drawn without bullet texture
-    MAXAMMO_BLK = LoadTexture("blocks/lotsammo.png");
-    RED_BLK = LoadTexture("blocks/redblk.png");
-    GREEN_BLK = LoadTexture("blocks/grnblk.png");
-	BLUE_BLK = LoadTexture("blocks/blueblk.png");
-    TAN_BLK = LoadTexture("blocks/tanblk.png");
-    PURPLE_BLK = LoadTexture("blocks/purpblk.png");
-    YELLOW_BLK = LoadTexture("blocks/yellblk.png");
-	BLACK_BLK = LoadTexture("blocks/blakblk.png");
-    ROAMER_BLK = LoadTexture("blocks/roamer.png");
-    BOMB_BLK = LoadTexture("blocks/bombblk.png");
-    DEATH_BLK = LoadTexture("blocks/death1.png");
-    EXTRABALL_BLK = LoadTexture("blocks/xtrabal.png");
-	MGUN_BLK = LoadTexture("blocks/machgun.png");
-    WALLOFF_BLK = LoadTexture("blocks/walloff.png");
-    RANDOM_BLK = LoadTexture("blocks/redblk.png");// Red block loaded instead of random block selection
-    DROP_BLK = LoadTexture("blocks/grnblk.png");// Green block drawn without hit points (text)
-    TIMER_BLK = LoadTexture("blocks/clock.png");
-	MULTIBALL_BLK = LoadTexture("blocks/multibal.png");
-    STICKY_BLK = LoadTexture("blocks/stkyblk.png");
-    REVERSE_BLK = LoadTexture("blocks/reverse.png");
-    PAD_SHRINK_BLK = LoadTexture("blocks/padshrk.png");
-	PAD_EXPAND_BLK = LoadTexture("blocks/padexpn.png");
+    HYPERSPACE_BLK = LoadTexture("bitmaps/blocks/hypspc.png");
+    BULLET_BLK = LoadTexture("bitmaps/blocks/grnblk.png");// Green block drawn without bullet texture
+    MAXAMMO_BLK = LoadTexture("bitmaps/blocks/lotsammo.png");
+    RED_BLK = LoadTexture("bitmaps/blocks/redblk.png");
+    GREEN_BLK = LoadTexture("bitmaps/blocks/grnblk.png");
+	BLUE_BLK = LoadTexture("bitmaps/blocks/blueblk.png");
+    TAN_BLK = LoadTexture("bitmaps/blocks/tanblk.png");
+    PURPLE_BLK = LoadTexture("bitmaps/blocks/purpblk.png");
+    YELLOW_BLK = LoadTexture("bitmaps/blocks/yellblk.png");
+	BLACK_BLK = LoadTexture("bitmaps/blocks/blakblk.png");
+    ROAMER_BLK = LoadTexture("bitmaps/blocks/roamer.png");
+    BOMB_BLK = LoadTexture("bitmaps/blocks/bombblk.png");
+    DEATH_BLK = LoadTexture("bitmaps/blocks/death1.png");
+    EXTRABALL_BLK = LoadTexture("bitmaps/blocks/xtrabal.png");
+	MGUN_BLK = LoadTexture("bitmaps/blocks/machgun.png");
+    WALLOFF_BLK = LoadTexture("bitmaps/blocks/walloff.png");
+    RANDOM_BLK = LoadTexture("bitmaps/blocks/redblk.png");// Red block loaded instead of random block selection
+    DROP_BLK = LoadTexture("bitmaps/blocks/grnblk.png");// Green block drawn without hit points (text)
+    TIMER_BLK = LoadTexture("bitmaps/blocks/clock.png");
+	MULTIBALL_BLK = LoadTexture("bitmaps/blocks/multibal.png");
+    STICKY_BLK = LoadTexture("bitmaps/blocks/stkyblk.png");
+    REVERSE_BLK = LoadTexture("bitmaps/blocks/reverse.png");
+    PAD_SHRINK_BLK = LoadTexture("bitmaps/blocks/padshrk.png");
+	PAD_EXPAND_BLK = LoadTexture("bitmaps/blocks/padexpn.png");
 
-    COUNTER_BLK[0] = LoadTexture("blocks/cntblk.png");
-    COUNTER_BLK[1] = LoadTexture("blocks/cntblk1.png");
-    COUNTER_BLK[2] = LoadTexture("blocks/cntblk2.png");
-    COUNTER_BLK[3] = LoadTexture("blocks/cntblk3.png");
-    COUNTER_BLK[4] = LoadTexture("blocks/cntblk4.png");
-    COUNTER_BLK[5] = LoadTexture("blocks/cntblk5.png");
+    COUNTER_BLK[0] = LoadTexture("bitmaps/blocks/cntblk.png");
+    COUNTER_BLK[1] = LoadTexture("bitmaps/blocks/cntblk1.png");
+    COUNTER_BLK[2] = LoadTexture("bitmaps/blocks/cntblk2.png");
+    COUNTER_BLK[3] = LoadTexture("bitmaps/blocks/cntblk3.png");
+    COUNTER_BLK[4] = LoadTexture("bitmaps/blocks/cntblk4.png");
+    COUNTER_BLK[5] = LoadTexture("bitmaps/blocks/cntblk5.png");
 }
