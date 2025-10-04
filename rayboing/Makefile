@@ -2,24 +2,41 @@
 CC := gcc
 
 # Compiler flags
-CFLAGS := -Wall -Wextra -std=c11 -Iraylib/include
+CFLAGS := -Wall -Wextra -std=c11 -Iinclude -Iraylib/include
 
-# Sources
-SRC := src/paddle_demo.c src/paddle.c
-
-# Output executable
-TARGET := paddle_demo
-
-# Raylib libraries
+# Linker flags (Raylib + Windows dependencies)
 LDFLAGS := -Lraylib/lib -lraylib -lopengl32 -lgdi32 -lwinmm
 
+# Sources and objects
+SRC := $(wildcard src/*.c)
+OBJ := $(SRC:.c=.o)
+
+# Output executable
+TARGET := demo
+
+# Detect OS for executable extension
+ifeq ($(OS),Windows_NT)
+    EXE := $(TARGET).exe
+    RMEXE := if exist $(EXE) del /F /Q $(EXE)
+    RMOBJ := if exist src\*.o del /F /Q src\*.o
+else
+    EXE := $(TARGET)
+    RMEXE := rm -f $(EXE)
+    RMOBJ := rm -f src/*.o
+endif
+
 # Default target
-all: $(TARGET)
+all: $(EXE)
 
-# Compile & link
-$(TARGET):
-	$(CC) $(CFLAGS) $(SRC) $(LDFLAGS) -o $(TARGET)
+# Link step
+$(EXE): $(OBJ)
+	$(CC) $(OBJ) -o $@ $(LDFLAGS)
 
-# Clean
+# Compile each .c into .o
+src/%.o: src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean rule
 clean:
-	del $(TARGET) 2>nul
+	$(RMEXE)
+	$(RMOBJ)

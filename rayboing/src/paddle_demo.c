@@ -2,7 +2,7 @@
 #include <raylib.h>
 #include "paddle.h"
 #include "faketypes.h"
-
+// REQUIRES paddle.c TO BE IN SRC FOLDER TO COMPILE
 // macros
 
 const int SCREEN_WIDTH = 582;

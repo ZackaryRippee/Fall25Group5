@@ -51,7 +51,7 @@
 #include <raylib.h>
 #include "faketypes.h"
 #include "paddle.h"
-//#include "demo_blockloader.h"
+#include "demo_blockloader.h"
 
 #define PADDLE_COUNT  3
 

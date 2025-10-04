@@ -1,0 +1,8 @@
+For testing purpouses I added all of the bitmaps too the rayboing folder. And updated the make file.
+To run each test, just move the file from testfolder to src. and then run make.
+as of now I know that
+ 
+blockloader.c   runs
+
+paddle.c        runs
+paddle_demo.c 
