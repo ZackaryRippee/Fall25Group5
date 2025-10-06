@@ -23,10 +23,10 @@ CPP_SRC := $(wildcard $(SRC_DIR)/*.cpp)
 
 ifeq ($(strip $(CPP_SRC)),)
     CC := gcc
-    CFLAGS := -Wall -Wextra -std=c11
+    CFLAGS := -Wall -Wextra -std=c11 -Iinclude
 else
     CC := g++
-    CFLAGS := -Wall -Wextra -std=c++17
+    CFLAGS := -Wall -Wextra -std=c++17 
 endif
 
 # =============================
