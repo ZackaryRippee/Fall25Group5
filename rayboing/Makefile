@@ -5,6 +5,8 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(OS),Windows_NT)
     PLATFORM := windows
+else ifneq (,$(findstring MINGW,$(UNAME_S)))
+    PLATFORM := windows
 else ifeq ($(UNAME_S),Linux)
     PLATFORM := linux
 else ifeq ($(UNAME_S),Darwin)
@@ -16,7 +18,6 @@ endif
 # =============================
 #  Compiler Setup
 # =============================
-# Detect C or C++ automatically based on files
 SRC_DIR := src
 C_SRC := $(wildcard $(SRC_DIR)/*.c)
 CPP_SRC := $(wildcard $(SRC_DIR)/*.cpp)
@@ -26,7 +27,7 @@ ifeq ($(strip $(CPP_SRC)),)
     CFLAGS := -Wall -Wextra -std=c11 -Iinclude
 else
     CC := g++
-    CFLAGS := -Wall -Wextra -std=c++17 
+    CFLAGS := -Wall -Wextra -std=c++17 -Iinclude
 endif
 
 # =============================
@@ -38,16 +39,10 @@ LIB_FILE := $(RAYLIB_DIR)/lib/libraylib.a
 
 ifeq ($(PLATFORM),windows)
     LDFLAGS := -L$(RAYLIB_DIR)/lib -lraylib -lopengl32 -lgdi32 -lwinmm
-    RM := del /Q
-    EXE := program.exe
 else ifeq ($(PLATFORM),linux)
     LDFLAGS := -L$(RAYLIB_DIR)/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-    RM := rm -f
-    EXE := program
 else ifeq ($(PLATFORM),macos)
     LDFLAGS := -L$(RAYLIB_DIR)/lib -lraylib -framework OpenGL -framework Cocoa -framework IOKit
-    RM := rm -f
-    EXE := program
 endif
 
 # =============================
@@ -56,16 +51,21 @@ endif
 SRC := $(C_SRC) $(CPP_SRC)
 OBJ := $(SRC:.c=.o)
 OBJ := $(OBJ:.cpp=.o)
-TARGET := $(EXE)
+TARGET := program
+ifeq ($(PLATFORM),windows)
+    EXE := $(TARGET).exe
+else
+    EXE := $(TARGET)
+endif
 
 # =============================
 #  Build Rules
 # =============================
-all: $(TARGET)
+all: $(EXE)
 
-$(TARGET): $(OBJ)
+$(EXE): $(OBJ)
 	$(CC) $(CFLAGS) -I$(I_DIR) $(OBJ) -o $@ $(LIB_FILE) $(LDFLAGS)
-	@echo "Build complete: $(TARGET)"
+	@echo "Build complete: $@"
 
 # Compile C and C++ sources
 %.o: %.c
@@ -77,15 +77,20 @@ $(TARGET): $(OBJ)
 # =============================
 #  Utility Targets
 # =============================
-run: $(TARGET)
+run: $(EXE)
 ifeq ($(PLATFORM),windows)
-	$(TARGET)
+	$(EXE)
 else
-	./$(TARGET)
+	./$(EXE)
 endif
 
 clean:
-	$(RM) $(TARGET) $(OBJ)
+ifeq ($(PLATFORM),windows)
+	if exist "$(EXE)" del /F /Q "$(EXE)"
+	if exist "src\*.o" del /F /Q src\*.o
+else
+	rm -f $(EXE) src/*.o
+endif
 	@echo "Cleaned build files."
 
 .PHONY: all run clean
