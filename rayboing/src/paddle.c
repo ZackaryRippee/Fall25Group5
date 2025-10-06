@@ -73,20 +73,6 @@ int	paddlePosition;
 
 int GetPaddlePositionY(void);
 
-Rectangle getPlayWall(WALLS wall) {
-    switch (wall) {
-        case WALL_LEFT:
-            return (Rectangle){0, 0, DIST_BASE, GetScreenHeight()};
-        case WALL_RIGHT:
-            return (Rectangle){GetScreenWidth() - DIST_BASE, 0, DIST_BASE, GetScreenHeight()};
-        case WALL_TOP:
-            return (Rectangle){0, 0, GetScreenWidth(), DIST_BASE};
-        case WALL_BOTTOM:
-            return (Rectangle){0, GetScreenHeight() - DIST_BASE, GetScreenWidth(), DIST_BASE};
-        default:
-            return (Rectangle){0, 0, 0, 0};
-    }
-}
 void DrawPaddle(void) { 
 	DrawTexture(paddles[paddleIndex].img, paddlePosition, GetPaddlePositionY(), WHITE);
  }
