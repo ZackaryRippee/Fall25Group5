@@ -26,7 +26,7 @@
  * enhancements, or modifications.
  */
 
-/* 
+/*
  * =========================================================================
  *
  * $Id: ball.c,v 1.1.1.1 1994/12/16 01:36:42 jck Exp $
@@ -86,7 +86,6 @@
 #include "bitmaps/balls/bbirth8.png"
 */
 
-
 #include "include/audio.h"
 #include "include/error.h"
 #include "include/score.h"
@@ -116,40 +115,39 @@
 
 /* MIN returns the smallest at a and b */
 #ifndef MIN
-#define MIN(a,b) ((a)<(b) ? (a):(b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
 /* MAX returns the largest of a and b */
 #ifndef MAX
-#define MAX(a,b) ((a)>(b) ? (a):(b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
 /* SQR returns the square of x */
 #ifndef SQR
-#define SQR(x) ((x)*(x))
+#define SQR(x) ((x) * (x))
 #endif
 
 #ifndef MINFLOAT
 #define MINFLOAT ((float)1.40129846432481707e-45)
 #endif
 
-
 /*
  *  Internal type declarations:
  */
 
 static void MoveBall(Display *display, Window window, int x, int y, int replace,
-	int i);
-static void MoveBallBirth(Display *display, Window window, int x, int y, 
-	int slide, int replace, int i);
+					 int i);
+static void MoveBallBirth(Display *display, Window window, int x, int y,
+						  int slide, int replace, int i);
 static void TeleportBall(Display *display, Window window, int i);
 static int BallHitPaddle(Display *display, Window window, int *hit, int i,
-	int *x, int *y);
+						 int *x, int *y);
 static void UpdateABall(Display *display, Window window, int i);
 static int CheckRegions(Display *display, Window window, int row, int col,
-	int x, int y, int i);
-static int CheckForCollision(Display *display, Window window, int x, int y, 
-	int *r, int *c, int i);
+						int x, int y, int i);
+static int CheckForCollision(Display *display, Window window, int x, int y,
+							 int *r, int *c, int i);
 static void updateBallVariables(int i);
 static void SetBallWait(enum BallStates newMode, int waitFrame, int i);
 static void DoBallWait(int i);
@@ -160,7 +158,7 @@ static int WhenBallsCollide(BALL *ball1, BALL *ball2, float *time);
 
 typedef struct
 {
-   float x, y;
+	float x, y;
 } vector_t;
 
 /*
@@ -171,10 +169,10 @@ static Pixmap ballsPixmap[BALL_SLIDES];
 static Pixmap ballsMask[BALL_SLIDES];
 static Pixmap ballBirthPixmap[BIRTH_SLIDES];
 static Pixmap ballBirthMask[BIRTH_SLIDES];
-static Pixmap guides[11];
-static Pixmap guidesM[11];
+static Pixmap guides[GUIDE_SLIDES];
+static Pixmap guidesM[GUIDE_SLIDES];
 BALL balls[MAX_BALLS];
-static int guidePos = 6;	 /* Start in middle of guider */
+static int guidePos = 6; /* Start in middle of guider */
 
 /* global constant machine epsilon */
 float MACHINE_EPS;
@@ -185,112 +183,112 @@ void InitialiseBall(Display *display, Window window, Colormap colormap)
 	 * Read and create all the animation frames for the balls and guides.
 	 */
 
-    XpmAttributes   attributes;
-	int		    	XpmErrorStatus;
+	XpmAttributes attributes;
+	int XpmErrorStatus;
 
-    attributes.valuemask = XpmColormap;
+	attributes.valuemask = XpmColormap;
 	attributes.colormap = colormap;
 
 	/* Create the xpm pixmap ball frames */
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ball1_xpm,
-		&ballsPixmap[0], &ballsMask[0], &attributes);
+											 &ballsPixmap[0], &ballsMask[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ball1)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ball2_xpm,
-		&ballsPixmap[1], &ballsMask[1], &attributes);
+											 &ballsPixmap[1], &ballsMask[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ball2)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ball3_xpm,
-		&ballsPixmap[2], &ballsMask[2], &attributes);
+											 &ballsPixmap[2], &ballsMask[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ball3)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ball4_xpm,
-		&ballsPixmap[3], &ballsMask[3], &attributes);
+											 &ballsPixmap[3], &ballsMask[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ball4)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, killer_xpm,
-		&ballsPixmap[4], &ballsMask[4], &attributes);
+											 &ballsPixmap[4], &ballsMask[4], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(killer)");
 
 	/* Ball birth sequence */
 
 	/* Create the xpm pixmap ball birth frames */
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ballbirth1_xpm,
-		&ballBirthPixmap[0], &ballBirthMask[0], &attributes);
+											 &ballBirthPixmap[0], &ballBirthMask[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ballbirth1)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ballbirth2_xpm,
-		&ballBirthPixmap[1], &ballBirthMask[1], &attributes);
+											 &ballBirthPixmap[1], &ballBirthMask[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ballbirth2)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ballbirth3_xpm,
-		&ballBirthPixmap[2], &ballBirthMask[2], &attributes);
+											 &ballBirthPixmap[2], &ballBirthMask[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ballbirth3)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ballbirth4_xpm,
-		&ballBirthPixmap[3], &ballBirthMask[3], &attributes);
+											 &ballBirthPixmap[3], &ballBirthMask[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ballbirth4)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ballbirth5_xpm,
-		&ballBirthPixmap[4], &ballBirthMask[4], &attributes);
+											 &ballBirthPixmap[4], &ballBirthMask[4], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ballbirth5)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ballbirth6_xpm,
-		&ballBirthPixmap[5], &ballBirthMask[5], &attributes);
+											 &ballBirthPixmap[5], &ballBirthMask[5], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ballbirth6)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ballbirth7_xpm,
-		&ballBirthPixmap[6], &ballBirthMask[6], &attributes);
+											 &ballBirthPixmap[6], &ballBirthMask[6], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ballbirth7)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, ballbirth8_xpm,
-		&ballBirthPixmap[7], &ballBirthMask[7], &attributes);
+											 &ballBirthPixmap[7], &ballBirthMask[7], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(ballbirth8)");
 
 	/* Now load in the guide pixmaps */
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide1_xpm,
-		&guides[0], &guidesM[0], &attributes);
+											 &guides[0], &guidesM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide1)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide2_xpm,
-		&guides[1], &guidesM[1], &attributes);
+											 &guides[1], &guidesM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide2)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide3_xpm,
-		&guides[2], &guidesM[2], &attributes);
+											 &guides[2], &guidesM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide3)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide4_xpm,
-		&guides[3], &guidesM[3], &attributes);
+											 &guides[3], &guidesM[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide4)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide5_xpm,
-		&guides[4], &guidesM[4], &attributes);
+											 &guides[4], &guidesM[4], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide5)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide6_xpm,
-		&guides[5], &guidesM[5], &attributes);
+											 &guides[5], &guidesM[5], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide6)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide7_xpm,
-		&guides[6], &guidesM[6], &attributes);
+											 &guides[6], &guidesM[6], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide7)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide8_xpm,
-		&guides[7], &guidesM[7], &attributes);
+											 &guides[7], &guidesM[7], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide8)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide9_xpm,
-		&guides[8], &guidesM[8], &attributes);
+											 &guides[8], &guidesM[8], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide9)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide10_xpm,
-		&guides[9], &guidesM[9], &attributes);
+											 &guides[9], &guidesM[9], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide10)");
 
 	XpmErrorStatus = XpmCreatePixmapFromData(display, window, guide11_xpm,
-		&guides[10], &guidesM[10], &attributes);
+											 &guides[10], &guidesM[10], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBall(guide11)");
 
 	/* Free the xpm pixmap attributes */
@@ -313,23 +311,29 @@ void FreeBall(Display *display)
 	/* Free all animation frames for the ball */
 	for (i = 0; i < BALL_SLIDES; i++)
 	{
-		if (ballsPixmap[i]) 	XFreePixmap(display, ballsPixmap[i]);
-	 	if (ballsMask[i]) 		XFreePixmap(display, ballsMask[i]);
+		if (ballsPixmap[i])
+			XFreePixmap(display, ballsPixmap[i]);
+		if (ballsMask[i])
+			XFreePixmap(display, ballsMask[i]);
 	}
 
 	/* Free all animation frames for the guides */
 	for (i = 0; i < 11; i++)
 	{
-		if (guides[i]) 	XFreePixmap(display, guides[i]);
-	 	if (guidesM[i]) XFreePixmap(display, guidesM[i]);
+		if (guides[i])
+			XFreePixmap(display, guides[i]);
+		if (guidesM[i])
+			XFreePixmap(display, guidesM[i]);
 	}
 
 	/* Free all animation frames for the ball birth */
 	for (i = 0; i < BIRTH_SLIDES; i++)
 	{
 		/* Free the ball birth animation pixmaps */
-		if (ballBirthPixmap[i]) 	XFreePixmap(display, ballBirthPixmap[i]);
-	 	if (ballBirthMask[i]) 		XFreePixmap(display, ballBirthMask[i]);
+		if (ballBirthPixmap[i])
+			XFreePixmap(display, ballBirthPixmap[i]);
+		if (ballBirthMask[i])
+			XFreePixmap(display, ballBirthMask[i]);
 	}
 }
 
@@ -340,63 +344,63 @@ void RedrawBall(Display *display, Window window)
 
 static void EraseTheBall(Display *display, Window window, int x, int y)
 {
-	/* 
-	 * Clear the ball area! The x, y coordinates are the centre of ball 
+	/*
+	 * Clear the ball area! The x, y coordinates are the centre of ball
 	 */
 
-    XClearArea(display, window, x - BALL_WC, y - BALL_HC, 
-		BALL_WIDTH, BALL_HEIGHT, False);
+	XClearArea(display, window, x - BALL_WC, y - BALL_HC,
+			   BALL_WIDTH, BALL_HEIGHT, False);
 }
 
 void DrawTheBall(Display *display, Window window, int x, int y, int slide)
 {
-	/* 
+	/*
 	 * Draw the ball using the slide variable as the index into the frames
 	 * of the ball animation. The x,y are the centre of the ball.
 	 */
 
-    RenderShape(display, window, ballsPixmap[slide], ballsMask[slide],
-		x - BALL_WC, y - BALL_HC, BALL_WIDTH, BALL_HEIGHT, False);
+	RenderShape(display, window, ballsPixmap[slide], ballsMask[slide],
+				x - BALL_WC, y - BALL_HC, BALL_WIDTH, BALL_HEIGHT, False);
 }
 
 void DrawTheBallBirth(Display *display, Window window, int x, int y, int slide)
 {
-	/* 
+	/*
 	 * Draw the ball using the slide variable as the index into the frames
 	 * of the ball animation. The x,y are the centre of the ball birth anim.
 	 */
 
-    RenderShape(display, window, ballBirthPixmap[slide], ballBirthMask[slide],
-		x - BALL_WC, y - BALL_HC, BALL_WIDTH, BALL_HEIGHT, False);
+	RenderShape(display, window, ballBirthPixmap[slide], ballBirthMask[slide],
+				x - BALL_WC, y - BALL_HC, BALL_WIDTH, BALL_HEIGHT, False);
 }
 
-static void MoveBallBirth(Display *display, Window window, int x, int y, 
-	int slide, int replace, int i)
+static void MoveBallBirth(Display *display, Window window, int x, int y,
+						  int slide, int replace, int i)
 {
-	/* 
-	 * Remove any debris under ball first by clearing it 
+	/*
+	 * Remove any debris under ball first by clearing it
 	 */
 
 	if (replace)
 	{
-		XClearArea(display, window, 
-			balls[i].oldx - BALL_WC, balls[i].oldy - BALL_HC, 
-			BALL_WIDTH, BALL_HEIGHT, False);
-	}	
+		XClearArea(display, window,
+				   balls[i].oldx - BALL_WC, balls[i].oldy - BALL_HC,
+				   BALL_WIDTH, BALL_HEIGHT, False);
+	}
 
 	balls[i].oldx = x;
 	balls[i].oldy = y;
 
-    /* If slide is -1 then clear the ball area */
-    if (slide == -1)
-        XClearArea(display, window,
-            x - BALL_WC, y - BALL_HC, BALL_WIDTH, BALL_HEIGHT, False);
-    else
-        DrawTheBallBirth(display, window, x, y, slide);
+	/* If slide is -1 then clear the ball area */
+	if (slide == -1)
+		XClearArea(display, window,
+				   x - BALL_WC, y - BALL_HC, BALL_WIDTH, BALL_HEIGHT, False);
+	else
+		DrawTheBallBirth(display, window, x, y, slide);
 }
 
 static void MoveBall(Display *display, Window window, int x, int y, int replace,
-	int i)
+					 int i)
 {
 	/*
 	 * Move the ball from one position to the next and also update the
@@ -414,20 +418,21 @@ static void MoveBall(Display *display, Window window, int x, int y, int replace,
 	if (Killer == True)
 	{
 		/* Render the killer ball now ie: red ball */
-		DrawTheBall(display, window, x, y, BALL_SLIDES-1);
+		DrawTheBall(display, window, x, y, BALL_SLIDES - 1);
 	}
 	else
 	{
 		/* Render the ball now */
 		DrawTheBall(display, window, x, y, balls[i].slide);
-	}	
+	}
 
 	/* Change slide for ball every n frames of animation */
 	if ((frame % BALL_ANIM_RATE) == 0)
 		balls[i].slide++;
-	
+
 	/* wrap around slides */
-	if (balls[i].slide == BALL_SLIDES-1) balls[i].slide = 0;
+	if (balls[i].slide == BALL_SLIDES - 1)
+		balls[i].slide = 0;
 }
 
 static void MoveGuides(Display *display, Window window, int i, int remove)
@@ -444,7 +449,7 @@ static void MoveGuides(Display *display, Window window, int i, int remove)
 	static int inc = 1;
 
 	/* Clear the old slide */
-    XClearArea(display, window, oldgx - 14, oldgy - 6, 29, 12, False);
+	XClearArea(display, window, oldgx - 14, oldgy - 6, 29, 12, False);
 
 	if (remove == False)
 	{
@@ -457,16 +462,18 @@ static void MoveGuides(Display *display, Window window, int i, int remove)
 			ErrorMessage("Guidepos out of range.");
 
 		/* draw the guide pixmap */
-    	RenderShape(display, window, guides[guidePos], guidesM[guidePos],
-			oldgx - 14, oldgy - 6, 29, 12, False);
+		RenderShape(display, window, guides[guidePos], guidesM[guidePos],
+					oldgx - 14, oldgy - 6, 29, 12, False);
 
 		/* Don't draw it ever frame */
-		if ((frame % (BALL_FRAME_RATE*8)) == 0)
+		if ((frame % (BALL_FRAME_RATE * 8)) == 0)
 			guidePos += inc;
 
 		/* wrap around slides */
-		if (guidePos == 10) inc = -1;
-		if (guidePos == 0) inc = 1;
+		if (guidePos == 10)
+			inc = -1;
+		if (guidePos == 0)
+			inc = 1;
 	}
 	else
 		guidePos = 6;
@@ -480,8 +487,8 @@ void RandomiseBallVelocity(int i)
 	while (balls[i].dx == 0 || balls[i].dy == 0)
 	{
 		/* Randomise the ball btwn [3, MAX_VEL] */
-   	 	balls[i].dx = (rand() % (MAX_X_VEL - 3)) + 3;
-   	 	balls[i].dy = (rand() % (MAX_Y_VEL - 3)) + 3;
+		balls[i].dx = (rand() % (MAX_X_VEL - 3)) + 3;
+		balls[i].dy = (rand() % (MAX_Y_VEL - 3)) + 3;
 
 		/* Make it possible for negative numbers */
 		if ((rand() % 10) < 5)
@@ -506,23 +513,23 @@ void DoBoardTilt(Display *display, int i)
 		DEBUG("Auto Tilt activated.");
 
 		/* Tilt the board to remove any endless loops */
-		SetCurrentMessage(display, messWindow, 
-			"Auto Tilt Activated", True);
-	
+		SetCurrentMessage(display, messWindow,
+						  "Auto Tilt Activated", True);
+
 		RandomiseBallVelocity(i);
 	}
 }
 
 static void TeleportBall(Display *display, Window window, int i)
 {
-	/* 
+	/*
 	 * This function will teleport the ball to some other space not occupied
 	 * and start off there.
 	 */
 
 	int r1, c1, s1, r2, c2, s2, r3, c3, s3, r4, c4, s4;
-    int r, c, x, y;
-    struct aBlock *blockP, *bP;
+	int r, c, x, y;
+	struct aBlock *blockP, *bP;
 	int done = False;
 	int count = 0;
 
@@ -536,8 +543,10 @@ static void TeleportBall(Display *display, Window window, int i)
 		r = (rand() % (MAX_ROW - 6)) + 1;
 		c = (rand() % MAX_COL) + 1;
 
-    	if (r < 0 || r >= MAX_ROW) continue;
-    	if (c < 0 || c >= MAX_COL) continue;
+		if (r < 0 || r >= MAX_ROW)
+			continue;
+		if (c < 0 || c >= MAX_COL)
+			continue;
 
 		/* Pointer to the correct block we need - speed things up */
 		blockP = &blocks[r][c];
@@ -545,53 +554,69 @@ static void TeleportBall(Display *display, Window window, int i)
 		/* Check that the block is not occupied and not exploding */
 		if ((blockP->occupied == False) && (blockP->exploding == False))
 		{
-        	/* Check that the block is not a closed in position */
+			/* Check that the block is not a closed in position */
 
-            r1 = r;     c1 = c - 1;  s1 = 0;
-            if (r1 < 0 || r1 >= MAX_ROW) s1 = 1;
-            if (c1 < 0 || c1 >= MAX_COL) s1 = 1;
-            if (s1 == 0) 
+			r1 = r;
+			c1 = c - 1;
+			s1 = 0;
+			if (r1 < 0 || r1 >= MAX_ROW)
+				s1 = 1;
+			if (c1 < 0 || c1 >= MAX_COL)
+				s1 = 1;
+			if (s1 == 0)
 			{
-            	bP = &blocks[r1][c1];
-                if (bP->blockType == BLACK_BLK)
-                s1 = 1;
-            }
+				bP = &blocks[r1][c1];
+				if (bP->blockType == BLACK_BLK)
+					s1 = 1;
+			}
 
-            r2 = r - 1; c2 = c;      s2 = 0;
-            if (r2 < 0 || r2 >= MAX_ROW) s2 = 1;
-            if (c2 < 0 || c2 >= MAX_COL) s2 = 1;
-            if (s2 == 0) 
+			r2 = r - 1;
+			c2 = c;
+			s2 = 0;
+			if (r2 < 0 || r2 >= MAX_ROW)
+				s2 = 1;
+			if (c2 < 0 || c2 >= MAX_COL)
+				s2 = 1;
+			if (s2 == 0)
 			{
-                bP = &blocks[r2][c2];
-                if (bP->blockType == BLACK_BLK)
-                    s2 = 1;
-            }
+				bP = &blocks[r2][c2];
+				if (bP->blockType == BLACK_BLK)
+					s2 = 1;
+			}
 
-            r3 = r;     c3 = c + 1;  s3 = 0;
-            if (r3 < 0 || r3 >= MAX_ROW) s3 = 1;
-            if (c3 < 0 || c3 >= MAX_COL) s3 = 1;
-            if (s3 == 0) 
+			r3 = r;
+			c3 = c + 1;
+			s3 = 0;
+			if (r3 < 0 || r3 >= MAX_ROW)
+				s3 = 1;
+			if (c3 < 0 || c3 >= MAX_COL)
+				s3 = 1;
+			if (s3 == 0)
 			{
-                bP = &blocks[r3][c3];
-                if (bP->blockType == BLACK_BLK)
-                    s3 = 1;
-            }
+				bP = &blocks[r3][c3];
+				if (bP->blockType == BLACK_BLK)
+					s3 = 1;
+			}
 
-            r4 = r + 1; c4 = c;      s4 = 0;
-            if (r4 < 0 || r4 >= MAX_ROW) s4 = 1;
-            if (c4 < 0 || c4 >= MAX_COL) s4 = 1;
-            if (s4 == 0) 
+			r4 = r + 1;
+			c4 = c;
+			s4 = 0;
+			if (r4 < 0 || r4 >= MAX_ROW)
+				s4 = 1;
+			if (c4 < 0 || c4 >= MAX_COL)
+				s4 = 1;
+			if (s4 == 0)
 			{
-                bP = &blocks[r4][c4];
-                if (bP->blockType == BLACK_BLK)
-                    s4 = 1;
-            }
+				bP = &blocks[r4][c4];
+				if (bP->blockType == BLACK_BLK)
+					s4 = 1;
+			}
 
 			/* If it isn't ok to go here then keep searching */
-            if ((s1 == 1) && (s2 == 1) && (s3 == 1) && (s4 == 1))
+			if ((s1 == 1) && (s2 == 1) && (s3 == 1) && (s4 == 1))
 			{
 				DEBUG("Trying new spot for teleport.");
-                continue;
+				continue;
 			}
 
 			/* Calculate the new ball coordinates */
@@ -647,7 +672,7 @@ void SplitBallInTwo(Display *display, Window window)
 	}
 	else
 		SetCurrentMessage(display, messWindow,
-			"Cannot add ball!", True);
+						  "Cannot add ball!", True);
 }
 
 void ClearBallNow(Display *display, Window window, int i)
@@ -685,7 +710,7 @@ void GetBallPosition(int *ballX, int *ballY, int i)
 }
 
 static int BallHitPaddle(Display *display, Window window, int *hit, int i,
-	int *x, int *y)
+						 int *x, int *y)
 {
 	/*
 	 * Handle the ball hitting the paddle if it is. The bounce it back
@@ -693,91 +718,91 @@ static int BallHitPaddle(Display *display, Window window, int *hit, int i,
 	 */
 
 	float x1, x2, y1, y2, alpha, beta, xP1, xP2, xH, yH;
-    int paddleLine;
+	int paddleLine;
 
 	/***********************************************************************
 
-                        A1 (x1,y1)
-                        *
-                       .
-                      .
-         P1 =========.=========== P2   <----   paddle (x, y pos is known )
-        (xP1,yP1)   . H (xH, yH)    (xP2,yP2)
-                   .
-                  .
-                 .
-                *
-               A2 (x2,y2)
+						A1 (x1,y1)
+						*
+					   .
+					  .
+		 P1 =========.=========== P2   <----   paddle (x, y pos is known )
+		(xP1,yP1)   . H (xH, yH)    (xP2,yP2)
+				   .
+				  .
+				 .
+				*
+			   A2 (x2,y2)
 
-   		Given the line A1A2, is the intersecting point H (xH, yH) in the paddle 
+		Given the line A1A2, is the intersecting point H (xH, yH) in the paddle
 		segment ? (i.e xH in [xP1,xP2])
 
-   		A1A2 is :  y = alpha * x + beta
+		A1A2 is :  y = alpha * x + beta
 
-   		A1 and A2 are in A1A2 than beta = [(y1 + y2) - alpha*(x1+x2)] / 2
+		A1 and A2 are in A1A2 than beta = [(y1 + y2) - alpha*(x1+x2)] / 2
 
-   		yH = yP1 = yP2
+		yH = yP1 = yP2
 
-   		so xH = (yP1 - beta) / alpha
+		so xH = (yP1 - beta) / alpha
 
 	**********************************************************************/
 
-    paddleLine = (PLAY_HEIGHT - DIST_BASE - 2);
+	paddleLine = (PLAY_HEIGHT - DIST_BASE - 2);
 
-    if (balls[i].bally + BALL_HC > paddleLine)
-   	{
-   		xP1 = (float)(paddlePos - (GetPaddleSize() / 2) - BALL_WC);
-   		xP2 = (float)(paddlePos + (GetPaddleSize() / 2) + BALL_WC);
+	if (balls[i].bally + BALL_HC > paddleLine)
+	{
+		xP1 = (float)(paddlePos - (GetPaddleSize() / 2) - BALL_WC);
+		xP2 = (float)(paddlePos + (GetPaddleSize() / 2) + BALL_WC);
 
-   		if (balls[i].dx == 0)
-      	{
+		if (balls[i].dx == 0)
+		{
 			/* process the vertical moving balls */
-      		if (((float)balls[i].ballx > xP1) && ((float)balls[i].ballx < xP2))
-         	{
-         		/* the ball hit the paddle */
-         		*hit = balls[i].ballx - paddlePos;
-         		*x 	 = balls[i].ballx;
-         		*y 	 = paddleLine - BALL_HC;
+			if (((float)balls[i].ballx > xP1) && ((float)balls[i].ballx < xP2))
+			{
+				/* the ball hit the paddle */
+				*hit = balls[i].ballx - paddlePos;
+				*x = balls[i].ballx;
+				*y = paddleLine - BALL_HC;
 
-         		return True;
-         	}
-      		else
-        		return False;
-      	}
-   		else
-      	{
- 			/* compute the line coefficients of the ball */
+				return True;
+			}
+			else
+				return False;
+		}
+		else
+		{
+			/* compute the line coefficients of the ball */
 
-			alpha 	= (float) balls[i].dy;
-    		x1 		= (float) (balls[i].ballx - balls[i].dx);
-    		y1 		= (float) (balls[i].bally - balls[i].dy);
-    		x2 		= (float) (balls[i].ballx);
-    		y2 		= (float) (balls[i].bally);
-    		beta 	= ((y1 + y2) - alpha * (x1 + x2)) / 2.0;
+			alpha = (float)balls[i].dy;
+			x1 = (float)(balls[i].ballx - balls[i].dx);
+			y1 = (float)(balls[i].bally - balls[i].dy);
+			x2 = (float)(balls[i].ballx);
+			y2 = (float)(balls[i].bally);
+			beta = ((y1 + y2) - alpha * (x1 + x2)) / 2.0;
 
-    		yH = (float) paddleLine;
-    		xH = (yH - beta) / alpha;
+			yH = (float)paddleLine;
+			xH = (yH - beta) / alpha;
 
 			if ((xH > xP1) && (xH < xP2))
-    		{
-    			/* the ball hit the paddle */
-        		*hit 	= (int) (xH + 0.5) - paddlePos;
-        		*x 		= (int) (xH + 0.5);
-        		*y 		= paddleLine - BALL_HC;
+			{
+				/* the ball hit the paddle */
+				*hit = (int)(xH + 0.5) - paddlePos;
+				*x = (int)(xH + 0.5);
+				*y = paddleLine - BALL_HC;
 
-        		return True;
-    		}
-    		else
-    			return False;
+				return True;
+			}
+			else
+				return False;
 		}
 	}
 
-   	/* We didn't hit the paddle */
-   	return False;
+	/* We didn't hit the paddle */
+	return False;
 }
 
 static int HandleTheBlocks(Display *display, Window window, int row, int col,
-	int i)
+						   int i)
 {
 	/*
 	 * When a ball hits a block it calls this routine and this routine
@@ -797,210 +822,221 @@ static int HandleTheBlocks(Display *display, Window window, int row, int col,
 	{
 		switch (blockP->blockType)
 		{
-			case COUNTER_BLK:
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+		case COUNTER_BLK:
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
 
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True || blockP->explodeAll == True)
-				{
-					/* Ok kill the block outright */
-					DrawBlock(display, window, row, col, KILL_BLK);
-					return True;
-				}
-	
-				/* Special case for counter - reduce count on block */
-				if (blockP->counterSlide == 0)
-					DrawBlock(display, window, row, col, KILL_BLK);
-				else
-				{
-					/* Draw the counter block minus one number */
-					blockP->counterSlide--;
-					DrawBlock(display, window, row, col, COUNTER_BLK);
-				}
-
-				break;
-
-			case MGUN_BLK:
-				/* Turn the machine gun on */
-				ToggleFastGun(display, True);
-				DrawSpecials(display);
-				SetCurrentMessage(display, messWindow, "Machine Gun", True);
-
-				/* Not a wall so explode the block */
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True || blockP->explodeAll == True)
+			{
+				/* Ok kill the block outright */
 				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+				return True;
+			}
 
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
-
-				break;
-
-			case DEATH_BLK:
-				/* Ha ha - hit death block so die */
-
-				/* Kill the ball now */
-				ClearBallNow(display, window, i);
-
-				/* Not a wall so explode the block */
+			/* Special case for counter - reduce count on block */
+			if (blockP->counterSlide == 0)
 				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+			else
+			{
+				/* Draw the counter block minus one number */
+				blockP->counterSlide--;
+				DrawBlock(display, window, row, col, COUNTER_BLK);
+			}
 
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
+			break;
 
-				break;
+		case MGUN_BLK:
+			/* Turn the machine gun on */
+			ToggleFastGun(display, True);
+			DrawSpecials(display);
+			SetCurrentMessage(display, messWindow, "Machine Gun", True);
 
-			case HYPERSPACE_BLK:
-				/* Teleport to somewhere else */
-				TeleportBall(display, window, i);
-				RandomiseBallVelocity(i);
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
 
-				/* Redraw it just in case */
-				DrawBlock(display, window, row, col, HYPERSPACE_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-
-				PlaySoundForBlock(HYPERSPACE_BLK);
-
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
 				return True;
 
-				break;
+			break;
 
-			case WALLOFF_BLK:
-				/* Walls are now turned off */
-				ToggleWallsOn(display, True);
-				DrawSpecials(display);
-				SetCurrentMessage(display, messWindow,
-					"Walls off", True);
+		case DEATH_BLK:
+			/* Ha ha - hit death block so die */
 
-				/* Not a wall so explode the block */
+			/* Kill the ball now */
+			ClearBallNow(display, window, i);
+
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
+
+			break;
+
+		case HYPERSPACE_BLK:
+			/* Teleport to somewhere else */
+			TeleportBall(display, window, i);
+			RandomiseBallVelocity(i);
+
+			/* Redraw it just in case */
+			DrawBlock(display, window, row, col, HYPERSPACE_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			PlaySoundForBlock(HYPERSPACE_BLK);
+
+			return True;
+
+			break;
+
+		case WALLOFF_BLK:
+			/* Walls are now turned off */
+			ToggleWallsOn(display, True);
+			DrawSpecials(display);
+			SetCurrentMessage(display, messWindow,
+							  "Walls off", True);
+
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
+
+			break;
+
+		case REVERSE_BLK:
+			/* Paddle control now reverse */
+			ToggleReverse(display);
+			SetCurrentMessage(display, messWindow,
+							  "Paddle control reversed", True);
+			DrawSpecials(display);
+
+			/* Move the paddle to reflect reversed paddle */
+			handlePaddleMoving(display);
+
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
+
+			break;
+
+		case PAD_SHRINK_BLK:
+			/* Paddle shrinking block */
+			ChangePaddleSize(display, window, PAD_SHRINK_BLK);
+			SetCurrentMessage(display, messWindow,
+							  "Shrink Paddle", True);
+
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
+
+			break;
+
+		case PAD_EXPAND_BLK:
+			/* Paddle expanding block */
+			ChangePaddleSize(display, window, PAD_EXPAND_BLK);
+			SetCurrentMessage(display, messWindow,
+							  "Expand Paddle", True);
+
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
+
+			break;
+
+		case EXTRABALL_BLK:
+			/* Extra ball */
+			AddExtraLife(display);
+			SetCurrentMessage(display, messWindow,
+							  "Extra ball", True);
+
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
+
+			break;
+
+		case STICKY_BLK:
+			ToggleStickyBat(display, True);
+			DrawSpecials(display);
+			SetCurrentMessage(display, messWindow,
+							  "Sticky Bat", True);
+
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
+
+			break;
+
+		case MULTIBALL_BLK:
+			SplitBallInTwo(display, window);
+
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
+
+			break;
+
+		case BLACK_BLK:
+			if (frame <= blockP->nextFrame)
+			{
+				/* Set the block up to be blown away */
 				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
+				balls[i].lastPaddleHitFrame = frame +
+											  PADDLE_BALL_FRAME_TILT;
 
 				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
+				if (Killer == True)
+					return True;
+			}
+			else
+			{
+				/* Redraw the solid wall block to make sure */
+				DrawBlock(display, window, row, col, BLACKHIT_BLK);
+				blockP->nextFrame = frame + 30;
+			}
 
-				break;
+			break;
 
-			case REVERSE_BLK:
-				/* Paddle control now reverse */
-				ToggleReverse(display);
-				SetCurrentMessage(display, messWindow,
-					"Paddle control reversed", True);
-				DrawSpecials(display);
+		default:
+			/* Not a wall so explode the block */
+			DrawBlock(display, window, row, col, KILL_BLK);
+			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
 
-				/* Move the paddle to reflect reversed paddle */
-				handlePaddleMoving(display);
+			/* If in killer mode then don't bounce off block */
+			if (Killer == True)
+				return True;
 
-				/* Not a wall so explode the block */
-				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
-
-				break;
-
-			case PAD_SHRINK_BLK:
-				/* Paddle shrinking block */
-				ChangePaddleSize(display, window, PAD_SHRINK_BLK);
-				SetCurrentMessage(display, messWindow,
-					"Shrink Paddle", True);
-
-				/* Not a wall so explode the block */
-				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
-
-				break;
-
-			case PAD_EXPAND_BLK:
-				/* Paddle expanding block */
-				ChangePaddleSize(display, window, PAD_EXPAND_BLK);
-				SetCurrentMessage(display, messWindow,
-					"Expand Paddle", True);
-
-				/* Not a wall so explode the block */
-				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
-
-				break;
-
-			case EXTRABALL_BLK:
-				/* Extra ball */
-				AddExtraLife(display);
-				SetCurrentMessage(display, messWindow,
-					"Extra ball", True);
-
-				/* Not a wall so explode the block */
-				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
-
-				break;
-
-			case STICKY_BLK:
-				ToggleStickyBat(display, True);
-				DrawSpecials(display);
-				SetCurrentMessage(display, messWindow,
-					"Sticky Bat", True);
-
-				/* Not a wall so explode the block */
-				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
-
-				break;
-
-			case MULTIBALL_BLK:
-				SplitBallInTwo(display, window);
-
-				/* Not a wall so explode the block */
-				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
-
-				break;
-
-			case BLACK_BLK:
-				if (frame <= blockP->nextFrame)
-				{
-					/* Set the block up to be blown away */
-					DrawBlock(display, window, row, col, KILL_BLK);
-					balls[i].lastPaddleHitFrame = frame + 
-						PADDLE_BALL_FRAME_TILT;
-
-					/* If in killer mode then don't bounce off block */
-					if (Killer == True) return True;
-				}
-				else
-				{
-					/* Redraw the solid wall block to make sure */
-					DrawBlock(display, window, row, col, BLACKHIT_BLK);
-					blockP->nextFrame = frame + 30;
-				}
-					
-				break;
-
-			default:
-				/* Not a wall so explode the block */
-				DrawBlock(display, window, row, col, KILL_BLK);
-				balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-
-				/* If in killer mode then don't bounce off block */
-				if (Killer == True) return True;
-
-				break;
+			break;
 		}
 	}
 
@@ -1021,7 +1057,7 @@ static void UpdateABall(Display *display, Window window, int i)
 	float Vs, Vx, Vy, alpha, beta, gamma, padSize;
 	float dummy;
 
-	/* Update ball position using dx and dy values */	
+	/* Update ball position using dx and dy values */
 	balls[i].ballx = balls[i].oldx + balls[i].dx;
 	balls[i].bally = balls[i].oldy + balls[i].dy;
 
@@ -1029,13 +1065,14 @@ static void UpdateABall(Display *display, Window window, int i)
 	if (balls[i].bally > (PLAY_HEIGHT - DIST_BASE + BALL_HEIGHT))
 		ChangeBallMode(BALL_DIE, i);
 
-	/* Check if ball has hit left wall and bounce off */		
+	/* Check if ball has hit left wall and bounce off */
 	if (balls[i].ballx < BALL_WC && noWalls == False)
 	{
 		balls[i].dx = abs(balls[i].dx);
-		if (noSound == False) playSoundFile("boing", 10);
-
-	} else if (noWalls == True && balls[i].ballx < BALL_WC)
+		if (noSound == False)
+			playSoundFile("boing", 10);
+	}
+	else if (noWalls == True && balls[i].ballx < BALL_WC)
 	{
 		/* If the no walls mode is on then wrap around onto right wall */
 		balls[i].ballx = (PLAY_WIDTH - BALL_WC);
@@ -1046,13 +1083,14 @@ static void UpdateABall(Display *display, Window window, int i)
 		return;
 	}
 
-	/* Check if ball has hit right wall and bounce off */		
+	/* Check if ball has hit right wall and bounce off */
 	if (balls[i].ballx > (PLAY_WIDTH - BALL_WC) && noWalls == False)
 	{
 		balls[i].dx = -(abs(balls[i].dx));
-		if (noSound == False) playSoundFile("boing", 10);
-
-	} else if (noWalls == True && balls[i].ballx > (PLAY_WIDTH - BALL_WC))
+		if (noSound == False)
+			playSoundFile("boing", 10);
+	}
+	else if (noWalls == True && balls[i].ballx > (PLAY_WIDTH - BALL_WC))
 	{
 		/* If the no walls mode is on then wrap around onto left wall */
 		balls[i].ballx = BALL_WC;
@@ -1063,11 +1101,12 @@ static void UpdateABall(Display *display, Window window, int i)
 		return;
 	}
 
-	/* Check if ball has hit top wall and bounce off */		
-	if (balls[i].bally < BALL_HC) 
+	/* Check if ball has hit top wall and bounce off */
+	if (balls[i].bally < BALL_HC)
 	{
 		balls[i].dy = abs(balls[i].dy);
-		if (noSound == False) playSoundFile("boing", 10);
+		if (noSound == False)
+			playSoundFile("boing", 10);
 	}
 
 	if (balls[i].ballState != BALL_DIE)
@@ -1077,63 +1116,64 @@ static void UpdateABall(Display *display, Window window, int i)
 		{
 			/* Keep track of how long it was since the last paddle hit */
 			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-			if (noSound == False) playSoundFile("paddle", 50);
+			if (noSound == False)
+				playSoundFile("paddle", 50);
 
 			/* Add a paddle hit bonus score, I'm nice ;-) */
-			AddToScore((u_long) PADDLE_HIT_SCORE);
+			AddToScore((u_long)PADDLE_HIT_SCORE);
 			DisplayScore(display, scoreWindow, score);
 
 			/* speed vector of the ball */
-           	Vx = (float) balls[i].dx;    
-           	Vy = (float) balls[i].dy;
+			Vx = (float)balls[i].dx;
+			Vy = (float)balls[i].dy;
 
 			/* speed intensity of the ball */
-           	Vs = sqrt(Vx * Vx + Vy * Vy );
+			Vs = sqrt(Vx * Vx + Vy * Vy);
 
-           	alpha = atan(Vx / -Vy);
+			alpha = atan(Vx / -Vy);
 
-           	padSize = (float) (GetPaddleSize() + BALL_WC);
-           	Vx = (float) hitPos;
-           	Vy = (float) padSize / 1.0;
+			padSize = (float)(GetPaddleSize() + BALL_WC);
+			Vx = (float)hitPos;
+			Vy = (float)padSize / 1.0;
 
-           	beta = atan(Vx / Vy);
-           	gamma = 2.0 * beta - alpha;
+			beta = atan(Vx / Vy);
+			gamma = 2.0 * beta - alpha;
 
-           	Vx = Vs * sin(gamma);
-           	Vy = -Vs * cos(gamma);
+			Vx = Vs * sin(gamma);
+			Vy = -Vs * cos(gamma);
 
-			/* take in account the horizontal speed of the paddle: 
-			 * vectorial summ 
+			/* take in account the horizontal speed of the paddle:
+			 * vectorial summ
 			 */
-           	Vx += (float) (paddleDx / 10.0);
+			Vx += (float)(paddleDx / 10.0);
 
-           	if (Vx > 0.0)
-            	balls[i].dx = (int) (Vx + 0.5);
-           	else
-             	balls[i].dx = (int) (Vx - 0.5);
+			if (Vx > 0.0)
+				balls[i].dx = (int)(Vx + 0.5);
+			else
+				balls[i].dx = (int)(Vx - 0.5);
 
-           	if (Vy < 0.0)
-             	balls[i].dy = (int) (Vy - 0.5);
-           	else
-             	balls[i].dy = -MIN_DY_BALL;
-
-           	if (balls[i].dy > -MIN_DY_BALL) 
+			if (Vy < 0.0)
+				balls[i].dy = (int)(Vy - 0.5);
+			else
 				balls[i].dy = -MIN_DY_BALL;
 
-           	balls[i].ballx = Hx;
-           	balls[i].bally = Hy;
+			if (balls[i].dy > -MIN_DY_BALL)
+				balls[i].dy = -MIN_DY_BALL;
+
+			balls[i].ballx = Hx;
+			balls[i].bally = Hy;
 
 			/* handle the sticky paddle special by changing the ball mode
 			 * to BALL_READY so it will need user to press space to start
 			 * the ball moving again.
 			 */
-			if (stickyBat == True)	
+			if (stickyBat == True)
 			{
 				ChangeBallMode(BALL_READY, i);
 
 				/* Move the ball to the new position */
-				MoveBall(display, window, 
-					balls[i].ballx, balls[i].bally, True, i);
+				MoveBall(display, window,
+						 balls[i].ballx, balls[i].bally, True, i);
 
 				/* So that it will auto shoot off if you wait too long */
 				balls[i].nextFrame = frame + BALL_AUTO_ACTIVE_DELAY;
@@ -1150,39 +1190,40 @@ static void UpdateABall(Display *display, Window window, int i)
 				DoBoardTilt(display, i);
 		}
 
-       	Vx = (float) balls[i].dx;
-       	Vy = (float) balls[i].dy;
-       	Vs = sqrt(Vx * Vx + Vy * Vy);
+		Vx = (float)balls[i].dx;
+		Vy = (float)balls[i].dy;
+		Vs = sqrt(Vx * Vx + Vy * Vy);
 
-       	alpha = sqrt((float)MAX_X_VEL*(float)MAX_X_VEL + (float)MAX_Y_VEL*
-			(float)MAX_Y_VEL );
-       	alpha /= 9.0; /* number of speed level */
-       	alpha *= (float) speedLevel;
-		if (Vs == 0.0) Vs = 1.0;
-       	beta = alpha / Vs;
+		alpha = sqrt((float)MAX_X_VEL * (float)MAX_X_VEL + (float)MAX_Y_VEL *
+															   (float)MAX_Y_VEL);
+		alpha /= 9.0; /* number of speed level */
+		alpha *= (float)speedLevel;
+		if (Vs == 0.0)
+			Vs = 1.0;
+		beta = alpha / Vs;
 
-       	Vx *= beta;
-       	Vy *= beta;
+		Vx *= beta;
+		Vy *= beta;
 
-       	if (Vx > 0.0)
-         	balls[i].dx = (int) (Vx + 0.5);
-       	else
-         	balls[i].dx = (int) (Vx - 0.5);
+		if (Vx > 0.0)
+			balls[i].dx = (int)(Vx + 0.5);
+		else
+			balls[i].dx = (int)(Vx - 0.5);
 
-       	if (Vy > 0.0)
-         	balls[i].dy = (int) (Vy + 0.5);
-       	else
-         	balls[i].dy = (int) (Vy - 0.5);
+		if (Vy > 0.0)
+			balls[i].dy = (int)(Vy + 0.5);
+		else
+			balls[i].dy = (int)(Vy - 0.5);
 
-       	if (balls[i].dy == 0) 
+		if (balls[i].dy == 0)
 			balls[i].dy = MIN_DY_BALL;
 
-       	if (balls[i].dx == 0) 
+		if (balls[i].dx == 0)
 			balls[i].dx = MIN_DX_BALL;
 	}
 
 	/* Has the player lost the ball of the bottom of the screen */
-	if (balls[i].bally > (PLAY_HEIGHT + BALL_HEIGHT*2))
+	if (balls[i].bally > (PLAY_HEIGHT + BALL_HEIGHT * 2))
 	{
 		DEBUG("Ball lost off bottom.");
 
@@ -1203,27 +1244,28 @@ static void UpdateABall(Display *display, Window window, int i)
 
 	if (abs(balls[i].dx) == abs(balls[i].dy))
 	{
-		incx = (float) cx;
-		incy = (float) cy;
+		incx = (float)cx;
+		incy = (float)cy;
 		step = abs(balls[i].dx);
-	} else if (abs(balls[i].dx) > abs(balls[i].dy))
+	}
+	else if (abs(balls[i].dx) > abs(balls[i].dy))
 	{
-		incx = (float) cx;
-		incy = ((float) abs(balls[i].dy) / (float) abs(balls[i].dx)) * cy;
+		incx = (float)cx;
+		incy = ((float)abs(balls[i].dy) / (float)abs(balls[i].dx)) * cy;
 		step = abs(balls[i].dx);
-	} 
-	else 
+	}
+	else
 	{
-		incy = (float) cy;
-		incx = ((float) abs(balls[i].dx) / (float) abs(balls[i].dy)) * cx;
+		incy = (float)cy;
+		incx = ((float)abs(balls[i].dx) / (float)abs(balls[i].dy)) * cx;
 		step = abs(balls[i].dy);
 	}
 
 	for (j = 0; j < step; j++)
 	{
 		/* Check if the ball has hit a brick or something */
-		if ((ret = CheckForCollision(display, window, 
-			(int) x, (int) y, &row, &col, i)) != REGION_NONE)
+		if ((ret = CheckForCollision(display, window,
+									 (int)x, (int)y, &row, &col, i)) != REGION_NONE)
 		{
 			if (HandleTheBlocks(display, window, row, col, i) == True)
 				return;
@@ -1234,59 +1276,58 @@ static void UpdateABall(Display *display, Window window, int i)
 			/* Find out which side the ball hit the brick */
 			switch (ret)
 			{
-				case REGION_LEFT:
-					ddx = -r/4;
-					balls[i].dx = -(abs(balls[i].dx));
-					break;
+			case REGION_LEFT:
+				ddx = -r / 4;
+				balls[i].dx = -(abs(balls[i].dx));
+				break;
 
-				case REGION_RIGHT:
-					ddx = r/4;
-					balls[i].dx = abs(balls[i].dx);
-					break;
+			case REGION_RIGHT:
+				ddx = r / 4;
+				balls[i].dx = abs(balls[i].dx);
+				break;
 
-				case REGION_TOP:
-					ddy = -r/4;
-					balls[i].dy = -(abs(balls[i].dy));
-					break;
+			case REGION_TOP:
+				ddy = -r / 4;
+				balls[i].dy = -(abs(balls[i].dy));
+				break;
 
-				case REGION_BOTTOM:
-					ddy = r/4;
-					balls[i].dy = abs(balls[i].dy);
-					break;
+			case REGION_BOTTOM:
+				ddy = r / 4;
+				balls[i].dy = abs(balls[i].dy);
+				break;
 
-				case (REGION_BOTTOM | REGION_RIGHT):
-					ddy = r;
-					ddx = r;
-					balls[i].dy = abs(balls[i].dy);
-					balls[i].dx = abs(balls[i].dx);
-					break;
+			case (REGION_BOTTOM | REGION_RIGHT):
+				ddy = r;
+				ddx = r;
+				balls[i].dy = abs(balls[i].dy);
+				balls[i].dx = abs(balls[i].dx);
+				break;
 
-				case (REGION_TOP | REGION_RIGHT):
-					ddy = -r;
-					ddx = r;
-					balls[i].dy = -(abs(balls[i].dy));
-					balls[i].dx = abs(balls[i].dx);
-					break;
+			case (REGION_TOP | REGION_RIGHT):
+				ddy = -r;
+				ddx = r;
+				balls[i].dy = -(abs(balls[i].dy));
+				balls[i].dx = abs(balls[i].dx);
+				break;
 
-				case (REGION_BOTTOM | REGION_LEFT):
-					ddy = r;
-					ddx = -r;
-					balls[i].dx = -(abs(balls[i].dx));
-					balls[i].dy = abs(balls[i].dy);
-					break;
+			case (REGION_BOTTOM | REGION_LEFT):
+				ddy = r;
+				ddx = -r;
+				balls[i].dx = -(abs(balls[i].dx));
+				balls[i].dy = abs(balls[i].dy);
+				break;
 
-				case (REGION_TOP | REGION_LEFT):
-					ddy = -r;
-					ddx = -r;
-					balls[i].dx = -(abs(balls[i].dx));
-					balls[i].dy = -(abs(balls[i].dy));
-					break;
+			case (REGION_TOP | REGION_LEFT):
+				ddy = -r;
+				ddx = -r;
+				balls[i].dx = -(abs(balls[i].dx));
+				balls[i].dy = -(abs(balls[i].dy));
+				break;
 			}
 
-
-			/* Update ball position using dx and dy values */	
-			balls[i].ballx = (int) x + balls[i].dx + ddx + 1 - rand() % 3;
-			balls[i].bally = (int) y + balls[i].dy + ddy + 1 - rand() % 3;
+			/* Update ball position using dx and dy values */
+			balls[i].ballx = (int)x + balls[i].dx + ddx + 1 - rand() % 3;
+			balls[i].bally = (int)y + balls[i].dy + ddy + 1 - rand() % 3;
 
 			break;
 		}
@@ -1294,7 +1335,7 @@ static void UpdateABall(Display *display, Window window, int i)
 		x += incx;
 		y += incy;
 
-	}	/* for */
+	} /* for */
 
 	/* Move the ball to the new position */
 	MoveBall(display, window, balls[i].ballx, balls[i].bally, True, i);
@@ -1313,16 +1354,17 @@ static void UpdateABall(Display *display, Window window, int i)
 				/* Ok collided - so rebound please */
 				Ball2BallCollision(&balls[i], &balls[t]);
 
-				if (noSound == False) playSoundFile("ball2ball", 90);
+				if (noSound == False)
+					playSoundFile("ball2ball", 90);
 			}
 
 			/* Check if the ball has hit an eye dude */
 			if (getEyeDudeMode() == EYEDUDE_WALK)
 			{
 				if (CheckBallEyeDudeCollision(display, window, t) == True)
-				{	
-           	    	/* Ok so the eyedude has been hit - arrggh */
-           	    	ChangeEyeDudeMode(EYEDUDE_DIE);
+				{
+					/* Ok so the eyedude has been hit - arrggh */
+					ChangeEyeDudeMode(EYEDUDE_DIE);
 				}
 			}
 		}
@@ -1330,7 +1372,7 @@ static void UpdateABall(Display *display, Window window, int i)
 }
 
 static int CheckRegions(Display *display, Window window, int row, int col,
-	int x, int y, int i)
+						int x, int y, int i)
 {
 	/*
 	 * Check each region and see if the ball has hit it.
@@ -1338,7 +1380,7 @@ static int CheckRegions(Display *display, Window window, int row, int col,
 	 * Returns the region hit or REGION_NONE.
 	 */
 
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 	struct aBlock *blockPleft;
 	struct aBlock *blockPright;
 	struct aBlock *blockPtop;
@@ -1346,99 +1388,101 @@ static int CheckRegions(Display *display, Window window, int row, int col,
 
 	int region = REGION_NONE;
 
-    if (row < 0 || row >= MAX_ROW) return REGION_NONE;
-    if (col < 0 || col >= MAX_COL) return REGION_NONE;
+	if (row < 0 || row >= MAX_ROW)
+		return REGION_NONE;
+	if (col < 0 || col >= MAX_COL)
+		return REGION_NONE;
 
-    blockP = &blocks[row][col];
-    blockPleft = &blocks[row][col-1];
-    blockPright = &blocks[row][col+1];
-    blockPtop = &blocks[row-1][col];
-    blockPbottom = &blocks[row+1][col];
+	blockP = &blocks[row][col];
+	blockPleft = &blocks[row][col - 1];
+	blockPright = &blocks[row][col + 1];
+	blockPtop = &blocks[row - 1][col];
+	blockPbottom = &blocks[row + 1][col];
 
-    /* If blocks is occupied then check for collision */
-    if (blockP->occupied == 1 && blockP->exploding == False)
-    {
-        /* Suss out if ball is moving more vertically than horizontally */
-        if (abs(balls[i].dx) > abs(balls[i].dy))
-        {
-            /* Check left and right first as ball is moving more horizontal */
+	/* If blocks is occupied then check for collision */
+	if (blockP->occupied == 1 && blockP->exploding == False)
+	{
+		/* Suss out if ball is moving more vertically than horizontally */
+		if (abs(balls[i].dx) > abs(balls[i].dy))
+		{
+			/* Check left and right first as ball is moving more horizontal */
 
-            /* See if the ball intersects with the block's left region */
-            if (XRectInRegion(blockP->regionLeft, x - BALL_WC, y - BALL_HC,
-                BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
+			/* See if the ball intersects with the block's left region */
+			if (XRectInRegion(blockP->regionLeft, x - BALL_WC, y - BALL_HC,
+							  BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
 			{
-            	if (blockPleft->occupied == False)
-                	region |= REGION_LEFT;
+				if (blockPleft->occupied == False)
+					region |= REGION_LEFT;
 			}
 
-            /* See if the ball intersects with the block's right region */
-            if (XRectInRegion(blockP->regionRight, x - BALL_WC, y - BALL_HC,
-                BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
+			/* See if the ball intersects with the block's right region */
+			if (XRectInRegion(blockP->regionRight, x - BALL_WC, y - BALL_HC,
+							  BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
 			{
-            	if (blockPright->occupied == False)
-                	region |= REGION_RIGHT;
+				if (blockPright->occupied == False)
+					region |= REGION_RIGHT;
 			}
 
-            /* See if the ball intersects with the block's bottom region */
-            if (XRectInRegion(blockP->regionBottom, x - BALL_WC, y - BALL_HC,
-                BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
+			/* See if the ball intersects with the block's bottom region */
+			if (XRectInRegion(blockP->regionBottom, x - BALL_WC, y - BALL_HC,
+							  BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
 			{
-            	if (blockPbottom->occupied == False)
-                	region |= REGION_BOTTOM;
+				if (blockPbottom->occupied == False)
+					region |= REGION_BOTTOM;
 			}
 
-            /* See if the ball intersects with the block's top region */
-            if (XRectInRegion(blockP->regionTop, x - BALL_WC, y - BALL_HC,
-                BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
+			/* See if the ball intersects with the block's top region */
+			if (XRectInRegion(blockP->regionTop, x - BALL_WC, y - BALL_HC,
+							  BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
 			{
-            	if (blockPtop->occupied == False)
-                	region |= REGION_TOP;
+				if (blockPtop->occupied == False)
+					region |= REGION_TOP;
 			}
-        }
-        else
-        {
-            /* Check top and bottom first as ball is moving more vertical */
+		}
+		else
+		{
+			/* Check top and bottom first as ball is moving more vertical */
 
-            /* See if the ball intersects with the block's bottom region */
-            if (XRectInRegion(blockP->regionBottom, x - BALL_WC, y - BALL_HC,
-                BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
+			/* See if the ball intersects with the block's bottom region */
+			if (XRectInRegion(blockP->regionBottom, x - BALL_WC, y - BALL_HC,
+							  BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
 			{
-            	if (blockPbottom->occupied == False)
-                	region |= REGION_BOTTOM;
-			}
-
-            /* See if the ball intersects with the block's top region */
-            if (XRectInRegion(blockP->regionTop, x - BALL_WC, y - BALL_HC,
-                BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
-			{
-            	if (blockPtop->occupied == False)
-                	region |= REGION_TOP;
+				if (blockPbottom->occupied == False)
+					region |= REGION_BOTTOM;
 			}
 
-            /* See if the ball intersects with the block's left region */
-            if (XRectInRegion(blockP->regionLeft, x - BALL_WC, y - BALL_HC,
-                BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
+			/* See if the ball intersects with the block's top region */
+			if (XRectInRegion(blockP->regionTop, x - BALL_WC, y - BALL_HC,
+							  BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
 			{
-            	if (blockPleft->occupied == False)
-                	region |= REGION_LEFT;
+				if (blockPtop->occupied == False)
+					region |= REGION_TOP;
 			}
 
-            /* See if the ball intersects with the block's right region */
-            if (XRectInRegion(blockP->regionRight, x - BALL_WC, y - BALL_HC,
-                BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
+			/* See if the ball intersects with the block's left region */
+			if (XRectInRegion(blockP->regionLeft, x - BALL_WC, y - BALL_HC,
+							  BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
 			{
-            	if (blockPright->occupied == False)
-                	region |= REGION_RIGHT;
+				if (blockPleft->occupied == False)
+					region |= REGION_LEFT;
 			}
-        }
-    }
+
+			/* See if the ball intersects with the block's right region */
+			if (XRectInRegion(blockP->regionRight, x - BALL_WC, y - BALL_HC,
+							  BALL_WIDTH, BALL_HEIGHT) != RectangleOut)
+			{
+				if (blockPright->occupied == False)
+					region |= REGION_RIGHT;
+			}
+		}
+	}
 
 	/* Return the region combination */
 	return region;
 }
 
-static int CheckForCollision(Display *display, Window window, int x, int y, 
-	int *r, int *c, int i)
+static int CheckForCollision(Display *display, Window window, int x, int y,
+							 int *r, int *c, int i)
 {
 	/*
 	 * Check each adjoining block and see if the ball has hit any region in
@@ -1450,27 +1494,35 @@ static int CheckForCollision(Display *display, Window window, int x, int y,
 	col = *c;
 
 	/* Check all the regions around block */
-	if ((ret = CheckRegions(display, window, row, col, x, y, i)) 
-		!= REGION_NONE)	/*nothin*/;
-	else if ((ret = CheckRegions(display, window, row+1, col, x, y, i)) 
-		!= REGION_NONE)	row++;
-	else if ((ret = CheckRegions(display, window, row-1, col, x, y, i)) 
-		!= REGION_NONE)	row--;
-	else if ((ret = CheckRegions(display, window, row, col+1, x, y, i)) 
-		!= REGION_NONE)	col++;
-	else if ((ret = CheckRegions(display, window, row, col-1, x, y, i)) 
-		!= REGION_NONE)	col--;
-	else if ((ret = CheckRegions(display, window, row+1, col+1, x, y, i)) 
-		!= REGION_NONE)	{ row++; col++; }
-	else if ((ret = CheckRegions(display, window, row-1, col-1, x, y, i)) 
-		!= REGION_NONE)	{ row--; col--; }
-	else if ((ret = CheckRegions(display, window, row+1, col-1, x, y, i)) 
-		!= REGION_NONE) { row++; col--; }
-	else if ((ret = CheckRegions(display, window, row-1, col+1, x, y, i)) 
-		!= REGION_NONE)	
+	if ((ret = CheckRegions(display, window, row, col, x, y, i)) != REGION_NONE) /*nothin*/
+		;
+	else if ((ret = CheckRegions(display, window, row + 1, col, x, y, i)) != REGION_NONE)
+		row++;
+	else if ((ret = CheckRegions(display, window, row - 1, col, x, y, i)) != REGION_NONE)
+		row--;
+	else if ((ret = CheckRegions(display, window, row, col + 1, x, y, i)) != REGION_NONE)
+		col++;
+	else if ((ret = CheckRegions(display, window, row, col - 1, x, y, i)) != REGION_NONE)
+		col--;
+	else if ((ret = CheckRegions(display, window, row + 1, col + 1, x, y, i)) != REGION_NONE)
 	{
-		*r = row-1;
-		*c = col+1;
+		row++;
+		col++;
+	}
+	else if ((ret = CheckRegions(display, window, row - 1, col - 1, x, y, i)) != REGION_NONE)
+	{
+		row--;
+		col--;
+	}
+	else if ((ret = CheckRegions(display, window, row + 1, col - 1, x, y, i)) != REGION_NONE)
+	{
+		row++;
+		col--;
+	}
+	else if ((ret = CheckRegions(display, window, row - 1, col + 1, x, y, i)) != REGION_NONE)
+	{
+		*r = row - 1;
+		*c = col + 1;
 		return REGION_NONE;
 	}
 
@@ -1483,115 +1535,115 @@ static int CheckForCollision(Display *display, Window window, int x, int y,
 
 static int WhenBallsCollide(BALL *ball1, BALL *ball2, float *time)
 {
-    /*
-     * Calculate when 2 balls will collide.
-     * If the balls collide, a True status is returned, and when the
-     * incident takes place is returned in time.
-     * If the balls don't collide, a False status is returned.
-     */
+	/*
+	 * Calculate when 2 balls will collide.
+	 * If the balls collide, a True status is returned, and when the
+	 * incident takes place is returned in time.
+	 * If the balls don't collide, a False status is returned.
+	 */
 
-   	vector_t 	p, v;          /* deltas between the 2 balls */
-   	float      	tmp1, tmp2, t1, t2, tmin, v2, r2;
+	vector_t p, v; /* deltas between the 2 balls */
+	float tmp1, tmp2, t1, t2, tmin, v2, r2;
 
-   	p.x = ball1->ballx   -  ball2->ballx;
-   	p.y = ball1->bally   -  ball2->bally;
-   	v.x = ball1->dx  	-  ball2->dx;
-    v.y = ball1->dy  	-  ball2->dy;
+	p.x = ball1->ballx - ball2->ballx;
+	p.y = ball1->bally - ball2->bally;
+	v.x = ball1->dx - ball2->dx;
+	v.y = ball1->dy - ball2->dy;
 
-   	v2 = SQR(v.x) + SQR(v.y);
-   	r2 = SQR(ball1->radius + ball2->radius);
+	v2 = SQR(v.x) + SQR(v.y);
+	r2 = SQR(ball1->radius + ball2->radius);
 
-   	/*
-     * tmp2 >  0   Balls will collide, or are off from a collision direction
-     * tmp2 == 0   Balls will touch or have already touched
-     * tmp2 <  0   Balls will not be/have not been close to eachother.
-     */
+	/*
+	 * tmp2 >  0   Balls will collide, or are off from a collision direction
+	 * tmp2 == 0   Balls will touch or have already touched
+	 * tmp2 <  0   Balls will not be/have not been close to eachother.
+	 */
 
-   	tmp2 = (v2 * r2) - SQR((v.x * p.y) - (v.y * p.x));
+	tmp2 = (v2 * r2) - SQR((v.x * p.y) - (v.y * p.x));
 
-    /*
-     * Check the magnitude of v2 to safeguard against numerical trouble.
-     * The velocities must be scaled so that this is not a problem,
-     * and rather change the time scale so that the travelled distance
-     * v * t is constant.
-     */
+	/*
+	 * Check the magnitude of v2 to safeguard against numerical trouble.
+	 * The velocities must be scaled so that this is not a problem,
+	 * and rather change the time scale so that the travelled distance
+	 * v * t is constant.
+	 */
 
-   	if (tmp2 >= 0.0 && v2 > MACHINE_EPS)
-   	{
-      	tmp2 = sqrt(tmp2) / v2;
-      	tmp1 = -((p.x * v.x) + (p.y * v.y)) / v2;
+	if (tmp2 >= 0.0 && v2 > MACHINE_EPS)
+	{
+		tmp2 = sqrt(tmp2) / v2;
+		tmp1 = -((p.x * v.x) + (p.y * v.y)) / v2;
 
-      	t1 = tmp1 - tmp2;
-      	t2 = tmp1 + tmp2;
+		t1 = tmp1 - tmp2;
+		t2 = tmp1 + tmp2;
 
-      	/*
-       	 * Choose the smallest of t1 and t2.
-       	 * Note that both solutions t1 and t2 will (should) have the same sign.
-       	 * If t1 and t2 are opposite sign, this means that the two ball centers
-       	 * are closer to eachother than their combined radius.
-       	 */
-      	tmin = MIN(t1, t2);
+		/*
+		 * Choose the smallest of t1 and t2.
+		 * Note that both solutions t1 and t2 will (should) have the same sign.
+		 * If t1 and t2 are opposite sign, this means that the two ball centers
+		 * are closer to eachother than their combined radius.
+		 */
+		tmin = MIN(t1, t2);
 
-      	if (tmin >= 0.0 && tmin <= 1.0)
-	  	{
-         	*time = tmin;
+		if (tmin >= 0.0 && tmin <= 1.0)
+		{
+			*time = tmin;
 			return True;
 		}
-   	}
+	}
 
-   	*time = 0.0;
+	*time = 0.0;
 
-   	return False;
+	return False;
 }
 
 static void Ball2BallCollision(BALL *ball1, BALL *ball2)
 {
-    /*
-     * Calclulate the new velocity (direction) of the balls after a collision.
-     * On entry, the balls positions and velocities are set to those values
-     * when the collision takes place.  On exit, the balls velocities are set
-     * to their new directions, whilst the position info remains unchanged.
-     */
+	/*
+	 * Calclulate the new velocity (direction) of the balls after a collision.
+	 * On entry, the balls positions and velocities are set to those values
+	 * when the collision takes place.  On exit, the balls velocities are set
+	 * to their new directions, whilst the position info remains unchanged.
+	 */
 
-   vector_t   p, v;          /* deltas between the 2 balls */
-   float      k, plen, massrate;
+	vector_t p, v; /* deltas between the 2 balls */
+	float k, plen, massrate;
 
-   p.x  = ball1->ballx  -  ball2->ballx;
-   p.y  = ball1->ballx  -  ball2->bally;
-   v.x  = ball1->dx  	-  ball2->dx;
-   v.y  = ball1->dy  	-  ball2->dy;
+	p.x = ball1->ballx - ball2->ballx;
+	p.y = ball1->ballx - ball2->bally;
+	v.x = ball1->dx - ball2->dx;
+	v.y = ball1->dy - ball2->dy;
 
-   /*
-    * p is the direction between the 2 balls centers, and will
-    * have the langth of ball1->radius + ball2->radius
-    */
-   plen = sqrt(SQR(p.x) + SQR(p.y));
-   p.x /= plen;
-   p.y /= plen;
+	/*
+	 * p is the direction between the 2 balls centers, and will
+	 * have the langth of ball1->radius + ball2->radius
+	 */
+	plen = sqrt(SQR(p.x) + SQR(p.y));
+	p.x /= plen;
+	p.y /= plen;
 
-   massrate = ball1->mass / ball2->mass;
+	massrate = ball1->mass / ball2->mass;
 
-   k = -2.0 * ((v.x * p.x) + (v.y * p.y)) / (1.0 + massrate);
-   ball1->dx += (int) (k * p.x);
-   ball1->dy += (int) (k * p.y);
+	k = -2.0 * ((v.x * p.x) + (v.y * p.y)) / (1.0 + massrate);
+	ball1->dx += (int)(k * p.x);
+	ball1->dy += (int)(k * p.y);
 
-   /* New k for ball 2 */
-   k *= -massrate;
-   ball2->dx += (int) (k * p.x);
-   ball2->dy += (int) (k * p.y);
+	/* New k for ball 2 */
+	k *= -massrate;
+	ball2->dx += (int)(k * p.x);
+	ball2->dy += (int)(k * p.y);
 }
 
 static void updateBallVariables(int i)
 {
 	/*
-	 * Update the balls x and old pos for a ball moving on the paddle 
+	 * Update the balls x and old pos for a ball moving on the paddle
 	 * waiting to be shot off. Also ball birth.
 	 */
 
-	balls[i].ballx 	= paddlePos;
-	balls[i].bally 	= PLAY_HEIGHT - DIST_BALL_OF_PADDLE;
-	balls[i].oldx 	= balls[i].ballx;
-	balls[i].oldy 	= balls[i].bally;
+	balls[i].ballx = paddlePos;
+	balls[i].bally = PLAY_HEIGHT - DIST_BALL_OF_PADDLE;
+	balls[i].oldx = balls[i].ballx;
+	balls[i].oldy = balls[i].bally;
 }
 
 int GetNumberOfActiveBalls(void)
@@ -1618,7 +1670,7 @@ int GetNumberOfActiveBalls(void)
 int GetAnActiveBall(void)
 {
 	/*
-	 * 
+	 *
 	 */
 	int i;
 
@@ -1653,7 +1705,7 @@ int IsBallWaiting(void)
 
 static void ChangeBallDirectionToGuide(int i)
 {
-	/* 
+	/*
 	 * Change the direction vector of the ball to that of the guide
 	 * marker so that it will shoot off in the direction you want.
 	 */
@@ -1663,39 +1715,73 @@ static void ChangeBallDirectionToGuide(int i)
 
 	switch (guidePos)
 	{
-		/* Left to middle to right */
-		case 0: dx = -5; dy = -1; break;
+	/* Left to middle to right */
+	case 0:
+		dx = -5;
+		dy = -1;
+		break;
 
-		case 1: dx = -4; dy = -2; break;
+	case 1:
+		dx = -4;
+		dy = -2;
+		break;
 
-		case 2: dx = -3; dy = -3; break;
+	case 2:
+		dx = -3;
+		dy = -3;
+		break;
 
-		case 3: dx = -2; dy = -4; break;
+	case 3:
+		dx = -2;
+		dy = -4;
+		break;
 
-		case 4: dx = -1; dy = -5; break;
+	case 4:
+		dx = -1;
+		dy = -5;
+		break;
 
-		case 5:	dx = 0; dy = -5; break;
+	case 5:
+		dx = 0;
+		dy = -5;
+		break;
 
-		case 6: dx = 1; dy = -5; break;
+	case 6:
+		dx = 1;
+		dy = -5;
+		break;
 
-		case 7: dx = 2; dy = -4; break;
+	case 7:
+		dx = 2;
+		dy = -4;
+		break;
 
-		case 8: dx = 3; dy = -3; break;
+	case 8:
+		dx = 3;
+		dy = -3;
+		break;
 
-		case 9: dx = 4; dy = -2; break;
+	case 9:
+		dx = 4;
+		dy = -2;
+		break;
 
-		case 10: dx = 5; dy = -1; break;
+	case 10:
+		dx = 5;
+		dy = -1;
+		break;
 	}
 
 	/* Make the ball go off in the direction of the guide */
-	balls[i].dx	= dx; balls[i].dy	= dy;
+	balls[i].dx = dx;
+	balls[i].dy = dy;
 
 	DEBUG("Changed ball start direction to guide.");
 }
 
 int ActivateWaitingBall(Display *display, Window window)
 {
-	/* 
+	/*
 	 * Loop through all balls and find the first one that is ready to
 	 * be activated and activate it. Also erase the guide marker.
 	 */
@@ -1767,15 +1853,15 @@ static void AnimateBallPop(Display *display, Window window, int i)
 		if (slide == BIRTH_SLIDES)
 		{
 			/* Clear the ball area */
-    		EraseTheBall(display, window, balls[i].oldx, balls[i].oldy);
+			EraseTheBall(display, window, balls[i].oldx, balls[i].oldy);
 			slide--;
 		}
 
 		if (slide < 0)
 		{
 			/* Erase the ball birth image */
-			MoveBallBirth(display, window, 
-				balls[i].oldx, balls[i].oldy, -1, True, i);
+			MoveBallBirth(display, window,
+						  balls[i].oldx, balls[i].oldy, -1, True, i);
 
 			slide = BIRTH_SLIDES + 1;
 
@@ -1786,8 +1872,8 @@ static void AnimateBallPop(Display *display, Window window, int i)
 		}
 		else
 			/* Draw ball birth - handles ball moving as well */
-			MoveBallBirth(display, window, 
-				balls[i].oldx, balls[i].oldy, slide, True, i);
+			MoveBallBirth(display, window,
+						  balls[i].oldx, balls[i].oldy, slide, True, i);
 	}
 }
 
@@ -1800,8 +1886,8 @@ static void AnimateBallCreate(Display *display, Window window, int i)
 	static int slide = 0;
 
 	/* Draw the ball birth at the new position */
-	MoveBallBirth(display, window, paddlePos, 
-		PLAY_HEIGHT - DIST_BALL_OF_PADDLE, slide, True, i);
+	MoveBallBirth(display, window, paddlePos,
+				  PLAY_HEIGHT - DIST_BALL_OF_PADDLE, slide, True, i);
 
 	if (frame == balls[i].nextFrame)
 	{
@@ -1814,28 +1900,28 @@ static void AnimateBallCreate(Display *display, Window window, int i)
 		if (slide == BIRTH_SLIDES)
 		{
 			/* Erase the ball birth image */
-			MoveBallBirth(display, window, 
-				paddlePos, PLAY_HEIGHT - DIST_BALL_OF_PADDLE, -1, 
-				True, i);
+			MoveBallBirth(display, window,
+						  paddlePos, PLAY_HEIGHT - DIST_BALL_OF_PADDLE, -1,
+						  True, i);
 
 			slide = 0;
 
 			updateBallVariables(i);
 
-			MoveBall(display, window, paddlePos, 
-				PLAY_HEIGHT - DIST_BALL_OF_PADDLE, True, i);
+			MoveBall(display, window, paddlePos,
+					 PLAY_HEIGHT - DIST_BALL_OF_PADDLE, True, i);
 
 			ChangeBallMode(BALL_READY, i);
 
 			/* This frame will trigger the auto shoot off the ball if you
-			 * don't press space within a specified time 
+			 * don't press space within a specified time
 			 */
 			balls[i].nextFrame = frame + BALL_AUTO_ACTIVE_DELAY;
 		}
 		else
-			MoveBallBirth(display, window, 
-				paddlePos, PLAY_HEIGHT - DIST_BALL_OF_PADDLE, 
-				slide, True, i);
+			MoveBallBirth(display, window,
+						  paddlePos, PLAY_HEIGHT - DIST_BALL_OF_PADDLE,
+						  slide, True, i);
 
 		if (paddleIsMoving())
 			updateBallVariables(i);
@@ -1859,9 +1945,9 @@ static void SetBallWait(enum BallStates newMode, int waitFrame, int i)
 	 */
 
 	/* Set up the ball waiting loop */
-	balls[i].waitingFrame	= waitFrame;
-	balls[i].waitMode 		= newMode;
-	balls[i].ballState 		= BALL_WAIT;
+	balls[i].waitingFrame = waitFrame;
+	balls[i].waitMode = newMode;
+	balls[i].ballState = BALL_WAIT;
 }
 
 static void DoBallWait(int i)
@@ -1899,17 +1985,17 @@ int AddANewBall(Display *display, int x, int y, int dx, int dy)
 			ClearBall(i);
 
 			/* We have found a new ball spot so setup the ball */
-			balls[i].active 	= True;
-			balls[i].ballx 		= x;
-			balls[i].bally 		= y;
-			balls[i].oldx 		= balls[i].ballx;
-			balls[i].oldy 		= balls[i].bally;
-			balls[i].dx 		= dx;
-			balls[i].dy 		= dy;
-			balls[i].ballState 	= BALL_CREATE;
-			balls[i].mass 		= (rand() % (int)MAX_BALL_MASS) + MIN_BALL_MASS;
-			balls[i].slide 		= 0;
-			balls[i].nextFrame 	= frame + BIRTH_FRAME_RATE;
+			balls[i].active = True;
+			balls[i].ballx = x;
+			balls[i].bally = y;
+			balls[i].oldx = balls[i].ballx;
+			balls[i].oldy = balls[i].bally;
+			balls[i].dx = dx;
+			balls[i].dy = dy;
+			balls[i].ballState = BALL_CREATE;
+			balls[i].mass = (rand() % (int)MAX_BALL_MASS) + MIN_BALL_MASS;
+			balls[i].slide = 0;
+			balls[i].nextFrame = frame + BIRTH_FRAME_RATE;
 
 			DEBUG("Added new ball to arena.");
 			return i;
@@ -1930,22 +2016,22 @@ void ClearBall(int i)
 	 * Initialise all the ball structure to default values.
 	 */
 
-	balls[i].waitMode 			= BALL_NONE;
-	balls[i].waitingFrame 		= 0;
+	balls[i].waitMode = BALL_NONE;
+	balls[i].waitingFrame = 0;
 	balls[i].lastPaddleHitFrame = 0;
-	balls[i].nextFrame 			= 0;
-	balls[i].newMode 			= BALL_NONE;
-	balls[i].active 			= False;
-	balls[i].oldx 				= 0;
-	balls[i].oldy 				= 0;
-	balls[i].ballx 				= 0;
-	balls[i].bally 				= 0;
-	balls[i].dx 				= 0;
-	balls[i].dy 				= 0;
-	balls[i].slide 				= 0;
-	balls[i].radius 			= BALL_WC;
-	balls[i].mass 			 	= MIN_BALL_MASS;
-	balls[i].ballState 			= BALL_CREATE;
+	balls[i].nextFrame = 0;
+	balls[i].newMode = BALL_NONE;
+	balls[i].active = False;
+	balls[i].oldx = 0;
+	balls[i].oldy = 0;
+	balls[i].ballx = 0;
+	balls[i].bally = 0;
+	balls[i].dx = 0;
+	balls[i].dy = 0;
+	balls[i].slide = 0;
+	balls[i].radius = BALL_WC;
+	balls[i].mass = MIN_BALL_MASS;
+	balls[i].ballState = BALL_CREATE;
 }
 
 void ClearAllBalls(void)
@@ -1985,58 +2071,58 @@ void HandleBallMode(Display *display, Window window)
 			/* Switch on the state of the ball */
 			switch (balls[i].ballState)
 			{
-				case BALL_POP:		/* Ball pop animation */
-					AnimateBallPop(display, window, i);
-					break;
+			case BALL_POP: /* Ball pop animation */
+				AnimateBallPop(display, window, i);
+				break;
 
-				case BALL_ACTIVE:	/* Animate the ball normally */
-					if ((frame % BALL_FRAME_RATE) == 0)
-						UpdateABall(display, window, i);
-					break;
+			case BALL_ACTIVE: /* Animate the ball normally */
+				if ((frame % BALL_FRAME_RATE) == 0)
+					UpdateABall(display, window, i);
+				break;
 
-				case BALL_READY:	/* ball created and waiting to move */
-					if (paddleIsMoving())
-					{
-						balls[i].ballx = paddlePos;
-						balls[i].bally = PLAY_HEIGHT - DIST_BALL_OF_PADDLE;
+			case BALL_READY: /* ball created and waiting to move */
+				if (paddleIsMoving())
+				{
+					balls[i].ballx = paddlePos;
+					balls[i].bally = PLAY_HEIGHT - DIST_BALL_OF_PADDLE;
 
-						MoveBall(display, window, balls[i].ballx, 
-							balls[i].bally, True, i);
-					}
+					MoveBall(display, window, balls[i].ballx,
+							 balls[i].bally, True, i);
+				}
 
-					if ((frame % (BALL_FRAME_RATE)) == 0)
-						MoveGuides(display, window, i, False);
+				if ((frame % (BALL_FRAME_RATE)) == 0)
+					MoveGuides(display, window, i, False);
 
-					/* After a certain number of seconds fire off anyway */
-					if (frame == balls[i].nextFrame)
-					{
-						ChangeBallMode(BALL_ACTIVE, i);
-						ChangeBallDirectionToGuide(i);
-						MoveGuides(display, window, i, True);
-					}
-					break;
+				/* After a certain number of seconds fire off anyway */
+				if (frame == balls[i].nextFrame)
+				{
+					ChangeBallMode(BALL_ACTIVE, i);
+					ChangeBallDirectionToGuide(i);
+					MoveGuides(display, window, i, True);
+				}
+				break;
 
-				case BALL_STOP:		/* Ball dead and stopped */
-					break;
+			case BALL_STOP: /* Ball dead and stopped */
+				break;
 
-				case BALL_CREATE:	/* Create ball animation */
-					AnimateBallCreate(display, window, i);
-					break;
+			case BALL_CREATE: /* Create ball animation */
+				AnimateBallCreate(display, window, i);
+				break;
 
-				case BALL_WAIT:		/* In wait mode waiting to change state */
-					DoBallWait(i);
-					break;
+			case BALL_WAIT: /* In wait mode waiting to change state */
+				DoBallWait(i);
+				break;
 
-				case BALL_DIE:		/* Ball is going to die */
-					if ((frame % BALL_FRAME_RATE) == 0)
-						UpdateABall(display, window, i);
-					break;
+			case BALL_DIE: /* Ball is going to die */
+				if ((frame % BALL_FRAME_RATE) == 0)
+					UpdateABall(display, window, i);
+				break;
 
-				case BALL_NONE:		/* Really cool mode ;-) */
-				default:
-					break;
+			case BALL_NONE: /* Really cool mode ;-) */
+			default:
+				break;
 
-			}	/* Ball modes */
-		}	/* If active */	
-	}	/* For loop */
+			} /* Ball modes */
+		} /* If active */
+	} /* For loop */
 }
