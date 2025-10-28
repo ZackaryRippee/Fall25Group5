@@ -238,7 +238,7 @@ static void DoFinish(/*Display*/int *display, /*/Window*/int  window)
    // mode = MODE_KEYS;
 
 	/*/if (noSound == False)
-		playSoundFile("whizzo", 50);
+		playSoundFile("whizzo", SFX_VOL_WHIZZO);
 */}
 
 void Demonstration(/*/Display*/int *display,/*/ Window*/int window)

@@ -376,7 +376,7 @@ static void DoFinish(Display *display, Window window)
 	mode = MODE_INSTRUCT;
 
 	if (noSound == False)
-		playSoundFile("whoosh", 50);
+		playSoundFile("whoosh", SFX_VOL_WHOOSH);
 }
 
 

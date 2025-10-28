@@ -133,6 +133,25 @@
 #define MINFLOAT ((float)1.40129846432481707e-45)
 #endif
 
+/* Local constants to avoid magic numbers */
+#define GUIDE_COUNT         11
+#define GUIDE_HALF_WIDTH    14
+#define GUIDE_HALF_HEIGHT   6
+#define GUIDE_WIDTH         29
+#define GUIDE_HEIGHT        12
+#define GUIDE_START_POS     6
+#define GUIDE_ANIM_STEPS    8
+
+#define MIN_RANDOM_VEL      3
+#define TELEPORT_MAX_TRIES  20
+
+#define COLLISION_RAND_RANGE 4
+#define COLLISION_JITTER     3
+#define COLLISION_POSITION_OFFSET 1
+
+#define BLACK_BLK_COOLDOWN  30
+#define PADDLE_HIT_LINE_OFFSET 2
+
 
 /*
  *  Internal type declarations:
@@ -171,10 +190,10 @@ static Pixmap ballsPixmap[BALL_SLIDES];
 static Pixmap ballsMask[BALL_SLIDES];
 static Pixmap ballBirthPixmap[BIRTH_SLIDES];
 static Pixmap ballBirthMask[BIRTH_SLIDES];
-static Pixmap guides[11];
-static Pixmap guidesM[11];
+static Pixmap guides[GUIDE_COUNT];
+static Pixmap guidesM[GUIDE_COUNT];
 BALL balls[MAX_BALLS];
-static int guidePos = 6;	 /* Start in middle of guider */
+static int guidePos = GUIDE_START_POS;	 /* Start in middle of guider */
 
 /* global constant machine epsilon */
 float MACHINE_EPS;
@@ -318,7 +337,7 @@ void FreeBall(Display *display)
 	}
 
 	/* Free all animation frames for the guides */
-	for (i = 0; i < 11; i++)
+	for (i = 0; i < GUIDE_COUNT; i++)
 	{
 		if (guides[i]) 	XFreePixmap(display, guides[i]);
 	 	if (guidesM[i]) XFreePixmap(display, guidesM[i]);
@@ -444,29 +463,30 @@ static void MoveGuides(Display *display, Window window, int i, int remove)
 	static int inc = 1;
 
 	/* Clear the old slide */
-    XClearArea(display, window, oldgx - 14, oldgy - 6, 29, 12, False);
+	XClearArea(display, window, oldgx - GUIDE_HALF_WIDTH, oldgy - GUIDE_HALF_HEIGHT,
+		GUIDE_WIDTH, GUIDE_HEIGHT, False);
 
 	if (remove == False)
 	{
-		/* Update its old positions */
-		oldgx = balls[i].oldx;
-		oldgy = balls[i].oldy - 16;
+	/* Update its old positions */
+	oldgx = balls[i].oldx;
+	oldgy = balls[i].oldy - (GUIDE_HALF_HEIGHT * 2 + 4); /* keep previous visual offset */
 
 		/* Check for any silly errors */
-		if (guidePos < 0 || guidePos > 10)
+		if (guidePos < 0 || guidePos > (GUIDE_COUNT - 1))
 			ErrorMessage("Guidepos out of range.");
 
 		/* draw the guide pixmap */
-    	RenderShape(display, window, guides[guidePos], guidesM[guidePos],
-			oldgx - 14, oldgy - 6, 29, 12, False);
+		RenderShape(display, window, guides[guidePos], guidesM[guidePos],
+			oldgx - GUIDE_HALF_WIDTH, oldgy - GUIDE_HALF_HEIGHT, GUIDE_WIDTH, GUIDE_HEIGHT, False);
 
-		/* Don't draw it ever frame */
-		if ((frame % (BALL_FRAME_RATE*8)) == 0)
+		/* Don't draw it every frame - advance animation slower */
+		if ((frame % (BALL_FRAME_RATE * GUIDE_ANIM_STEPS)) == 0)
 			guidePos += inc;
 
-		/* wrap around slides */
-		if (guidePos == 10) inc = -1;
-		if (guidePos == 0) inc = 1;
+	/* wrap around slides */
+	if (guidePos == (GUIDE_COUNT - 1)) inc = -1;
+	if (guidePos == 0) inc = 1;
 	}
 	else
 		guidePos = 6;
@@ -479,9 +499,9 @@ void RandomiseBallVelocity(int i)
 	/* Loop until values are random */
 	while (balls[i].dx == 0 || balls[i].dy == 0)
 	{
-		/* Randomise the ball btwn [3, MAX_VEL] */
-   	 	balls[i].dx = (rand() % (MAX_X_VEL - 3)) + 3;
-   	 	balls[i].dy = (rand() % (MAX_Y_VEL - 3)) + 3;
+    	/* Randomise the ball between [MIN_RANDOM_VEL, MAX_*_VEL] */
+    	 balls[i].dx = (rand() % (MAX_X_VEL - MIN_RANDOM_VEL)) + MIN_RANDOM_VEL;
+    	 balls[i].dy = (rand() % (MAX_Y_VEL - MIN_RANDOM_VEL)) + MIN_RANDOM_VEL;
 
 		/* Make it possible for negative numbers */
 		if ((rand() % 10) < 5)
@@ -527,7 +547,7 @@ static void TeleportBall(Display *display, Window window, int i)
 	int count = 0;
 
 	/* Loop until we find a block to move to */
-	while (done == False && count <= 20)
+	while (done == False && count <= TELEPORT_MAX_TRIES)
 	{
 		/* Stop this going on forever */
 		count++;
@@ -722,7 +742,7 @@ static int BallHitPaddle(Display *display, Window window, int *hit, int i,
 
 	**********************************************************************/
 
-    paddleLine = (PLAY_HEIGHT - DIST_BASE - 2);
+	paddleLine = (PLAY_HEIGHT - DIST_BASE - PADDLE_HIT_LINE_OFFSET);
 
     if (balls[i].bally + BALL_HC > paddleLine)
    	{
@@ -987,7 +1007,7 @@ static int HandleTheBlocks(Display *display, Window window, int row, int col,
 				{
 					/* Redraw the solid wall block to make sure */
 					DrawBlock(display, window, row, col, BLACKHIT_BLK);
-					blockP->nextFrame = frame + 30;
+					blockP->nextFrame = frame + BLACK_BLK_COOLDOWN;
 				}
 					
 				break;
@@ -1033,7 +1053,7 @@ static void UpdateABall(Display *display, Window window, int i)
 	if (balls[i].ballx < BALL_WC && noWalls == False)
 	{
 		balls[i].dx = abs(balls[i].dx);
-		if (noSound == False) playSoundFile("boing", 10);
+		if (noSound == False) playSoundFile("boing", SFX_VOL_BOING);
 
 	} else if (noWalls == True && balls[i].ballx < BALL_WC)
 	{
@@ -1050,7 +1070,7 @@ static void UpdateABall(Display *display, Window window, int i)
 	if (balls[i].ballx > (PLAY_WIDTH - BALL_WC) && noWalls == False)
 	{
 		balls[i].dx = -(abs(balls[i].dx));
-		if (noSound == False) playSoundFile("boing", 10);
+		if (noSound == False) playSoundFile("boing", SFX_VOL_BOING);
 
 	} else if (noWalls == True && balls[i].ballx > (PLAY_WIDTH - BALL_WC))
 	{
@@ -1067,7 +1087,7 @@ static void UpdateABall(Display *display, Window window, int i)
 	if (balls[i].bally < BALL_HC) 
 	{
 		balls[i].dy = abs(balls[i].dy);
-		if (noSound == False) playSoundFile("boing", 10);
+		if (noSound == False) playSoundFile("boing", SFX_VOL_BOING);
 	}
 
 	if (balls[i].ballState != BALL_DIE)
@@ -1077,7 +1097,7 @@ static void UpdateABall(Display *display, Window window, int i)
 		{
 			/* Keep track of how long it was since the last paddle hit */
 			balls[i].lastPaddleHitFrame = frame + PADDLE_BALL_FRAME_TILT;
-			if (noSound == False) playSoundFile("paddle", 50);
+			if (noSound == False) playSoundFile("paddle", SFX_VOL_PADDLE);
 
 			/* Add a paddle hit bonus score, I'm nice ;-) */
 			AddToScore((u_long) PADDLE_HIT_SCORE);
@@ -1229,28 +1249,28 @@ static void UpdateABall(Display *display, Window window, int i)
 				return;
 
 			ddx = ddy = 0;
-			r = (rand() >> 16) % 4;
+			r = (rand() >> 16) % COLLISION_RAND_RANGE;
 
 			/* Find out which side the ball hit the brick */
 			switch (ret)
 			{
 				case REGION_LEFT:
-					ddx = -r/4;
+					ddx = -r / (COLLISION_RAND_RANGE);
 					balls[i].dx = -(abs(balls[i].dx));
 					break;
 
 				case REGION_RIGHT:
-					ddx = r/4;
+					ddx = r / (COLLISION_RAND_RANGE);
 					balls[i].dx = abs(balls[i].dx);
 					break;
 
 				case REGION_TOP:
-					ddy = -r/4;
+					ddy = -r / (COLLISION_RAND_RANGE);
 					balls[i].dy = -(abs(balls[i].dy));
 					break;
 
 				case REGION_BOTTOM:
-					ddy = r/4;
+					ddy = r / (COLLISION_RAND_RANGE);
 					balls[i].dy = abs(balls[i].dy);
 					break;
 
@@ -1284,8 +1304,8 @@ static void UpdateABall(Display *display, Window window, int i)
 			}
 
 
-			/* Update ball position using dx and dy values */	
-			balls[i].ballx = (int) x + balls[i].dx + ddx + 1 - rand() % 3;
+			/* Update ball position using dx and dy values */
+			balls[i].ballx = (int) x + balls[i].dx + ddx + COLLISION_POSITION_OFFSET - (rand() % COLLISION_JITTER);
 			balls[i].bally = (int) y + balls[i].dy + ddy + 1 - rand() % 3;
 
 			break;
@@ -1313,7 +1333,7 @@ static void UpdateABall(Display *display, Window window, int i)
 				/* Ok collided - so rebound please */
 				Ball2BallCollision(&balls[i], &balls[t]);
 
-				if (noSound == False) playSoundFile("ball2ball", 90);
+				if (noSound == False) playSoundFile("ball2ball", SFX_VOL_BALL2BALL);
 			}
 
 			/* Check if the ball has hit an eye dude */

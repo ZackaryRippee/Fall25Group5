@@ -77,6 +77,44 @@
 #define SFX_STATIC  	5
 
 /*
+ * Default sound effect volume levels (avoid magic numbers in callers)
+ */
+#define SFX_VOL_DEFAULT        99
+#define SFX_VOL_BOING          10
+#define SFX_VOL_PADDLE         50
+#define SFX_VOL_BALL2BALL      90
+#define SFX_VOL_BOMB           50
+#define SFX_VOL_AMMO_LOW       30
+#define SFX_VOL_AMMO_HIGH      70
+#define SFX_VOL_TOUCH          SFX_VOL_DEFAULT
+#define SFX_VOL_OUCH           SFX_VOL_DEFAULT
+#define SFX_VOL_DDLOO          SFX_VOL_DEFAULT
+#define SFX_VOL_MGUN           SFX_VOL_DEFAULT
+#define SFX_VOL_WALLSOFF       SFX_VOL_DEFAULT
+#define SFX_VOL_GATE           SFX_VOL_DEFAULT
+#define SFX_VOL_WARP           SFX_VOL_DEFAULT
+#define SFX_VOL_WZZZ2          SFX_VOL_DEFAULT
+#define SFX_VOL_WZZZ           SFX_VOL_DEFAULT
+#define SFX_VOL_SPRING         80
+#define SFX_VOL_BONUS          50
+#define SFX_VOL_STICKY         90
+#define SFX_VOL_EVILLAUGH      SFX_VOL_DEFAULT
+#define SFX_VOL_METAL          SFX_VOL_DEFAULT
+#define SFX_VOL_HYPSPC         SFX_VOL_DEFAULT
+#define SFX_VOL_BUZZER         70
+#define SFX_VOL_APPLAUSE       70
+#define SFX_VOL_YOUAGOD        SFX_VOL_DEFAULT
+#define SFX_VOL_GAME_OVER      SFX_VOL_DEFAULT
+#define SFX_VOL_BALLLOST       SFX_VOL_DEFAULT
+#define SFX_VOL_WHOOSH         50
+#define SFX_VOL_LOOKSBAD       80
+#define SFX_VOL_WHIZZO         50
+#define SFX_VOL_HITHERE        100
+#define SFX_VOL_SUPBONS        80
+#define SFX_VOL_SHOOT          80
+#define SFX_VOL_BALLSHOT       50
+#define SFX_VOL_SHOTGUN        50
+#define SFX_VOL_CLICK          SFX_VOL_DEFAULT
  *  Function prototypes:
  */
 

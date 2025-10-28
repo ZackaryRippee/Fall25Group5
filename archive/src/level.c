@@ -167,7 +167,7 @@ void DecLevelTimeBonus(Display *display, Window window)
 		if (timeBonus == 0)
 		{
 			/* Times up buzzer sound */
-			if (noSound == False) playSoundFile("buzzer", 70); //C Bool Lib
+				if (noSound == False) playSoundFile("buzzer", SFX_VOL_BUZZER); //C Bool Lib
 		}
 	}
 }
@@ -539,7 +539,7 @@ void CheckGameRules(Display *display, Window window)
 		DrawSpecials(display);
 
 		/* Give the play a big head with some applause */
-		if (noSound == False) playSoundFile("applause", 70);
+		if (noSound == False) playSoundFile("applause", SFX_VOL_APPLAUSE);
 
 		/* Finished level now so set up bonus screen */
         mode = MODE_BONUS;
@@ -569,7 +569,7 @@ void UpdateHighScores(Display *display)
 	/* If the user is the new boing master */
 	if (GetHighScoreRanking(score) == 1)
 	{
-		if (noSound == False) playSoundFile("youagod", 99); //C Bool Lib
+		if (noSound == False) playSoundFile("youagod", SFX_VOL_YOUAGOD); //C Bool Lib
 
 		/* Ask them for some words of wisdom */
 		strcpy(message, UserInputDialogueMessage(display,
@@ -599,7 +599,7 @@ void EndTheGame(Display *display, Window window)
 	/* Game over man! */
 	SetCurrentMessage(display, messWindow, "- Game Over - ", True);		//C Bool Lib
 
-	if (noSound == False) playSoundFile("game_over", 99);	//C Bool Lib
+	if (noSound == False) playSoundFile("game_over", SFX_VOL_GAME_OVER); 	//C Bool Lib
 
 	TurnSpecialsOff(display);
 
@@ -625,7 +625,7 @@ void EndTheGame(Display *display, Window window)
 */
 void DeadBall(Display *display, Window window)
 {
-	if (noSound == False) playSoundFile("balllost", 99);  //C Bool Lib
+	if (noSound == False) playSoundFile("balllost", SFX_VOL_BALLLOST);  //C Bool Lib
 
 	/* More than one ball on screen - 1 died */
 	SetCurrentMessage(display, messWindow, "Another one bites the dust!", True);		//C Bool Lib

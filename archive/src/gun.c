@@ -215,7 +215,7 @@ static void AddTink(Display *display, Window window, int xpos)
 			/* Draw the new found tink! */
 			DrawTheTink(display, window, xpos, 2);
 
-			if (noSound == False) playSoundFile("shoot", 80);
+			if (noSound == False) playSoundFile("shoot", SFX_VOL_SHOOT);
 
 			return;
 		}
@@ -290,7 +290,7 @@ static void UpdateBullet(Display *display, Window window)
 						ClearBallNow(display, window, j);
 
 						/* Play the lovel ahhh pop sound for ball shot */
-						if (noSound == False) playSoundFile("ballshot", 50);
+						if (noSound == False) playSoundFile("ballshot", SFX_VOL_BALLSHOT);
 						break;
 					}
 				}
@@ -505,13 +505,13 @@ void shootBullet(Display *display, Window window)
 			DeleteABullet(display);
 
 			/* Play a shooting sound */
-			if (noSound == False) playSoundFile("shotgun", 50);
+			if (noSound == False) playSoundFile("shotgun", SFX_VOL_SHOTGUN);
 		}
 	}
 	else if (GetNumberBullets() == 0)
 	{
 		/* Play an trigger clicking sound */
-		if (noSound == False) playSoundFile("click", 99);
+		if (noSound == False) playSoundFile("click", SFX_VOL_CLICK);
 	}
 }
 

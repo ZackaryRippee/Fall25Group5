@@ -511,7 +511,7 @@ static void DoFinish(Display *display, Window window)
 	ResetPreviewLevel();
 
 	if (noSound == False)
-		playSoundFile("gate", 50);
+		playSoundFile("gate", SFX_VOL_GATE);
 
 	SetGameSpeed(FAST_SPEED);
 }

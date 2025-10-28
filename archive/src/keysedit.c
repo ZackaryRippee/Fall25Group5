@@ -259,8 +259,8 @@ static void DoFinish(Display *display, Window window)
 	else
 		toggle = GLOBAL;
 
-    if (noSound == False)
-		playSoundFile("warp", 50);
+	if (noSound == False)
+		playSoundFile("warp", SFX_VOL_WARP);
 }
 
 

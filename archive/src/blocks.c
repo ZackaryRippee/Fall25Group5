@@ -184,6 +184,48 @@
 #define X2COL(col, x) (col = x / colWidth)
 #define Y2ROW(row, y) (row = y / rowHeight)
 
+/* Standard block size constants (avoid magic numbers) */
+#define BLOCK_WIDTH        40
+#define BLOCK_HEIGHT       20
+
+/* Special block sizes */
+#define BLACK_BLOCK_W      50
+#define BLACK_BLOCK_H      30
+#define BOMB_DEATH_W       30
+#define BOMB_DEATH_H       30
+#define REVERSE_BLOCK_W    33
+#define REVERSE_BLOCK_H    16
+#define HYPERSPACE_W       31
+#define HYPERSPACE_H       31
+#define EXTRABALL_W        30
+#define EXTRABALL_H        19
+#define MGUN_BLOCK_W       35
+#define MGUN_BLOCK_H       15
+#define WALLOFF_BLOCK_W    27
+#define WALLOFF_BLOCK_H    23
+#define STICKY_W           32
+#define STICKY_H           27
+#define PAD_SHRINK_W       40
+#define PAD_SHRINK_H       15
+#define ROAMER_BLOCK_W     25
+#define ROAMER_BLOCK_H     27
+#define TIMER_BLOCK_W      21
+#define TIMER_BLOCK_H      21
+#define BONUS_27_W         27
+#define BONUS_27_H         27
+#define DYNAMITE_W         40
+#define DYNAMITE_H         20
+
+/* Named constant for initial slide value to avoid magic numbers */
+#define SLIDE_INITIAL       0
+
+/* Frame counts for various animated pixmaps (avoid magic numbers) */
+#define EXPLODE_SMALL_FRAMES 3
+#define BONUS_FRAMES         4
+#define DEATH_FRAMES         5
+#define COUNTERBLOCK_FRAMES  6
+#define ROAMER_FRAMES        5
+
 /*
  *  Internal type declarations:
  */
@@ -195,23 +237,23 @@ static void SetBlockUpForExplosion(int row, int col, int frame);
  *  Internal variable declarations:
  */
 
-static Pixmap	exredblock[3],		exredblockM[3];
-static Pixmap	extanblock[3],		extanblockM[3];
-Pixmap	exyellowblock[3],	exyellowblockM[3];
-static Pixmap	exgreenblock[3],	exgreenblockM[3];
-static Pixmap	exblueblock[3],		exblueblockM[3];
-static Pixmap	expurpleblock[3],	expurpleblockM[3];
-static Pixmap	exbombblock[3],		exbombblockM[3];
-static Pixmap	excounterblock[3],	excounterblockM[3];
-static Pixmap	exx2bonus[3],		exx2bonusM[3];
-static Pixmap	x2bonus[4],			x2bonusM[4];
-static Pixmap	x4bonus[4],			x4bonusM[4];
-static Pixmap	Bonus[4],			BonusM[4];
-static Pixmap	death[5],			deathM[5];
-static Pixmap	exdeath[5],			exdeathM[5];
-static Pixmap	counterblock[6],	counterblockM[6];
-static Pixmap	extraball[3],		extraballM[3];
-static Pixmap	roamer[5],			roamerM[5];
+static Pixmap	exredblock[EXPLODE_SMALL_FRAMES],		exredblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap	extanblock[EXPLODE_SMALL_FRAMES],		extanblockM[EXPLODE_SMALL_FRAMES];
+Pixmap	exyellowblock[EXPLODE_SMALL_FRAMES],	exyellowblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap	exgreenblock[EXPLODE_SMALL_FRAMES],	exgreenblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap	exblueblock[EXPLODE_SMALL_FRAMES],		exblueblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap	expurpleblock[EXPLODE_SMALL_FRAMES],	expurpleblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap	exbombblock[EXPLODE_SMALL_FRAMES],		exbombblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap	excounterblock[EXPLODE_SMALL_FRAMES],	excounterblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap	exx2bonus[EXPLODE_SMALL_FRAMES],		exx2bonusM[EXPLODE_SMALL_FRAMES];
+static Pixmap	x2bonus[BONUS_FRAMES],			 x2bonusM[BONUS_FRAMES];
+static Pixmap	x4bonus[BONUS_FRAMES],			 x4bonusM[BONUS_FRAMES];
+static Pixmap	Bonus[BONUS_FRAMES],			 BonusM[BONUS_FRAMES];
+static Pixmap	death[DEATH_FRAMES],			 deathM[DEATH_FRAMES];
+static Pixmap	exdeath[DEATH_FRAMES],			exdeathM[DEATH_FRAMES];
+static Pixmap	counterblock[COUNTERBLOCK_FRAMES],	counterblockM[COUNTERBLOCK_FRAMES];
+static Pixmap	extraball[EXPLODE_SMALL_FRAMES],		extraballM[EXPLODE_SMALL_FRAMES];
+static Pixmap	roamer[ROAMER_FRAMES],			 roamerM[ROAMER_FRAMES];
 
 static Pixmap	redblock, greenblock, blueblock, yellowblock, purpleblock;	
 static Pixmap	tanblock, blackblock, bombblock, revblock, 	hyperblock;
@@ -632,155 +674,155 @@ void SetupBlockInfo(void)
 	/* These static values must be updated to match those in blocks.h */
 
 	BlockInfo[0].blockType 	= RED_BLK;
-	BlockInfo[0].width 		= 40;
-	BlockInfo[0].height 	= 20;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[0].width 		= BLOCK_WIDTH;
+	BlockInfo[0].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[0].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[1].blockType 	= BLUE_BLK;
-	BlockInfo[1].width 		= 40;
-	BlockInfo[1].height 	= 20;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[1].width 		= BLOCK_WIDTH;
+	BlockInfo[1].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[1].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[2].blockType 	= GREEN_BLK;
-	BlockInfo[2].width 		= 40;
-	BlockInfo[2].height 	= 20;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[2].width 		= BLOCK_WIDTH;
+	BlockInfo[2].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[2].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[3].blockType 	= TAN_BLK;
-	BlockInfo[3].width 		= 40;
-	BlockInfo[3].height 	= 20;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[3].width 		= BLOCK_WIDTH;
+	BlockInfo[3].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[3].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[4].blockType 	= YELLOW_BLK;
-	BlockInfo[4].width 		= 40;
-	BlockInfo[4].height 	= 20;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[4].width 		= BLOCK_WIDTH;
+	BlockInfo[4].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[4].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[5].blockType 	= PURPLE_BLK;
-	BlockInfo[5].width 		= 40;
-	BlockInfo[5].height 	= 20;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[5].width 		= BLOCK_WIDTH;
+	BlockInfo[5].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[5].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[6].blockType 	= BULLET_BLK;
-	BlockInfo[6].width 		= 40;
-	BlockInfo[6].height 	= 20;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[6].width 		= BLOCK_WIDTH;
+	BlockInfo[6].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[6].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[7].blockType 	= BLACK_BLK;
-	BlockInfo[7].width 		= 50;
-	BlockInfo[7].height 	= 30;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[7].width 		= BLACK_BLOCK_W;
+	BlockInfo[7].height 	= BLACK_BLOCK_H;
+ 	BlockInfo[7].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[8].blockType 	= COUNTER_BLK;
-	BlockInfo[8].width 		= 40;
-	BlockInfo[8].height 	= 20;
-	BlockInfo[0].slide 		= 0;
+	BlockInfo[8].width 		= BLOCK_WIDTH;
+	BlockInfo[8].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[8].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[9].blockType 	= BOMB_BLK;
-	BlockInfo[9].width 		= 30;
-	BlockInfo[9].height 		= 30;
-	BlockInfo[9].slide 		= 0;
+	BlockInfo[9].width 		= BOMB_DEATH_W;
+	BlockInfo[9].height 	= BOMB_DEATH_H;
+ 	BlockInfo[9].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[10].blockType 	= DEATH_BLK;
-	BlockInfo[10].width 		= 30;
-	BlockInfo[10].height 		= 30;
-	BlockInfo[10].slide 		= 0;
+	BlockInfo[10].width 		= BOMB_DEATH_W;
+	BlockInfo[10].height 	= BOMB_DEATH_H;
+ 	BlockInfo[10].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[11].blockType 	= REVERSE_BLK;
-	BlockInfo[11].width 		= 33;
-	BlockInfo[11].height 		= 16;
-	BlockInfo[11].slide 		= 0;
+	BlockInfo[11].width 		= REVERSE_BLOCK_W;
+	BlockInfo[11].height 	= REVERSE_BLOCK_H;
+ 	BlockInfo[11].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[12].blockType 	= HYPERSPACE_BLK;
-	BlockInfo[12].width 		= 31;
-	BlockInfo[12].height 		= 31;
-	BlockInfo[12].slide 		= 0;
+	BlockInfo[12].width 		= HYPERSPACE_W;
+	BlockInfo[12].height 	= HYPERSPACE_H;
+ 	BlockInfo[12].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[13].blockType 	= EXTRABALL_BLK;
-	BlockInfo[13].width 		= 30;
-	BlockInfo[13].height 		= 19;
-	BlockInfo[13].slide 		= 0;
+	BlockInfo[13].width 		= EXTRABALL_W;
+	BlockInfo[13].height 	= EXTRABALL_H;
+ 	BlockInfo[13].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[14].blockType 	= MGUN_BLK;
-	BlockInfo[14].width 		= 35;
-	BlockInfo[14].height 		= 15;
-	BlockInfo[14].slide 		= 0;
+	BlockInfo[14].width 		= MGUN_BLOCK_W;
+	BlockInfo[14].height 	= MGUN_BLOCK_H;
+ 	BlockInfo[14].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[15].blockType 	= WALLOFF_BLK;
-	BlockInfo[15].width 		= 27;
-	BlockInfo[15].height 		= 23;
-	BlockInfo[15].slide 		= 0;
+	BlockInfo[15].width 		= WALLOFF_BLOCK_W;
+	BlockInfo[15].height 	= WALLOFF_BLOCK_H;
+ 	BlockInfo[15].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[16].blockType 	= MULTIBALL_BLK;
-	BlockInfo[16].width 		= 40;
-	BlockInfo[16].height 		= 20;
-	BlockInfo[16].slide 		= 0;
+	BlockInfo[16].width 		= BLOCK_WIDTH;
+	BlockInfo[16].height 	= BLOCK_HEIGHT;
+ 	BlockInfo[16].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[17].blockType 	= STICKY_BLK;
-	BlockInfo[17].width 		= 32;
-	BlockInfo[17].height 		= 27;
-	BlockInfo[17].slide 		= 0;
+	BlockInfo[17].width 		= STICKY_W;
+	BlockInfo[17].height 	= STICKY_H;
+ 	BlockInfo[17].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[18].blockType 	= PAD_SHRINK_BLK;
-	BlockInfo[18].width 		= 40;
-	BlockInfo[18].height 		= 15;
-	BlockInfo[18].slide 		= 0;
+	BlockInfo[18].width 		= PAD_SHRINK_W;
+	BlockInfo[18].height 	= PAD_SHRINK_H;
+ 	BlockInfo[18].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[19].blockType 	= PAD_EXPAND_BLK;
-	BlockInfo[19].width 		= 40;
-	BlockInfo[19].height 		= 15;
-	BlockInfo[19].slide 		= 0;
+	BlockInfo[19].width 		= PAD_SHRINK_W;
+	BlockInfo[19].height 	= PAD_SHRINK_H;
+ 	BlockInfo[19].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[20].blockType 	= DROP_BLK;
-	BlockInfo[20].width 		= 40;
-	BlockInfo[20].height 		= 20;
-	BlockInfo[20].slide 		= 0;
+	BlockInfo[20].width 		= BLOCK_WIDTH;
+	BlockInfo[20].height 	= BLOCK_HEIGHT;
+	BlockInfo[20].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[21].blockType 	= MAXAMMO_BLK;
-	BlockInfo[21].width 		= 40;
-	BlockInfo[21].height 		= 20;
-	BlockInfo[21].slide 		= 0;
+	BlockInfo[21].width 		= BLOCK_WIDTH;
+	BlockInfo[21].height 	= BLOCK_HEIGHT;
+	BlockInfo[21].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[22].blockType 	= ROAMER_BLK;
-	BlockInfo[22].width 		= 25;
-	BlockInfo[22].height 		= 27;
-	BlockInfo[22].slide 		= 0;
+	BlockInfo[22].width 		= ROAMER_BLOCK_W;
+	BlockInfo[22].height 	= ROAMER_BLOCK_H;
+	BlockInfo[22].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[23].blockType 	= TIMER_BLK;
-	BlockInfo[23].width 		= 21;
-	BlockInfo[23].height 		= 21;
-	BlockInfo[23].slide 		= 0;
+	BlockInfo[23].width 		= TIMER_BLOCK_W;
+	BlockInfo[23].height 	= TIMER_BLOCK_H;
+	BlockInfo[23].slide 		= SLIDE_INITIAL;
 
 
 	BlockInfo[24].blockType 	= RANDOM_BLK;
-	BlockInfo[24].width 		= 40;
-	BlockInfo[24].height 		= 20;
-	BlockInfo[24].slide 		= 0;
+	BlockInfo[24].width 		= BLOCK_WIDTH;
+	BlockInfo[24].height 	= BLOCK_HEIGHT;
+	BlockInfo[24].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[25].blockType 	= DYNAMITE_BLK;
-	BlockInfo[25].width 		= 40;
-	BlockInfo[25].height 		= 20;
-	BlockInfo[25].slide 		= 0;
+	BlockInfo[25].width 		= DYNAMITE_W;
+	BlockInfo[25].height 	= DYNAMITE_H;
+	BlockInfo[25].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[26].blockType 	= BONUSX2_BLK;
-	BlockInfo[26].width 		= 27;
-	BlockInfo[26].height 		= 27;
-	BlockInfo[26].slide 		= 0;
+	BlockInfo[26].width 		= BONUS_27_W;
+	BlockInfo[26].height 	= BONUS_27_H;
+	BlockInfo[26].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[27].blockType 	= BONUSX4_BLK;
-	BlockInfo[27].width 		= 27;
-	BlockInfo[27].height 		= 27;
-	BlockInfo[27].slide 		= 0;
+	BlockInfo[27].width 		= BONUS_27_W;
+	BlockInfo[27].height 	= BONUS_27_H;
+	BlockInfo[27].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[28].blockType 	= BONUS_BLK;
-	BlockInfo[28].width 		= 27;
-	BlockInfo[28].height 		= 27;
-	BlockInfo[28].slide 		= 0;
+	BlockInfo[28].width 		= BONUS_27_W;
+	BlockInfo[28].height 	= BONUS_27_H;
+	BlockInfo[28].slide 		= SLIDE_INITIAL;
 
 	BlockInfo[29].blockType 	= BLACKHIT_BLK;
-	BlockInfo[29].width 		= 50;
-	BlockInfo[29].height 		= 30;
-	BlockInfo[29].slide 		= 0;
+	BlockInfo[29].width 		= BLACK_BLOCK_W;
+	BlockInfo[29].height 	= BLACK_BLOCK_H;
+	BlockInfo[29].slide 		= SLIDE_INITIAL;
 }
 
 void PlaySoundForBlock(int type)
@@ -792,15 +834,15 @@ void PlaySoundForBlock(int type)
 	switch (type)
 	{
 		case BOMB_BLK:		
-			playSoundFile("bomb", 50);
+			playSoundFile("bomb", SFX_VOL_BOMB);
 			break;
 
 		case BULLET_BLK:
-			playSoundFile("ammo", 30);
+			playSoundFile("ammo", SFX_VOL_AMMO_LOW);
 			break;
 
 		case MAXAMMO_BLK:
-			playSoundFile("ammo", 70);
+			playSoundFile("ammo", SFX_VOL_AMMO_HIGH);
 			break;
 
 		case RED_BLK:
@@ -812,65 +854,65 @@ void PlaySoundForBlock(int type)
 		case COUNTER_BLK:
 		case RANDOM_BLK:
 		case DROP_BLK:
-			playSoundFile("touch", 99);
+			playSoundFile("touch", SFX_VOL_TOUCH);
 			break;
 
 		case ROAMER_BLK:
-			playSoundFile("ouch", 99);
+			playSoundFile("ouch", SFX_VOL_OUCH);
 			break;
 
 		case EXTRABALL_BLK:	
-			playSoundFile("ddloo", 99);
+			playSoundFile("ddloo", SFX_VOL_DDLOO);
 			break;
 
 		case MGUN_BLK:	
-			playSoundFile("mgun", 99);
+			playSoundFile("mgun", SFX_VOL_MGUN);
 			break;
 
 		case WALLOFF_BLK:	
-			playSoundFile("wallsoff", 99);
+			playSoundFile("wallsoff", SFX_VOL_WALLSOFF);
 			break;
 
 		case BONUSX2_BLK:	
 		case BONUSX4_BLK:	
 		case BONUS_BLK:	
-			playSoundFile("gate", 99);
+			playSoundFile("gate", SFX_VOL_GATE);
 			break;			
 			
 		case REVERSE_BLK:	
-			playSoundFile("warp", 99);
+			playSoundFile("warp", SFX_VOL_WARP);
 			break;
 
 		case PAD_SHRINK_BLK:
-			playSoundFile("wzzz2", 99);
+			playSoundFile("wzzz2", SFX_VOL_WZZZ2);
 			break;
 
 		case PAD_EXPAND_BLK:
-			playSoundFile("wzzz", 99);
+			playSoundFile("wzzz", SFX_VOL_WZZZ);
 			break;
 
 		case MULTIBALL_BLK:
-			playSoundFile("spring", 80);
+			playSoundFile("spring", SFX_VOL_SPRING);
 			break;
 
 		case TIMER_BLK:
-			playSoundFile("bonus", 50);
+			playSoundFile("bonus", SFX_VOL_BONUS);
 			break;
 
 		case STICKY_BLK:
-			playSoundFile("sticky", 90);
+			playSoundFile("sticky", SFX_VOL_STICKY);
 			break;
 
 		case DEATH_BLK:	
-			playSoundFile("evillaugh", 99);
+			playSoundFile("evillaugh", SFX_VOL_EVILLAUGH);
 			break;
 
 		case BLACK_BLK:		
-			playSoundFile("metal", 99);
+			playSoundFile("metal", SFX_VOL_METAL);
 			break;
 
 		case HYPERSPACE_BLK:
-			playSoundFile("hypspc", 99);
+			playSoundFile("hypspc", SFX_VOL_HYPSPC);
 			break;
 
 		case KILL_BLK:
@@ -2028,27 +2070,27 @@ void FreeBlockPixmaps(Display *display)
 	if (dynamite)		XFreePixmap(display, dynamite);
 	if (dynamiteM)		XFreePixmap(display, dynamiteM);
 
-	for (i = 0; i < 5; i++)
+	for (i = 0; i < ROAMER_FRAMES; i++)
 	{
 		/* Free the frames for the roamer block */
 		if (roamer[i])	XFreePixmap(display, roamer[i]); 	
 		if (roamerM[i])	XFreePixmap(display, roamerM[i]);
 	}
 
-	for (i = 0; i < 5; i++)
+	for (i = 0; i < DEATH_FRAMES; i++)
 	{
 		/* Free the frames for the death block */
 		if (death[i])	XFreePixmap(display, death[i]); 	
 		if (deathM[i])	XFreePixmap(display, deathM[i]);
 	}
 
-	for (i = 0; i < 6; i++)
+	for (i = 0; i < COUNTERBLOCK_FRAMES; i++)
 	{
 		if (counterblock[i])	XFreePixmap(display, counterblock[i]); 	
 		if (counterblockM[i])	XFreePixmap(display, counterblockM[i]);
 	}
 
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < BONUS_FRAMES; i++)
 	{
 		if (x2bonus[i])			XFreePixmap(display, x2bonus[i]); 	
 		if (x2bonusM[i])		XFreePixmap(display, x2bonusM[i]);
@@ -2066,7 +2108,7 @@ void FreeBlockPixmaps(Display *display)
 		if (extraballM[i])		XFreePixmap(display, extraballM[i]);
 	}
 
-	for (i = 0; i < 3; i++)
+	for (i = 0; i < EXPLODE_SMALL_FRAMES; i++)
 	{
 		if (exgreenblock[i])   	XFreePixmap(display, exgreenblock[i]); 	
 		if (exgreenblockM[i])   XFreePixmap(display, exgreenblockM[i]);

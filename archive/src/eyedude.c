@@ -278,7 +278,7 @@ static void ResetEyeDude(Display *display, Window window)
 
 	ChangeEyeDudeMode(EYEDUDE_WALK);
 
-	if (noSound == False) playSoundFile("hithere", 100);
+	if (noSound == False) playSoundFile("hithere", SFX_VOL_HITHERE);
 }
 
 static int CheckEyeDudeClearPath(Display *display, Window window)
@@ -376,7 +376,7 @@ void HandleEyeDudeMode(Display *display, Window window)
             AddToScore((u_long) EYEDUDE_HIT_BONUS);
             DisplayScore(display, scoreWindow, score);
 
-            if (noSound == False) playSoundFile("supbons", 80);
+			if (noSound == False) playSoundFile("supbons", SFX_VOL_SUPBONS);
 			break;
 
 		case EYEDUDE_TURN:

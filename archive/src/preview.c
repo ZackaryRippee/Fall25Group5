@@ -196,7 +196,7 @@ static void DoText(Display *display, Window window)
 	if (noSound == False) 
 	{
 		if ((rand() % 3) == 0)
-			playSoundFile("looksbad", 80);
+			playSoundFile("looksbad", SFX_VOL_LOOKSBAD);
 	}
 
 	SetPreviewWait(PREVIEW_FINISH, frame + 5000);
@@ -217,7 +217,7 @@ static void DoFinish(Display *display, Window window)
     ResetIntroduction();
 
     if (noSound == False)
-        playSoundFile("whizzo", 50);
+		playSoundFile("whizzo", SFX_VOL_WHIZZO);
 
     SetGameSpeed(FAST_SPEED);
 }
