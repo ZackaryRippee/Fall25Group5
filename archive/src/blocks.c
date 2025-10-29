@@ -26,7 +26,7 @@
  * enhancements, or modifications.
  */
 
-/* 
+/*
  * =========================================================================
  *
  * $Id: blocks.c,v 1.1.1.1 1994/12/16 01:36:45 jck Exp $
@@ -185,46 +185,69 @@
 #define Y2ROW(row, y) (row = y / rowHeight)
 
 /* Standard block size constants (avoid magic numbers) */
-#define BLOCK_WIDTH        40
-#define BLOCK_HEIGHT       20
+#define BLOCK_WIDTH 40
+#define BLOCK_HEIGHT 20
 
 /* Special block sizes */
-#define BLACK_BLOCK_W      50
-#define BLACK_BLOCK_H      30
-#define BOMB_DEATH_W       30
-#define BOMB_DEATH_H       30
-#define REVERSE_BLOCK_W    33
-#define REVERSE_BLOCK_H    16
-#define HYPERSPACE_W       31
-#define HYPERSPACE_H       31
-#define EXTRABALL_W        30
-#define EXTRABALL_H        19
-#define MGUN_BLOCK_W       35
-#define MGUN_BLOCK_H       15
-#define WALLOFF_BLOCK_W    27
-#define WALLOFF_BLOCK_H    23
-#define STICKY_W           32
-#define STICKY_H           27
-#define PAD_SHRINK_W       40
-#define PAD_SHRINK_H       15
-#define ROAMER_BLOCK_W     25
-#define ROAMER_BLOCK_H     27
-#define TIMER_BLOCK_W      21
-#define TIMER_BLOCK_H      21
-#define BONUS_27_W         27
-#define BONUS_27_H         27
-#define DYNAMITE_W         40
-#define DYNAMITE_H         20
+#define BLACK_BLOCK_W 50
+#define BLACK_BLOCK_H 30
+#define BOMB_DEATH_W 30
+#define BOMB_DEATH_H 30
+#define REVERSE_BLOCK_W 33
+#define REVERSE_BLOCK_H 16
+#define HYPERSPACE_W 31
+#define HYPERSPACE_H 31
+#define EXTRABALL_W 30
+#define EXTRABALL_H 19
+#define MGUN_BLOCK_W 35
+#define MGUN_BLOCK_H 15
+#define WALLOFF_BLOCK_W 27
+#define WALLOFF_BLOCK_H 23
+#define STICKY_W 32
+#define STICKY_H 27
+#define PAD_SHRINK_W 40
+#define PAD_SHRINK_H 15
+#define ROAMER_BLOCK_W 25
+#define ROAMER_BLOCK_H 27
+#define TIMER_BLOCK_W 21
+#define TIMER_BLOCK_H 21
+#define BONUS_27_W 27
+#define BONUS_27_H 27
+#define DYNAMITE_W 40
+#define DYNAMITE_H 20
+
+/* Backwards-compatible alias defines (map new names to archive-local names) */
+#define STANDARD_BLOCK_WIDTH BLOCK_WIDTH
+#define STANDARD_BLOCK_HEIGHT BLOCK_HEIGHT
+#define SHORT_BLOCK_HEIGHT PAD_SHRINK_H
+#define TINY_BLOCK_WIDTH TIMER_BLOCK_W
+#define TINY_BLOCK_HEIGHT TIMER_BLOCK_H
+#define STICKY_WIDTH STICKY_W
+#define SMALL_BLOCK_WIDTH BONUS_27_W
+#define SMALL_BLOCK_HEIGHT BONUS_27_H
+#define DYNAMITE_WIDTH DYNAMITE_W
+#define DYNAMITE_HEIGHT DYNAMITE_H
+#define ROAMER_WIDTH ROAMER_BLOCK_W
+#define ROAMER_HEIGHT ROAMER_BLOCK_H
+#define REVERSE_WIDTH REVERSE_BLOCK_W
+#define REVERSE_HEIGHT REVERSE_BLOCK_H
+#define SQUARE_BLOCK_SIZE BOMB_DEATH_W
+#define EXTRABALL_HEIGHT EXTRABALL_H
+#define HYPERSPACE_SIZE HYPERSPACE_W
+#define MGUN_WIDTH MGUN_BLOCK_W
+#define WALLOFF_HEIGHT WALLOFF_BLOCK_H
+#define LARGE_BLOCK_WIDTH BLACK_BLOCK_W
+#define LARGE_BLOCK_HEIGHT BLACK_BLOCK_H
 
 /* Named constant for initial slide value to avoid magic numbers */
-#define SLIDE_INITIAL       0
+#define SLIDE_INITIAL 0
 
 /* Frame counts for various animated pixmaps (avoid magic numbers) */
 #define EXPLODE_SMALL_FRAMES 3
-#define BONUS_FRAMES         4
-#define DEATH_FRAMES         5
-#define COUNTERBLOCK_FRAMES  6
-#define ROAMER_FRAMES        5
+#define BONUS_FRAMES 4
+#define DEATH_FRAMES 5
+#define COUNTERBLOCK_FRAMES 6
+#define ROAMER_FRAMES 5
 
 /*
  *  Internal type declarations:
@@ -237,429 +260,426 @@ static void SetBlockUpForExplosion(int row, int col, int frame);
  *  Internal variable declarations:
  */
 
-static Pixmap	exredblock[EXPLODE_SMALL_FRAMES],		exredblockM[EXPLODE_SMALL_FRAMES];
-static Pixmap	extanblock[EXPLODE_SMALL_FRAMES],		extanblockM[EXPLODE_SMALL_FRAMES];
-Pixmap	exyellowblock[EXPLODE_SMALL_FRAMES],	exyellowblockM[EXPLODE_SMALL_FRAMES];
-static Pixmap	exgreenblock[EXPLODE_SMALL_FRAMES],	exgreenblockM[EXPLODE_SMALL_FRAMES];
-static Pixmap	exblueblock[EXPLODE_SMALL_FRAMES],		exblueblockM[EXPLODE_SMALL_FRAMES];
-static Pixmap	expurpleblock[EXPLODE_SMALL_FRAMES],	expurpleblockM[EXPLODE_SMALL_FRAMES];
-static Pixmap	exbombblock[EXPLODE_SMALL_FRAMES],		exbombblockM[EXPLODE_SMALL_FRAMES];
-static Pixmap	excounterblock[EXPLODE_SMALL_FRAMES],	excounterblockM[EXPLODE_SMALL_FRAMES];
-static Pixmap	exx2bonus[EXPLODE_SMALL_FRAMES],		exx2bonusM[EXPLODE_SMALL_FRAMES];
-static Pixmap	x2bonus[BONUS_FRAMES],			 x2bonusM[BONUS_FRAMES];
-static Pixmap	x4bonus[BONUS_FRAMES],			 x4bonusM[BONUS_FRAMES];
-static Pixmap	Bonus[BONUS_FRAMES],			 BonusM[BONUS_FRAMES];
-static Pixmap	death[DEATH_FRAMES],			 deathM[DEATH_FRAMES];
-static Pixmap	exdeath[DEATH_FRAMES],			exdeathM[DEATH_FRAMES];
-static Pixmap	counterblock[COUNTERBLOCK_FRAMES],	counterblockM[COUNTERBLOCK_FRAMES];
-static Pixmap	extraball[EXPLODE_SMALL_FRAMES],		extraballM[EXPLODE_SMALL_FRAMES];
-static Pixmap	roamer[ROAMER_FRAMES],			 roamerM[ROAMER_FRAMES];
+static Pixmap exredblock[EXPLODE_SMALL_FRAMES], exredblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap extanblock[EXPLODE_SMALL_FRAMES], extanblockM[EXPLODE_SMALL_FRAMES];
+Pixmap exyellowblock[EXPLODE_SMALL_FRAMES], exyellowblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap exgreenblock[EXPLODE_SMALL_FRAMES], exgreenblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap exblueblock[EXPLODE_SMALL_FRAMES], exblueblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap expurpleblock[EXPLODE_SMALL_FRAMES], expurpleblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap exbombblock[EXPLODE_SMALL_FRAMES], exbombblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap excounterblock[EXPLODE_SMALL_FRAMES], excounterblockM[EXPLODE_SMALL_FRAMES];
+static Pixmap exx2bonus[EXPLODE_SMALL_FRAMES], exx2bonusM[EXPLODE_SMALL_FRAMES];
+static Pixmap x2bonus[BONUS_FRAMES], x2bonusM[BONUS_FRAMES];
+static Pixmap x4bonus[BONUS_FRAMES], x4bonusM[BONUS_FRAMES];
+static Pixmap Bonus[BONUS_FRAMES], BonusM[BONUS_FRAMES];
+static Pixmap death[DEATH_FRAMES], deathM[DEATH_FRAMES];
+static Pixmap exdeath[DEATH_FRAMES], exdeathM[DEATH_FRAMES];
+static Pixmap counterblock[COUNTERBLOCK_FRAMES], counterblockM[COUNTERBLOCK_FRAMES];
+static Pixmap extraball[EXPLODE_SMALL_FRAMES], extraballM[EXPLODE_SMALL_FRAMES];
+static Pixmap roamer[ROAMER_FRAMES], roamerM[ROAMER_FRAMES];
 
-static Pixmap	redblock, greenblock, blueblock, yellowblock, purpleblock;	
-static Pixmap	tanblock, blackblock, bombblock, revblock, 	hyperblock;
-static Pixmap	mgunblock, walloffblock, multiball, sticky, paddleshrink;
-static Pixmap	paddleexpand, unlimitammo, blackhit, timeblock, dynamite;
+static Pixmap redblock, greenblock, blueblock, yellowblock, purpleblock;
+static Pixmap tanblock, blackblock, bombblock, revblock, hyperblock;
+static Pixmap mgunblock, walloffblock, multiball, sticky, paddleshrink;
+static Pixmap paddleexpand, unlimitammo, blackhit, timeblock, dynamite;
 
-static Pixmap	redblockM, greenblockM, blueblockM, yellowblockM, purpleblockM;	
-static Pixmap	tanblockM, blackblockM, bombblockM, revblockM, 	hyperblockM;
-static Pixmap	mgunblockM, walloffblockM, multiballM, stickyM, paddleshrinkM;
-static Pixmap	paddleexpandM, unlimitammoM, blackhitM, timeblockM, dynamiteM;
+static Pixmap redblockM, greenblockM, blueblockM, yellowblockM, purpleblockM;
+static Pixmap tanblockM, blackblockM, bombblockM, revblockM, hyperblockM;
+static Pixmap mgunblockM, walloffblockM, multiballM, stickyM, paddleshrinkM;
+static Pixmap paddleexpandM, unlimitammoM, blackhitM, timeblockM, dynamiteM;
 
-struct aBlock 		blocks[MAX_ROW][MAX_COL];
-struct blockInfo 	BlockInfo[MAX_BLOCKS];
-int					blocksExploding = 0;
-int					rowHeight;
-int					colWidth;
+struct aBlock blocks[MAX_ROW][MAX_COL];
+struct blockInfo BlockInfo[MAX_BLOCKS];
+int blocksExploding = 0;
+int rowHeight;
+int colWidth;
 
 void InitialiseBlocks(Display *display, Window window, Colormap colormap)
 {
-	XpmAttributes   attributes;
-	int 			XpmErrorStatus;
+	XpmAttributes attributes;
+	int XpmErrorStatus;
 
 	attributes.valuemask = XpmColormap;
 	attributes.colormap = colormap;
 
 	/* Create all xpm pixmap blocks from the files */
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, redblock_xpm, 
-		&redblock, &redblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, redblock_xpm,
+											 &redblock, &redblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(red)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, blueblock_xpm, 
-		&blueblock, &blueblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, blueblock_xpm,
+											 &blueblock, &blueblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(blue)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, greenblock_xpm, 
-		&greenblock, &greenblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, greenblock_xpm,
+											 &greenblock, &greenblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(green)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, yellowblock_xpm, 
-		&yellowblock, &yellowblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, yellowblock_xpm,
+											 &yellowblock, &yellowblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(yellow)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, tanblock_xpm, 
-		&tanblock, &tanblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, tanblock_xpm,
+											 &tanblock, &tanblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(tan)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, purpleblock_xpm, 
-		&purpleblock, &purpleblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, purpleblock_xpm,
+											 &purpleblock, &purpleblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(purple)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, blackblock_xpm, 
-		&blackblock, &blackblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, blackblock_xpm,
+											 &blackblock, &blackblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(wall)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		blackhitblock_xpm, &blackhit, &blackhitM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 blackhitblock_xpm, &blackhit, &blackhitM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(wallhit)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, bombblock_xpm, 
-		&bombblock, &bombblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, bombblock_xpm,
+											 &bombblock, &bombblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(bomb)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, reverse_xpm, 
-		&revblock, &revblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, reverse_xpm,
+											 &revblock, &revblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(reverse)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, hyperspace_xpm, 
-		&hyperblock, &hyperblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, hyperspace_xpm,
+											 &hyperblock, &hyperblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(hyperspace)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, machinegun_xpm, 
-		&mgunblock, &mgunblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, machinegun_xpm,
+											 &mgunblock, &mgunblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(machinegun)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, walloff_xpm, 
-		&walloffblock, &walloffblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, walloff_xpm,
+											 &walloffblock, &walloffblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(walloff)");
 
 	/* Explosion for yellow block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exyellowblock1_xpm, &exyellowblock[0], &exyellowblockM[0], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exyellowblock1_xpm, &exyellowblock[0], &exyellowblockM[0],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exyellow)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exyellowblock2_xpm, &exyellowblock[1], &exyellowblockM[1], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exyellowblock2_xpm, &exyellowblock[1], &exyellowblockM[1],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exyellow)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exyellowblock3_xpm, &exyellowblock[2], &exyellowblockM[2], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exyellowblock3_xpm, &exyellowblock[2], &exyellowblockM[2],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exyellow)");
 
 	/* Explosion for red block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, exredblock1_xpm, 
-		&exredblock[0], &exredblockM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, exredblock1_xpm,
+											 &exredblock[0], &exredblockM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exred)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, exredblock2_xpm, 
-		&exredblock[1], &exredblockM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, exredblock2_xpm,
+											 &exredblock[1], &exredblockM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exred)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, exredblock3_xpm, 
-		&exredblock[2], &exredblockM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window, exredblock3_xpm,
+											 &exredblock[2], &exredblockM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exred)");
 
 	/* Explosion for green block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exgreenblock1_xpm, &exgreenblock[0], &exgreenblockM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exgreenblock1_xpm, &exgreenblock[0], &exgreenblockM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exgreen)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exgreenblock2_xpm, &exgreenblock[1], &exgreenblockM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exgreenblock2_xpm, &exgreenblock[1], &exgreenblockM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exgreen)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exgreenblock3_xpm, &exgreenblock[2], &exgreenblockM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exgreenblock3_xpm, &exgreenblock[2], &exgreenblockM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exgreen)");
 
 	/* Explosion for blue block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exblueblock1_xpm, &exblueblock[0], &exblueblockM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exblueblock1_xpm, &exblueblock[0], &exblueblockM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exblue)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exblueblock2_xpm, &exblueblock[1], &exblueblockM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exblueblock2_xpm, &exblueblock[1], &exblueblockM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exblue)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exblueblock3_xpm, &exblueblock[2], &exblueblockM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exblueblock3_xpm, &exblueblock[2], &exblueblockM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exblue)");
 
 	/* Explosion for tan block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		extanblock1_xpm, &extanblock[0], &extanblockM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 extanblock1_xpm, &extanblock[0], &extanblockM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(extan)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		extanblock2_xpm, &extanblock[1], &extanblockM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 extanblock2_xpm, &extanblock[1], &extanblockM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(extan)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		extanblock3_xpm, &extanblock[2], &extanblockM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 extanblock3_xpm, &extanblock[2], &extanblockM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(extan)");
 
 	/* Explosion for purple block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		expurpleblock1_xpm, &expurpleblock[0], &expurpleblockM[0], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 expurpleblock1_xpm, &expurpleblock[0], &expurpleblockM[0],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(expurple)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		expurpleblock2_xpm, &expurpleblock[1], &expurpleblockM[1], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 expurpleblock2_xpm, &expurpleblock[1], &expurpleblockM[1],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(expurple)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		expurpleblock3_xpm, &expurpleblock[2], &expurpleblockM[2], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 expurpleblock3_xpm, &expurpleblock[2], &expurpleblockM[2],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(expurple)");
 
 	/* Explosion for bomb block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exbombblock1_xpm, &exbombblock[0], &exbombblockM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exbombblock1_xpm, &exbombblock[0], &exbombblockM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exbomb)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exbombblock2_xpm, &exbombblock[1], &exbombblockM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exbombblock2_xpm, &exbombblock[1], &exbombblockM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exbomb)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exbombblock3_xpm, &exbombblock[2], &exbombblockM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exbombblock3_xpm, &exbombblock[2], &exbombblockM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exbomb)");
 
 	/* Explosion for counter block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		excounterblock1_xpm, &excounterblock[0], &excounterblockM[0], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 excounterblock1_xpm, &excounterblock[0], &excounterblockM[0],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(excounter)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		excounterblock2_xpm, &excounterblock[1], &excounterblockM[1], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 excounterblock2_xpm, &excounterblock[1], &excounterblockM[1],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(excounter)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		excounterblock3_xpm, &excounterblock[2], &excounterblockM[2], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 excounterblock3_xpm, &excounterblock[2], &excounterblockM[2],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(excounter)");
 
 	/* countdown for counter block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		counterblock_xpm, &counterblock[0], &counterblockM[0], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 counterblock_xpm, &counterblock[0], &counterblockM[0],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(counter0)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		counterblock1_xpm, &counterblock[1], &counterblockM[1], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 counterblock1_xpm, &counterblock[1], &counterblockM[1],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(counter1)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		counterblock2_xpm, &counterblock[2], &counterblockM[2], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 counterblock2_xpm, &counterblock[2], &counterblockM[2],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(counter2)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		counterblock3_xpm, &counterblock[3], &counterblockM[3], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 counterblock3_xpm, &counterblock[3], &counterblockM[3],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(counter3)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		counterblock4_xpm, &counterblock[4], &counterblockM[4], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 counterblock4_xpm, &counterblock[4], &counterblockM[4],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(counter4)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		counterblock5_xpm, &counterblock[5], &counterblockM[5], 
-		&attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 counterblock5_xpm, &counterblock[5], &counterblockM[5],
+											 &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(counter5)");
 
 	/* Bonus block stuff */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		x2bonus1_xpm, &x2bonus[0], &x2bonusM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 x2bonus1_xpm, &x2bonus[0], &x2bonusM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(x2bonus1)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		x2bonus2_xpm, &x2bonus[1], &x2bonusM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 x2bonus2_xpm, &x2bonus[1], &x2bonusM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(x2bonus2)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		x2bonus3_xpm, &x2bonus[2], &x2bonusM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 x2bonus3_xpm, &x2bonus[2], &x2bonusM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(x2bonus3)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		x2bonus4_xpm, &x2bonus[3], &x2bonusM[3], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 x2bonus4_xpm, &x2bonus[3], &x2bonusM[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(x2bonus4)");
 
-
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		x4bonus1_xpm, &x4bonus[0], &x4bonusM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 x4bonus1_xpm, &x4bonus[0], &x4bonusM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(x4bonus1)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		x4bonus2_xpm, &x4bonus[1], &x4bonusM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 x4bonus2_xpm, &x4bonus[1], &x4bonusM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(x4bonus2)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		x4bonus3_xpm, &x4bonus[2], &x4bonusM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 x4bonus3_xpm, &x4bonus[2], &x4bonusM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(x4bonus3)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		x4bonus4_xpm, &x4bonus[3], &x4bonusM[3], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 x4bonus4_xpm, &x4bonus[3], &x4bonusM[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(x4bonus4)");
 
-
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		bonus1_xpm, &Bonus[0], &BonusM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 bonus1_xpm, &Bonus[0], &BonusM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(bonus1)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		bonus2_xpm, &Bonus[1], &BonusM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 bonus2_xpm, &Bonus[1], &BonusM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(bonus2)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		bonus3_xpm, &Bonus[2], &BonusM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 bonus3_xpm, &Bonus[2], &BonusM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(bonus3)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		bonus4_xpm, &Bonus[3], &BonusM[3], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 bonus4_xpm, &Bonus[3], &BonusM[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(bonus4)");
 
-
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exx2bonus1_xpm, &exx2bonus[0], &exx2bonusM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exx2bonus1_xpm, &exx2bonus[0], &exx2bonusM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exbonus)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exx2bonus2_xpm, &exx2bonus[1], &exx2bonusM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exx2bonus2_xpm, &exx2bonus[1], &exx2bonusM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exbonus)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exx2bonus3_xpm, &exx2bonus[2], &exx2bonusM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exx2bonus3_xpm, &exx2bonus[2], &exx2bonusM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exbonus)");
 
 	/* Death block initialisation */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		death1_xpm, &death[0], &deathM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 death1_xpm, &death[0], &deathM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(death)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		death2_xpm, &death[1], &deathM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 death2_xpm, &death[1], &deathM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(death)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		death3_xpm, &death[2], &deathM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 death3_xpm, &death[2], &deathM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(death)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		death4_xpm, &death[3], &deathM[3], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 death4_xpm, &death[3], &deathM[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(death)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		death5_xpm, &death[4], &deathM[4], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 death5_xpm, &death[4], &deathM[4], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(death)");
 
 	/* Death block explosion init */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exdeath1_xpm, &exdeath[0], &exdeathM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exdeath1_xpm, &exdeath[0], &exdeathM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exdeath)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exdeath2_xpm, &exdeath[1], &exdeathM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exdeath2_xpm, &exdeath[1], &exdeathM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exdeath)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exdeath3_xpm, &exdeath[2], &exdeathM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exdeath3_xpm, &exdeath[2], &exdeathM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exdeath)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		exdeath4_xpm, &exdeath[3], &exdeathM[3], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 exdeath4_xpm, &exdeath[3], &exdeathM[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(exdeath)");
 
 	/* Extra balll pixmaps */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		xtraball_xpm, &extraball[0], &extraballM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 xtraball_xpm, &extraball[0], &extraballM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(extraball)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		xtraball2_xpm, &extraball[1], &extraballM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 xtraball2_xpm, &extraball[1], &extraballM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(extraball)");
 
 	/* Multiple ball pixmap */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		multiballblock_xpm, &multiball, &multiballM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 multiballblock_xpm, &multiball, &multiballM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(multiball)");
 
 	/* Sticky block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		stickyblock_xpm, &sticky, &stickyM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 stickyblock_xpm, &sticky, &stickyM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(sticky)");
 
 	/* Dynamite block for blowing up all of a kind */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		dynamite_xpm, &dynamite, &dynamiteM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 dynamite_xpm, &dynamite, &dynamiteM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(dynamite)");
 
 	/* Unlimited ammo block symbol */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		unlimitammo_xpm, &unlimitammo, &unlimitammoM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 unlimitammo_xpm, &unlimitammo, &unlimitammoM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(unlimitammo)");
 
 	/* paddle shrink and expand block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		paddleshrink_xpm, &paddleshrink, &paddleshrinkM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 paddleshrink_xpm, &paddleshrink, &paddleshrinkM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(paddleshrink)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		paddleexpand_xpm, &paddleexpand, &paddleexpandM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 paddleexpand_xpm, &paddleexpand, &paddleexpandM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(paddleexpand)");
 
 	/* Frames for the roaming block */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		roamer_xpm, &roamer[0], &roamerM[0], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 roamer_xpm, &roamer[0], &roamerM[0], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(roamer)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		roamerL_xpm, &roamer[1], &roamerM[1], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 roamerL_xpm, &roamer[1], &roamerM[1], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(roamer1)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		roamerR_xpm, &roamer[2], &roamerM[2], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 roamerR_xpm, &roamer[2], &roamerM[2], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(roamer2)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		roamerU_xpm, &roamer[3], &roamerM[3], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 roamerU_xpm, &roamer[3], &roamerM[3], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(roamer3)");
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		roamerD_xpm, &roamer[4], &roamerM[4], &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 roamerD_xpm, &roamer[4], &roamerM[4], &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(roamer4)");
 
 	/* Clock pixmap */
 
-	XpmErrorStatus = XpmCreatePixmapFromData(display, window, 
-		clock_xpm, &timeblock, &timeblockM, &attributes);
+	XpmErrorStatus = XpmCreatePixmapFromData(display, window,
+											 clock_xpm, &timeblock, &timeblockM, &attributes);
 	HandleXPMError(display, XpmErrorStatus, "InitialiseBlocks(timeblock)");
 
 	/* Free the xpm pixmap attributes */
@@ -673,371 +693,371 @@ void SetupBlockInfo(void)
 {
 	/* These static values must be updated to match those in blocks.h */
 
-	BlockInfo[0].blockType 	= RED_BLK;
-	BlockInfo[0].width 		= BLOCK_WIDTH;
-	BlockInfo[0].height 	= BLOCK_HEIGHT;
- 	BlockInfo[0].slide 		= SLIDE_INITIAL;
+	BlockInfo[0].blockType = RED_BLK;
+	BlockInfo[0].width = BLOCK_WIDTH;
+	BlockInfo[0].height = BLOCK_HEIGHT;
+	BlockInfo[0].slide = SLIDE_INITIAL;
 
-	BlockInfo[1].blockType 	= BLUE_BLK;
-	BlockInfo[1].width 		= BLOCK_WIDTH;
-	BlockInfo[1].height 	= BLOCK_HEIGHT;
- 	BlockInfo[1].slide 		= SLIDE_INITIAL;
+	BlockInfo[1].blockType = BLUE_BLK;
+	BlockInfo[1].width = BLOCK_WIDTH;
+	BlockInfo[1].height = BLOCK_HEIGHT;
+	BlockInfo[1].slide = SLIDE_INITIAL;
 
-	BlockInfo[2].blockType 	= GREEN_BLK;
-	BlockInfo[2].width 		= BLOCK_WIDTH;
-	BlockInfo[2].height 	= BLOCK_HEIGHT;
- 	BlockInfo[2].slide 		= SLIDE_INITIAL;
+	BlockInfo[2].blockType = GREEN_BLK;
+	BlockInfo[2].width = BLOCK_WIDTH;
+	BlockInfo[2].height = BLOCK_HEIGHT;
+	BlockInfo[2].slide = SLIDE_INITIAL;
 
-	BlockInfo[3].blockType 	= TAN_BLK;
-	BlockInfo[3].width 		= BLOCK_WIDTH;
-	BlockInfo[3].height 	= BLOCK_HEIGHT;
- 	BlockInfo[3].slide 		= SLIDE_INITIAL;
+	BlockInfo[3].blockType = TAN_BLK;
+	BlockInfo[3].width = BLOCK_WIDTH;
+	BlockInfo[3].height = BLOCK_HEIGHT;
+	BlockInfo[3].slide = SLIDE_INITIAL;
 
-	BlockInfo[4].blockType 	= YELLOW_BLK;
-	BlockInfo[4].width 		= BLOCK_WIDTH;
-	BlockInfo[4].height 	= BLOCK_HEIGHT;
- 	BlockInfo[4].slide 		= SLIDE_INITIAL;
+	BlockInfo[4].blockType = YELLOW_BLK;
+	BlockInfo[4].width = BLOCK_WIDTH;
+	BlockInfo[4].height = BLOCK_HEIGHT;
+	BlockInfo[4].slide = SLIDE_INITIAL;
 
-	BlockInfo[5].blockType 	= PURPLE_BLK;
-	BlockInfo[5].width 		= BLOCK_WIDTH;
-	BlockInfo[5].height 	= BLOCK_HEIGHT;
- 	BlockInfo[5].slide 		= SLIDE_INITIAL;
+	BlockInfo[5].blockType = PURPLE_BLK;
+	BlockInfo[5].width = BLOCK_WIDTH;
+	BlockInfo[5].height = BLOCK_HEIGHT;
+	BlockInfo[5].slide = SLIDE_INITIAL;
 
-	BlockInfo[6].blockType 	= BULLET_BLK;
-	BlockInfo[6].width 		= BLOCK_WIDTH;
-	BlockInfo[6].height 	= BLOCK_HEIGHT;
- 	BlockInfo[6].slide 		= SLIDE_INITIAL;
+	BlockInfo[6].blockType = BULLET_BLK;
+	BlockInfo[6].width = BLOCK_WIDTH;
+	BlockInfo[6].height = BLOCK_HEIGHT;
+	BlockInfo[6].slide = SLIDE_INITIAL;
 
-	BlockInfo[7].blockType 	= BLACK_BLK;
-	BlockInfo[7].width 		= BLACK_BLOCK_W;
-	BlockInfo[7].height 	= BLACK_BLOCK_H;
- 	BlockInfo[7].slide 		= SLIDE_INITIAL;
+	BlockInfo[7].blockType = BLACK_BLK;
+	BlockInfo[7].width = BLACK_BLOCK_W;
+	BlockInfo[7].height = BLACK_BLOCK_H;
+	BlockInfo[7].slide = SLIDE_INITIAL;
 
-	BlockInfo[8].blockType 	= COUNTER_BLK;
-	BlockInfo[8].width 		= BLOCK_WIDTH;
-	BlockInfo[8].height 	= BLOCK_HEIGHT;
- 	BlockInfo[8].slide 		= SLIDE_INITIAL;
+	BlockInfo[8].blockType = COUNTER_BLK;
+	BlockInfo[8].width = BLOCK_WIDTH;
+	BlockInfo[8].height = BLOCK_HEIGHT;
+	BlockInfo[8].slide = SLIDE_INITIAL;
 
-	BlockInfo[9].blockType 	= BOMB_BLK;
-	BlockInfo[9].width 		= BOMB_DEATH_W;
-	BlockInfo[9].height 	= BOMB_DEATH_H;
- 	BlockInfo[9].slide 		= SLIDE_INITIAL;
+	BlockInfo[9].blockType = BOMB_BLK;
+	BlockInfo[9].width = BOMB_DEATH_W;
+	BlockInfo[9].height = BOMB_DEATH_H;
+	BlockInfo[9].slide = SLIDE_INITIAL;
 
-	BlockInfo[10].blockType 	= DEATH_BLK;
-	BlockInfo[10].width 		= BOMB_DEATH_W;
-	BlockInfo[10].height 	= BOMB_DEATH_H;
- 	BlockInfo[10].slide 		= SLIDE_INITIAL;
+	BlockInfo[10].blockType = DEATH_BLK;
+	BlockInfo[10].width = BOMB_DEATH_W;
+	BlockInfo[10].height = BOMB_DEATH_H;
+	BlockInfo[10].slide = SLIDE_INITIAL;
 
-	BlockInfo[11].blockType 	= REVERSE_BLK;
-	BlockInfo[11].width 		= REVERSE_BLOCK_W;
-	BlockInfo[11].height 	= REVERSE_BLOCK_H;
- 	BlockInfo[11].slide 		= SLIDE_INITIAL;
+	BlockInfo[11].blockType = REVERSE_BLK;
+	BlockInfo[11].width = REVERSE_BLOCK_W;
+	BlockInfo[11].height = REVERSE_BLOCK_H;
+	BlockInfo[11].slide = SLIDE_INITIAL;
 
-	BlockInfo[12].blockType 	= HYPERSPACE_BLK;
-	BlockInfo[12].width 		= HYPERSPACE_W;
-	BlockInfo[12].height 	= HYPERSPACE_H;
- 	BlockInfo[12].slide 		= SLIDE_INITIAL;
+	BlockInfo[12].blockType = HYPERSPACE_BLK;
+	BlockInfo[12].width = HYPERSPACE_W;
+	BlockInfo[12].height = HYPERSPACE_H;
+	BlockInfo[12].slide = SLIDE_INITIAL;
 
-	BlockInfo[13].blockType 	= EXTRABALL_BLK;
-	BlockInfo[13].width 		= EXTRABALL_W;
-	BlockInfo[13].height 	= EXTRABALL_H;
- 	BlockInfo[13].slide 		= SLIDE_INITIAL;
+	BlockInfo[13].blockType = EXTRABALL_BLK;
+	BlockInfo[13].width = EXTRABALL_W;
+	BlockInfo[13].height = EXTRABALL_H;
+	BlockInfo[13].slide = SLIDE_INITIAL;
 
-	BlockInfo[14].blockType 	= MGUN_BLK;
-	BlockInfo[14].width 		= MGUN_BLOCK_W;
-	BlockInfo[14].height 	= MGUN_BLOCK_H;
- 	BlockInfo[14].slide 		= SLIDE_INITIAL;
+	BlockInfo[14].blockType = MGUN_BLK;
+	BlockInfo[14].width = MGUN_BLOCK_W;
+	BlockInfo[14].height = MGUN_BLOCK_H;
+	BlockInfo[14].slide = SLIDE_INITIAL;
 
-	BlockInfo[15].blockType 	= WALLOFF_BLK;
-	BlockInfo[15].width 		= WALLOFF_BLOCK_W;
-	BlockInfo[15].height 	= WALLOFF_BLOCK_H;
- 	BlockInfo[15].slide 		= SLIDE_INITIAL;
+	BlockInfo[15].blockType = WALLOFF_BLK;
+	BlockInfo[15].width = WALLOFF_BLOCK_W;
+	BlockInfo[15].height = WALLOFF_BLOCK_H;
+	BlockInfo[15].slide = SLIDE_INITIAL;
 
-	BlockInfo[16].blockType 	= MULTIBALL_BLK;
-	BlockInfo[16].width 		= BLOCK_WIDTH;
-	BlockInfo[16].height 	= BLOCK_HEIGHT;
- 	BlockInfo[16].slide 		= SLIDE_INITIAL;
+	BlockInfo[16].blockType = MULTIBALL_BLK;
+	BlockInfo[16].width = BLOCK_WIDTH;
+	BlockInfo[16].height = BLOCK_HEIGHT;
+	BlockInfo[16].slide = SLIDE_INITIAL;
 
-	BlockInfo[17].blockType 	= STICKY_BLK;
-	BlockInfo[17].width 		= STICKY_W;
-	BlockInfo[17].height 	= STICKY_H;
- 	BlockInfo[17].slide 		= SLIDE_INITIAL;
+	BlockInfo[17].blockType = STICKY_BLK;
+	BlockInfo[17].width = STICKY_W;
+	BlockInfo[17].height = STICKY_H;
+	BlockInfo[17].slide = SLIDE_INITIAL;
 
-	BlockInfo[18].blockType 	= PAD_SHRINK_BLK;
-	BlockInfo[18].width 		= PAD_SHRINK_W;
-	BlockInfo[18].height 	= PAD_SHRINK_H;
- 	BlockInfo[18].slide 		= SLIDE_INITIAL;
+	BlockInfo[18].blockType = PAD_SHRINK_BLK;
+	BlockInfo[18].width = PAD_SHRINK_W;
+	BlockInfo[18].height = PAD_SHRINK_H;
+	BlockInfo[18].slide = SLIDE_INITIAL;
 
-	BlockInfo[19].blockType 	= PAD_EXPAND_BLK;
-	BlockInfo[19].width 		= PAD_SHRINK_W;
-	BlockInfo[19].height 	= PAD_SHRINK_H;
- 	BlockInfo[19].slide 		= SLIDE_INITIAL;
+	BlockInfo[19].blockType = PAD_EXPAND_BLK;
+	BlockInfo[19].width = PAD_SHRINK_W;
+	BlockInfo[19].height = PAD_SHRINK_H;
+	BlockInfo[19].slide = SLIDE_INITIAL;
 
-	BlockInfo[20].blockType 	= DROP_BLK;
-	BlockInfo[20].width 		= BLOCK_WIDTH;
-	BlockInfo[20].height 	= BLOCK_HEIGHT;
-	BlockInfo[20].slide 		= SLIDE_INITIAL;
+	BlockInfo[20].blockType = DROP_BLK;
+	BlockInfo[20].width = BLOCK_WIDTH;
+	BlockInfo[20].height = BLOCK_HEIGHT;
+	BlockInfo[20].slide = SLIDE_INITIAL;
 
-	BlockInfo[21].blockType 	= MAXAMMO_BLK;
-	BlockInfo[21].width 		= BLOCK_WIDTH;
-	BlockInfo[21].height 	= BLOCK_HEIGHT;
-	BlockInfo[21].slide 		= SLIDE_INITIAL;
+	BlockInfo[21].blockType = MAXAMMO_BLK;
+	BlockInfo[21].width = BLOCK_WIDTH;
+	BlockInfo[21].height = BLOCK_HEIGHT;
+	BlockInfo[21].slide = SLIDE_INITIAL;
 
-	BlockInfo[22].blockType 	= ROAMER_BLK;
-	BlockInfo[22].width 		= ROAMER_BLOCK_W;
-	BlockInfo[22].height 	= ROAMER_BLOCK_H;
-	BlockInfo[22].slide 		= SLIDE_INITIAL;
+	BlockInfo[22].blockType = ROAMER_BLK;
+	BlockInfo[22].width = ROAMER_BLOCK_W;
+	BlockInfo[22].height = ROAMER_BLOCK_H;
+	BlockInfo[22].slide = SLIDE_INITIAL;
 
-	BlockInfo[23].blockType 	= TIMER_BLK;
-	BlockInfo[23].width 		= TIMER_BLOCK_W;
-	BlockInfo[23].height 	= TIMER_BLOCK_H;
-	BlockInfo[23].slide 		= SLIDE_INITIAL;
+	BlockInfo[23].blockType = TIMER_BLK;
+	BlockInfo[23].width = TIMER_BLOCK_W;
+	BlockInfo[23].height = TIMER_BLOCK_H;
+	BlockInfo[23].slide = SLIDE_INITIAL;
 
+	BlockInfo[24].blockType = RANDOM_BLK;
+	BlockInfo[24].width = BLOCK_WIDTH;
+	BlockInfo[24].height = BLOCK_HEIGHT;
+	BlockInfo[24].slide = SLIDE_INITIAL;
 
-	BlockInfo[24].blockType 	= RANDOM_BLK;
-	BlockInfo[24].width 		= BLOCK_WIDTH;
-	BlockInfo[24].height 	= BLOCK_HEIGHT;
-	BlockInfo[24].slide 		= SLIDE_INITIAL;
+	BlockInfo[25].blockType = DYNAMITE_BLK;
+	BlockInfo[25].width = DYNAMITE_W;
+	BlockInfo[25].height = DYNAMITE_H;
+	BlockInfo[25].slide = SLIDE_INITIAL;
 
-	BlockInfo[25].blockType 	= DYNAMITE_BLK;
-	BlockInfo[25].width 		= DYNAMITE_W;
-	BlockInfo[25].height 	= DYNAMITE_H;
-	BlockInfo[25].slide 		= SLIDE_INITIAL;
+	BlockInfo[26].blockType = BONUSX2_BLK;
+	BlockInfo[26].width = BONUS_27_W;
+	BlockInfo[26].height = BONUS_27_H;
+	BlockInfo[26].slide = SLIDE_INITIAL;
 
-	BlockInfo[26].blockType 	= BONUSX2_BLK;
-	BlockInfo[26].width 		= BONUS_27_W;
-	BlockInfo[26].height 	= BONUS_27_H;
-	BlockInfo[26].slide 		= SLIDE_INITIAL;
+	BlockInfo[27].blockType = BONUSX4_BLK;
+	BlockInfo[27].width = BONUS_27_W;
+	BlockInfo[27].height = BONUS_27_H;
+	BlockInfo[27].slide = SLIDE_INITIAL;
 
-	BlockInfo[27].blockType 	= BONUSX4_BLK;
-	BlockInfo[27].width 		= BONUS_27_W;
-	BlockInfo[27].height 	= BONUS_27_H;
-	BlockInfo[27].slide 		= SLIDE_INITIAL;
+	BlockInfo[28].blockType = BONUS_BLK;
+	BlockInfo[28].width = BONUS_27_W;
+	BlockInfo[28].height = BONUS_27_H;
+	BlockInfo[28].slide = SLIDE_INITIAL;
 
-	BlockInfo[28].blockType 	= BONUS_BLK;
-	BlockInfo[28].width 		= BONUS_27_W;
-	BlockInfo[28].height 	= BONUS_27_H;
-	BlockInfo[28].slide 		= SLIDE_INITIAL;
-
-	BlockInfo[29].blockType 	= BLACKHIT_BLK;
-	BlockInfo[29].width 		= BLACK_BLOCK_W;
-	BlockInfo[29].height 	= BLACK_BLOCK_H;
-	BlockInfo[29].slide 		= SLIDE_INITIAL;
+	BlockInfo[29].blockType = BLACKHIT_BLK;
+	BlockInfo[29].width = BLACK_BLOCK_W;
+	BlockInfo[29].height = BLACK_BLOCK_H;
+	BlockInfo[29].slide = SLIDE_INITIAL;
 }
 
 void PlaySoundForBlock(int type)
 {
 	/* If no sound the no sound */
-	if (noSound == True) return;
+	if (noSound == True)
+		return;
 
 	/* Play the sound effect for the block being hit */
 	switch (type)
 	{
-		case BOMB_BLK:		
-			playSoundFile("bomb", SFX_VOL_BOMB);
-			break;
+	case BOMB_BLK:
+		playSoundFile("bomb", SFX_VOL_BOMB);
+		break;
 
-		case BULLET_BLK:
-			playSoundFile("ammo", SFX_VOL_AMMO_LOW);
-			break;
+	case BULLET_BLK:
+		playSoundFile("ammo", SFX_VOL_AMMO_LOW);
+		break;
 
-		case MAXAMMO_BLK:
-			playSoundFile("ammo", SFX_VOL_AMMO_HIGH);
-			break;
+	case MAXAMMO_BLK:
+		playSoundFile("ammo", SFX_VOL_AMMO_HIGH);
+		break;
 
-		case RED_BLK:
-		case GREEN_BLK:		
-		case BLUE_BLK:	
-		case TAN_BLK:
-		case PURPLE_BLK:	
-		case YELLOW_BLK:
-		case COUNTER_BLK:
-		case RANDOM_BLK:
-		case DROP_BLK:
-			playSoundFile("touch", SFX_VOL_TOUCH);
-			break;
+	case RED_BLK:
+	case GREEN_BLK:
+	case BLUE_BLK:
+	case TAN_BLK:
+	case PURPLE_BLK:
+	case YELLOW_BLK:
+	case COUNTER_BLK:
+	case RANDOM_BLK:
+	case DROP_BLK:
+		playSoundFile("touch", SFX_VOL_TOUCH);
+		break;
 
-		case ROAMER_BLK:
-			playSoundFile("ouch", SFX_VOL_OUCH);
-			break;
+	case ROAMER_BLK:
+		playSoundFile("ouch", SFX_VOL_OUCH);
+		break;
 
-		case EXTRABALL_BLK:	
-			playSoundFile("ddloo", SFX_VOL_DDLOO);
-			break;
+	case EXTRABALL_BLK:
+		playSoundFile("ddloo", SFX_VOL_DDLOO);
+		break;
 
-		case MGUN_BLK:	
-			playSoundFile("mgun", SFX_VOL_MGUN);
-			break;
+	case MGUN_BLK:
+		playSoundFile("mgun", SFX_VOL_MGUN);
+		break;
 
-		case WALLOFF_BLK:	
-			playSoundFile("wallsoff", SFX_VOL_WALLSOFF);
-			break;
+	case WALLOFF_BLK:
+		playSoundFile("wallsoff", SFX_VOL_WALLSOFF);
+		break;
 
-		case BONUSX2_BLK:	
-		case BONUSX4_BLK:	
-		case BONUS_BLK:	
-			playSoundFile("gate", SFX_VOL_GATE);
-			break;			
-			
-		case REVERSE_BLK:	
-			playSoundFile("warp", SFX_VOL_WARP);
-			break;
+	case BONUSX2_BLK:
+	case BONUSX4_BLK:
+	case BONUS_BLK:
+		playSoundFile("gate", SFX_VOL_GATE);
+		break;
 
-		case PAD_SHRINK_BLK:
-			playSoundFile("wzzz2", SFX_VOL_WZZZ2);
-			break;
+	case REVERSE_BLK:
+		playSoundFile("warp", SFX_VOL_WARP);
+		break;
 
-		case PAD_EXPAND_BLK:
-			playSoundFile("wzzz", SFX_VOL_WZZZ);
-			break;
+	case PAD_SHRINK_BLK:
+		playSoundFile("wzzz2", SFX_VOL_WZZZ2);
+		break;
 
-		case MULTIBALL_BLK:
-			playSoundFile("spring", SFX_VOL_SPRING);
-			break;
+	case PAD_EXPAND_BLK:
+		playSoundFile("wzzz", SFX_VOL_WZZZ);
+		break;
 
-		case TIMER_BLK:
-			playSoundFile("bonus", SFX_VOL_BONUS);
-			break;
+	case MULTIBALL_BLK:
+		playSoundFile("spring", SFX_VOL_SPRING);
+		break;
 
-		case STICKY_BLK:
-			playSoundFile("sticky", SFX_VOL_STICKY);
-			break;
+	case TIMER_BLK:
+		playSoundFile("bonus", SFX_VOL_BONUS);
+		break;
 
-		case DEATH_BLK:	
-			playSoundFile("evillaugh", SFX_VOL_EVILLAUGH);
-			break;
+	case STICKY_BLK:
+		playSoundFile("sticky", SFX_VOL_STICKY);
+		break;
 
-		case BLACK_BLK:		
-			playSoundFile("metal", SFX_VOL_METAL);
-			break;
+	case DEATH_BLK:
+		playSoundFile("evillaugh", SFX_VOL_EVILLAUGH);
+		break;
 
-		case HYPERSPACE_BLK:
-			playSoundFile("hypspc", SFX_VOL_HYPSPC);
-			break;
+	case BLACK_BLK:
+		playSoundFile("metal", SFX_VOL_METAL);
+		break;
 
-		case KILL_BLK:
-			ErrorMessage("Error: kill block type in PlaySoundForBlock()");
-			break;
+	case HYPERSPACE_BLK:
+		playSoundFile("hypspc", SFX_VOL_HYPSPC);
+		break;
 
-		default:
-			ErrorMessage("Error: Unknown block type in PlaySoundForBlock()");
-			break;
+	case KILL_BLK:
+		ErrorMessage("Error: kill block type in PlaySoundForBlock()");
+		break;
+
+	default:
+		ErrorMessage("Error: Unknown block type in PlaySoundForBlock()");
+		break;
 	}
 }
 
-void ExplodeBlockType(Display *display, Window window, int x, int y, 
-	int row, int col, int type, int slide)
+void ExplodeBlockType(Display *display, Window window, int x, int y,
+					  int row, int col, int type, int slide)
 {
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 	int y1, y2, h;
 
 	/* Draw a frame from the blocks explode animation */
 	switch (type)
 	{
-		case BOMB_BLK:		/* Draw the bomb block explosion slide */
-			RenderShape(display, window, exbombblock[slide], 
-				exbombblockM[slide], x, y, 30, 30, True);
+	case BOMB_BLK: /* Draw the bomb block explosion slide */
+		RenderShape(display, window, exbombblock[slide],
+					exbombblockM[slide], x, y, 30, 30, True);
+		break;
+
+	case MULTIBALL_BLK:
+	case RED_BLK: /* Draw a red block explosion slide */
+		RenderShape(display, window, exredblock[slide],
+					exredblockM[slide], x, y, 40, 20, True);
+		break;
+
+	case GREEN_BLK: /* Draw a green block explosion slide */
+	case DROP_BLK:	/* Draw a drop block explosion slide */
+		RenderShape(display, window, exgreenblock[slide],
+					exgreenblockM[slide], x, y, 40, 20, True);
+		break;
+
+	case BLUE_BLK: /* Draw a blue block explosion slide */
+		RenderShape(display, window, exblueblock[slide],
+					exblueblockM[slide], x, y, 40, 20, True);
+		break;
+
+	case TAN_BLK: /* Draw a tan block explosion slide */
+		RenderShape(display, window, extanblock[slide],
+					extanblockM[slide], x, y, 40, 20, True);
+		break;
+
+	case PURPLE_BLK: /* Draw a purple block explosion slide */
+		RenderShape(display, window, expurpleblock[slide],
+					expurpleblockM[slide], x, y, 40, 20, True);
+		break;
+
+	case BULLET_BLK: /* Draw a bullet block explosion slide */
+	case YELLOW_BLK: /* Draw a yellow block explosion slide */
+		RenderShape(display, window, exyellowblock[slide],
+					exyellowblockM[slide], x, y, 40, 20, True);
+		break;
+
+	case COUNTER_BLK: /* Draw a counter block explosion slide */
+		RenderShape(display, window, excounterblock[slide],
+					excounterblockM[slide], x, y, 40, 20, True);
+		break;
+
+	case BONUS_BLK:	  /* Draw a bonus coin block explosion slide */
+	case BONUSX4_BLK: /* Draw a bonus x2 oin block explosion slide */
+	case BONUSX2_BLK: /* Draw a bonus x4 coin block explosion slide */
+	case TIMER_BLK:	  /* Draw a timer clock block explosion slide */
+		RenderShape(display, window, exx2bonus[slide],
+					exx2bonusM[slide], x, y, 27, 27, True);
+		break;
+
+	case DEATH_BLK: /* Draw a pirate death block explosion slide */
+		RenderShape(display, window, exdeath[slide],
+					exdeathM[slide], x, y, 30, 30, True);
+		break;
+
+	case BLACK_BLK:
+		break;
+
+	case REVERSE_BLK:	 /* The reverse doesn't have any animation */
+	case HYPERSPACE_BLK: /* The hyperspace doesn't have any animation */
+	case EXTRABALL_BLK:	 /* The extra ball doesn't have any animation */
+	case MGUN_BLK:		 /* The machine gun doesn't have any animation */
+	case WALLOFF_BLK:	 /* The wall off doesn't have any animation */
+	case STICKY_BLK:	 /* No animation for sticky block either */
+	case PAD_SHRINK_BLK:
+	case PAD_EXPAND_BLK:
+	case MAXAMMO_BLK:
+	case ROAMER_BLK:
+		blockP = &blocks[row][col];
+		y1 = blockP->y;
+		y2 = blockP->y + blockP->height;
+
+		switch (slide)
+		{
+		case 0: /* First frame to clear */
+			h = (blockP->height / 2) / 3;
+			XClearArea(display, window,
+					   blockP->x, y1, blockP->width, h, False);
+			XClearArea(display, window,
+					   blockP->x, y2 - h, blockP->width, h, False);
 			break;
 
-		case MULTIBALL_BLK:
-		case RED_BLK:		/* Draw a red block explosion slide */
-			RenderShape(display, window, exredblock[slide], 
-				exredblockM[slide], x, y, 40, 20, True);
+		case 1: /* Second frame to clear */
+			h = (blockP->height / 2) / 2;
+			XClearArea(display, window,
+					   blockP->x, y1, blockP->width, h, False);
+			XClearArea(display, window,
+					   blockP->x, y2 - h, blockP->width, h, False);
 			break;
 
-		case GREEN_BLK:		/* Draw a green block explosion slide */
-		case DROP_BLK:		/* Draw a drop block explosion slide */
-			RenderShape(display, window, exgreenblock[slide], 
-				exgreenblockM[slide], x, y, 40, 20, True);
+		case 2: /* thrid frame to clear */
+			h = (int)((blockP->height / 2) / 1.5);
+			XClearArea(display, window,
+					   blockP->x, y1, blockP->width, h, False);
+			XClearArea(display, window,
+					   blockP->x, y2 - h, blockP->width, h, False);
 			break;
+		}
+		break;
 
-		case BLUE_BLK:		/* Draw a blue block explosion slide */
-			RenderShape(display, window, exblueblock[slide], 
-				exblueblockM[slide], x, y, 40, 20, True);
-			break;
-
-		case TAN_BLK:		/* Draw a tan block explosion slide */
-			RenderShape(display, window, extanblock[slide], 
-				extanblockM[slide], x, y, 40, 20, True);
-			break;
-
-		case PURPLE_BLK:	/* Draw a purple block explosion slide */
-			RenderShape(display, window, expurpleblock[slide], 
-				expurpleblockM[slide], x, y, 40, 20, True);
-			break;
-
-		case BULLET_BLK:	/* Draw a bullet block explosion slide */
-		case YELLOW_BLK:	/* Draw a yellow block explosion slide */
-			RenderShape(display, window, exyellowblock[slide], 
-				exyellowblockM[slide], x, y, 40, 20, True);
-			break;
-
-		case COUNTER_BLK:	/* Draw a counter block explosion slide */
-			RenderShape(display, window, excounterblock[slide], 
-				excounterblockM[slide], x, y, 40, 20, True);
-			break;
-
-		case BONUS_BLK:		/* Draw a bonus coin block explosion slide */
-		case BONUSX4_BLK:	/* Draw a bonus x2 oin block explosion slide */
-		case BONUSX2_BLK:	/* Draw a bonus x4 coin block explosion slide */
-		case TIMER_BLK:		/* Draw a timer clock block explosion slide */
-			RenderShape(display, window, exx2bonus[slide], 
-				exx2bonusM[slide], x, y, 27, 27, True);
-			break;
-
-		case DEATH_BLK:		/* Draw a pirate death block explosion slide */
-			RenderShape(display, window, exdeath[slide], 
-				exdeathM[slide], x, y, 30, 30, True);
-			break;
-
-		case BLACK_BLK:		
-			break;
-
-		case REVERSE_BLK:	/* The reverse doesn't have any animation */
-		case HYPERSPACE_BLK:/* The hyperspace doesn't have any animation */
-		case EXTRABALL_BLK:	/* The extra ball doesn't have any animation */
-		case MGUN_BLK:		/* The machine gun doesn't have any animation */
-		case WALLOFF_BLK:	/* The wall off doesn't have any animation */
-		case STICKY_BLK:	/* No animation for sticky block either */
-		case PAD_SHRINK_BLK:
-		case PAD_EXPAND_BLK:
-		case MAXAMMO_BLK:
-		case ROAMER_BLK:
-    		blockP = &blocks[row][col];
-			y1 = blockP->y;
-			y2 = blockP->y + blockP->height;
-
-			switch (slide)
-			{
-				case 0:	 /* First frame to clear */
-					h = (blockP->height / 2) / 3;
-        			XClearArea(display, window, 
-						blockP->x, y1, blockP->width, h, False);
-        			XClearArea(display, window, 
-						blockP->x, y2-h, blockP->width, h, False);
-					break;
-
-				case 1:	 /* Second frame to clear */
-					h = (blockP->height / 2) / 2;
-        			XClearArea(display, window, 
-						blockP->x, y1, blockP->width, h, False);
-        			XClearArea(display, window, 
-						blockP->x, y2-h, blockP->width, h, False);
-					break;
-
-				case 2:	 /* thrid frame to clear */
-					h = (int) ((blockP->height / 2) / 1.5);
-        			XClearArea(display, window, 
-						blockP->x, y1, blockP->width, h, False);
-        			XClearArea(display, window, 
-						blockP->x, y2-h, blockP->width, h, False);
-					break;
-			}
-			break;
-
-		default:
-			ErrorMessage("Error: Unknown block type in ExplodeBlockType()");
-			break;
+	default:
+		ErrorMessage("Error: Unknown block type in ExplodeBlockType()");
+		break;
 	}
 }
 
@@ -1048,7 +1068,7 @@ void ExplodeAllOfOneType(Display *display, Window window, int type)
 	 * passed to blow up ASAP. He he he.
 	 */
 
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 	int r, c;
 
 	/* Check all blocks looking for a type we want */
@@ -1060,7 +1080,7 @@ void ExplodeAllOfOneType(Display *display, Window window, int type)
 			blockP = &blocks[r][c];
 
 			/* Don't bother me if the block is not occupied */
-			if (blockP->occupied == True) 
+			if (blockP->occupied == True)
 			{
 				/* Ok if it is the type then blow it to bits */
 				if (blockP->blockType == type)
@@ -1083,7 +1103,7 @@ void SetExplodeAllType(Display *display, Window window, int type)
 		int r, c;
 	} locations[MAX_ROW * MAX_COL];
 
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 	int r, c, count, theBlock;
 
 	/* Check all blocks looking for a type we want */
@@ -1095,7 +1115,7 @@ void SetExplodeAllType(Display *display, Window window, int type)
 			blockP = &blocks[r][c];
 
 			/* Don't bother me if the block is not occupied */
-			if (blockP->occupied == True) 
+			if (blockP->occupied == True)
 			{
 				if (blockP->blockType == type)
 				{
@@ -1120,61 +1140,61 @@ void SetExplodeAllType(Display *display, Window window, int type)
 		blockP->explodeAll = True;
 
 		/* Now draw the dynamite over other block */
-		DrawTheBlock(display, window, 
-			blockP->x + ((blockP->width / 2) - 14),
-			blockP->y + ((blockP->height / 2) - 7),
-			DYNAMITE_BLK, 0, r, c);
+		DrawTheBlock(display, window,
+					 blockP->x + ((blockP->width / 2) - 14),
+					 blockP->y + ((blockP->height / 2) - 7),
+					 DYNAMITE_BLK, 0, r, c);
 	}
 }
 
 void AddSpecialBlock(Display *display, Window window, int *row, int *col,
-    int type, int kill_shots)
-{
-    int r, c;
-    struct aBlock *blockP;
-
-    /* Give me a new random block position */
-    r = (rand() % (MAX_ROW - 7)) + 1;
-    c = rand() % MAX_COL;
-
-    /* Pointer to the correct block we need - speed things up */
-    blockP = &blocks[r][c];
-
-    /* 
-	 * Add a special in this block only if it isn't occupied and
-     * it isn't exploding.
-     */
-    if ((blockP->occupied == False) && (blockP->explodeStartFrame == 0))
-    {
-        AddNewBlock(display, window, r, c, type, kill_shots, True);
-		bonusBlock = True;
-
-        /* Setup the block structure for new block */
-        blockP->nextFrame       = frame + 1;
-        blockP->lastFrame       = frame + BONUS_LENGTH;
-        blockP->bonusSlide      = 0;
-        blockP->specialPopup    = True;
-
-        /* Return the new specials row & coloumn position */
-        *row = r; *col = c;
-    }
-}
-
-
-void AddBonusBlock(Display *display, Window window, int *row, int *col, 
-	int type)
+					 int type, int kill_shots)
 {
 	int r, c;
 	struct aBlock *blockP;
 
 	/* Give me a new random block position */
-    r = (rand() % (MAX_ROW - 7)) + 1;
+	r = (rand() % (MAX_ROW - 7)) + 1;
 	c = rand() % MAX_COL;
 
 	/* Pointer to the correct block we need - speed things up */
 	blockP = &blocks[r][c];
 
-	/* Add a bonus coin in this block only if it isn't occupied and 
+	/*
+	 * Add a special in this block only if it isn't occupied and
+	 * it isn't exploding.
+	 */
+	if ((blockP->occupied == False) && (blockP->explodeStartFrame == 0))
+	{
+		AddNewBlock(display, window, r, c, type, kill_shots, True);
+		bonusBlock = True;
+
+		/* Setup the block structure for new block */
+		blockP->nextFrame = frame + 1;
+		blockP->lastFrame = frame + BONUS_LENGTH;
+		blockP->bonusSlide = 0;
+		blockP->specialPopup = True;
+
+		/* Return the new specials row & coloumn position */
+		*row = r;
+		*col = c;
+	}
+}
+
+void AddBonusBlock(Display *display, Window window, int *row, int *col,
+				   int type)
+{
+	int r, c;
+	struct aBlock *blockP;
+
+	/* Give me a new random block position */
+	r = (rand() % (MAX_ROW - 7)) + 1;
+	c = rand() % MAX_COL;
+
+	/* Pointer to the correct block we need - speed things up */
+	blockP = &blocks[r][c];
+
+	/* Add a bonus coin in this block only if it isn't occupied and
 	 * it isn't exploding.
 	 */
 	if ((blockP->occupied == False) && (blockP->explodeStartFrame == 0))
@@ -1183,13 +1203,14 @@ void AddBonusBlock(Display *display, Window window, int *row, int *col,
 		bonusBlock = True;
 
 		/* Setup the block structure for new block */
-		blockP->nextFrame 		= frame + BONUS_DELAY;
-		blockP->lastFrame 		= frame + BONUS_LENGTH;
-		blockP->bonusSlide 		= 3;
-        blockP->specialPopup    = True;
+		blockP->nextFrame = frame + BONUS_DELAY;
+		blockP->lastFrame = frame + BONUS_LENGTH;
+		blockP->bonusSlide = 3;
+		blockP->specialPopup = True;
 
 		/* Return the new bonus row & coloumn position */
-		*row = r; *col = c;
+		*row = r;
+		*col = c;
 	}
 }
 
@@ -1204,32 +1225,32 @@ int GetRandomType(int blankBlock)
 
 	switch (rand() % 8)
 	{
-		case 0:
-			return RED_BLK;
+	case 0:
+		return RED_BLK;
 
-		case 1:
-			return BLUE_BLK;
+	case 1:
+		return BLUE_BLK;
 
-		case 2:
-			return GREEN_BLK;
+	case 2:
+		return GREEN_BLK;
 
-		case 3:
-			return TAN_BLK;
+	case 3:
+		return TAN_BLK;
 
-		case 4:
+	case 4:
+		return YELLOW_BLK;
+
+	case 5:
+		return PURPLE_BLK;
+
+	case 6:
+		return BULLET_BLK;
+
+	case 7:
+		if (blankBlock == True)
+			return NONE_BLK;
+		else
 			return YELLOW_BLK;
-
-		case 5:
-			return PURPLE_BLK;
-
-		case 6:
-			return BULLET_BLK;
-
-		case 7:
-			if (blankBlock == True)
-				return NONE_BLK;
-			else
-				return YELLOW_BLK;
 	}
 
 	/* Shouldn't get here but it stops warnings on compiler */
@@ -1237,63 +1258,62 @@ int GetRandomType(int blankBlock)
 }
 
 void HandlePendingSpecials(Display *display, Window window, int type,
-    int r, int c)
-{
-    struct aBlock *blockP;
-
-    blockP = &blocks[r][c];
-
-    if (frame >= blockP->lastFrame)
-    {
-    	/* Kill off special block */
-		bonusBlock = False;
-
-		/* Maybe somehow got here */
-		if (blockP->exploding) 
-			blocksExploding--;
-
-        XClearArea(display, window,
-            blockP->x, blockP->y,
-            blockP->width, blockP->height,
-            False);
-		ClearBlock(r, c);
-		DEBUG("Clearing special random block.")
-    }
-}
-
-
-void HandlePendingBonuses(Display *display, Window window, int type, 
-	int r, int c)
+						   int r, int c)
 {
 	struct aBlock *blockP;
 
 	blockP = &blocks[r][c];
 
-	if (blockP->nextFrame == frame) 
+	if (frame >= blockP->lastFrame)
+	{
+		/* Kill off special block */
+		bonusBlock = False;
+
+		/* Maybe somehow got here */
+		if (blockP->exploding)
+			blocksExploding--;
+
+		XClearArea(display, window,
+				   blockP->x, blockP->y,
+				   blockP->width, blockP->height,
+				   False);
+		ClearBlock(r, c);
+		DEBUG("Clearing special random block.")
+	}
+}
+
+void HandlePendingBonuses(Display *display, Window window, int type,
+						  int r, int c)
+{
+	struct aBlock *blockP;
+
+	blockP = &blocks[r][c];
+
+	if (blockP->nextFrame == frame)
 	{
 		if (frame <= blockP->lastFrame)
 		{
 			DEBUG("turning bonus coin block.")
 
 			/* Advance to the next frame of animation */
-			DrawTheBlock(display, window, 
-				blockP->x, blockP->y, 
-				type, blockP->bonusSlide, r, c);
+			DrawTheBlock(display, window,
+						 blockP->x, blockP->y,
+						 type, blockP->bonusSlide, r, c);
 
-				blockP->nextFrame = frame + BONUS_DELAY;
-				blockP->bonusSlide--;
+			blockP->nextFrame = frame + BONUS_DELAY;
+			blockP->bonusSlide--;
 
-				if (blockP->bonusSlide < 0)
-					blockP->bonusSlide = 3;
+			if (blockP->bonusSlide < 0)
+				blockP->bonusSlide = 3;
 		}
 		else
 		{
 			/* Kill off bonus block */
 			bonusBlock = False;
-			XClearArea(display, window, 
-				blockP->x, blockP->y,
-				blockP->width, blockP->height, 
-				False);
+			XClearArea(display, window,
+					   blockP->x, blockP->y,
+					   blockP->width, blockP->height,
+					   False);
 			ClearBlock(r, c);
 			DEBUG("Clearing bonus block.")
 		}
@@ -1306,17 +1326,20 @@ static int CheckAdjacentBlocks(Display *display, Window window, int r, int c)
 	struct aBlock *blockP;
 	int row, col, i;
 
-	if (r < 0 || r >= MAX_ROW) return False;
-	if (c < 0 || c >= MAX_COL) return False;
+	if (r < 0 || r >= MAX_ROW)
+		return False;
+	if (c < 0 || c >= MAX_COL)
+		return False;
 
 	blockP = &blocks[r][c];
 
 	if ((blockP->occupied == True) || (blockP->explodeStartFrame != 0))
 		return False;
 
-	if ((r+1) >= (MAX_ROW - 2)) return False;
+	if ((r + 1) >= (MAX_ROW - 2))
+		return False;
 
-    /* Loop through all the balls */
+	/* Loop through all the balls */
 	for (i = 0; i < MAX_BALLS; i++)
 	{
 		/* Only handle active balls - sounds disgusting! :-) */
@@ -1326,14 +1349,14 @@ static int CheckAdjacentBlocks(Display *display, Window window, int r, int c)
 			Y2ROW(row, balls[i].bally);
 
 			/* Is the ball in the way of the new block? */
-			if ((row == r) && (col == c)) return False;
+			if ((row == r) && (col == c))
+				return False;
 		}
 	}
 
 	/* Ok to move down one block */
 	return True;
 }
-
 
 void HandlePendingAnimations(Display *display, Window window)
 {
@@ -1350,165 +1373,177 @@ void HandlePendingAnimations(Display *display, Window window)
 			blockP = &blocks[r][c];
 
 			/* Only bother if the block is occupied! */
-			if (blockP->occupied == True) 
+			if (blockP->occupied == True)
 			{
 				switch (blockP->blockType)
 				{
-					case PAD_SHRINK_BLK:
-						HandlePendingSpecials(display, window, 
-							PAD_SHRINK_BLK, r, c);
-						break;
+				case PAD_SHRINK_BLK:
+					HandlePendingSpecials(display, window,
+										  PAD_SHRINK_BLK, r, c);
+					break;
 
-					case PAD_EXPAND_BLK:	
-						HandlePendingSpecials(display, window, 
-							PAD_EXPAND_BLK, r, c);
-						break;
+				case PAD_EXPAND_BLK:
+					HandlePendingSpecials(display, window,
+										  PAD_EXPAND_BLK, r, c);
+					break;
 
-					case MULTIBALL_BLK:	
-						HandlePendingSpecials(display, window, 
-							MULTIBALL_BLK, r, c);
-						break;
+				case MULTIBALL_BLK:
+					HandlePendingSpecials(display, window,
+										  MULTIBALL_BLK, r, c);
+					break;
 
-					case REVERSE_BLK:
-						HandlePendingSpecials(display, window, 
-							REVERSE_BLK, r, c);
-						break;
+				case REVERSE_BLK:
+					HandlePendingSpecials(display, window,
+										  REVERSE_BLK, r, c);
+					break;
 
-					case MGUN_BLK:	
-						HandlePendingSpecials(display, window, 
-							MGUN_BLK, r, c);
-						break;
+				case MGUN_BLK:
+					HandlePendingSpecials(display, window,
+										  MGUN_BLK, r, c);
+					break;
 
-					case WALLOFF_BLK:	
-						HandlePendingSpecials(display, window, 
-							WALLOFF_BLK, r, c);
-						break;
+				case WALLOFF_BLK:
+					HandlePendingSpecials(display, window,
+										  WALLOFF_BLK, r, c);
+					break;
 
-					case BONUS_BLK:	/* bonus coin symbol */
-						HandlePendingBonuses(display, window, BONUS_BLK, r, c);
-						break;
+				case BONUS_BLK: /* bonus coin symbol */
+					HandlePendingBonuses(display, window, BONUS_BLK, r, c);
+					break;
 
-					case BONUSX2_BLK:	/* Bonus x2 coin symbol */
-						HandlePendingBonuses(display, window, BONUSX2_BLK, r,c);
-						break;
+				case BONUSX2_BLK: /* Bonus x2 coin symbol */
+					HandlePendingBonuses(display, window, BONUSX2_BLK, r, c);
+					break;
 
-					case BONUSX4_BLK:	/* Bonus x4 coin symbol */
-						HandlePendingBonuses(display, window, BONUSX4_BLK, r,c);
-						break;
+				case BONUSX4_BLK: /* Bonus x4 coin symbol */
+					HandlePendingBonuses(display, window, BONUSX4_BLK, r, c);
+					break;
 
-					case DEATH_BLK:	/* Death block animation */
-						if (blockP->nextFrame == frame) 
+				case DEATH_BLK: /* Death block animation */
+					if (blockP->nextFrame == frame)
+					{
+						/* Advance to the next frame of animation */
+						DrawTheBlock(display, window,
+									 blockP->x, blockP->y,
+									 DEATH_BLK, blockP->bonusSlide, r, c);
+
+						blockP->nextFrame = frame + DEATH_DELAY1;
+						blockP->bonusSlide++;
+
+						/* Have the delay bit between winks */
+						if (blockP->bonusSlide > 4)
 						{
-							/* Advance to the next frame of animation */
-							DrawTheBlock(display, window, 
-								blockP->x, blockP->y, 
-								DEATH_BLK, blockP->bonusSlide, r, c);
+							blockP->bonusSlide = 0;
+							blockP->nextFrame = frame + DEATH_DELAY2;
+							DrawTheBlock(display, window,
+										 blockP->x, blockP->y,
+										 DEATH_BLK, blockP->bonusSlide, r, c);
+						}
+					}
 
-							blockP->nextFrame = frame + DEATH_DELAY1;
-							blockP->bonusSlide++;
+					HandlePendingSpecials(display, window, DEATH_BLK, r, c);
+					break;
 
-							/* Have the delay bit between winks */
-							if (blockP->bonusSlide > 4)
-							{
-								blockP->bonusSlide = 0;
-								blockP->nextFrame = frame + DEATH_DELAY2;
-								DrawTheBlock(display, window, 
-									blockP->x, blockP->y, 
-									DEATH_BLK, blockP->bonusSlide, r, c);
-							}
+				case EXTRABALL_BLK: /* extra ball block animation */
+					if (blockP->nextFrame == frame)
+					{
+						/* Advance to the next frame of animation */
+						DrawTheBlock(display, window,
+									 blockP->x, blockP->y,
+									 EXTRABALL_BLK, blockP->bonusSlide, r, c);
+
+						blockP->nextFrame = frame + EXTRABALL_DELAY;
+						blockP->bonusSlide++;
+
+						/* Have the delay bit between flashes */
+						if (blockP->bonusSlide > 1)
+							blockP->bonusSlide = 0;
+					}
+
+					HandlePendingSpecials(display, window,
+										  EXTRABALL_BLK, r, c);
+					break;
+
+				case BLACK_BLK:
+					if (blockP->nextFrame == frame)
+					{
+						/* Clear the red bit in wall block */
+						DrawTheBlock(display, window,
+									 blockP->x, blockP->y,
+									 BLACK_BLK, 0, r, c);
+
+						blockP->nextFrame = frame - 1;
+					}
+					break;
+
+				case ROAMER_BLK: /* Roamer block animation */
+					if (blockP->nextFrame == frame)
+					{
+						/* Advance to the next frame of animation */
+						DrawTheBlock(display, window,
+									 blockP->x, blockP->y,
+									 ROAMER_BLK, blockP->bonusSlide, r, c);
+
+						blockP->nextFrame = frame +
+											(rand() % ROAM_EYES_DELAY) + 50;
+						blockP->bonusSlide = rand() % 5;
+					}
+					else if (blockP->lastFrame == frame)
+					{
+						/* Work out which way to move block if we can */
+						d = blockP->bonusSlide + 1; /* 1 - 4 */
+						switch (d)
+						{
+						case 1:
+							r1 = 0;
+							c1 = -1;
+							break;
+						case 2:
+							r1 = 0;
+							c1 = 1;
+							break;
+						case 3:
+							r1 = -1;
+							c1 = 0;
+							break;
+						case 4:
+							r1 = 1;
+							c1 = 0;
+							break;
 						}
 
-						HandlePendingSpecials(display, window, DEATH_BLK, r, c);
-						break;
-
-					case EXTRABALL_BLK:	/* extra ball block animation */
-						if (blockP->nextFrame == frame) 
+						/* check if we can move the roamer to next block */
+						if (CheckAdjacentBlocks(display, window,
+												r + r1, c + c1))
 						{
-							/* Advance to the next frame of animation */
-							DrawTheBlock(display, window, 
-								blockP->x, blockP->y, 
-								EXTRABALL_BLK, blockP->bonusSlide, r, c);
+							/* Ok add a new block one space down */
+							AddNewBlock(display, window, r + r1, c + c1,
+										ROAMER_BLK, 0, True);
+							blockP = &blocks[r + r1][c + c1];
+							blockP->nextFrame = frame +
+												(rand() % ROAM_EYES_DELAY) + 50;
 
-							blockP->nextFrame = frame + EXTRABALL_DELAY;
-							blockP->bonusSlide++;
-
-							/* Have the delay bit between flashes */
-							if (blockP->bonusSlide > 1)
-								blockP->bonusSlide = 0;
+							/* Erase the old block */
+							blockP = &blocks[r][c];
+							XClearArea(display, window,
+									   blockP->x, blockP->y,
+									   blockP->width, blockP->height, False);
+							ClearBlock(r, c);
 						}
-
-						HandlePendingSpecials(display, window, 
-							EXTRABALL_BLK, r, c);
-						break;
-
-					case BLACK_BLK:
-						if (blockP->nextFrame == frame) 
+						else
 						{
-							/* Clear the red bit in wall block */
-							DrawTheBlock(display, window, 
-								blockP->x, blockP->y, 
-								BLACK_BLK, 0, r, c);
-
-							blockP->nextFrame = frame - 1;
+							/* Ok - cannot go so just wait for a while */
+							blockP->lastFrame = frame +
+												(rand() % ROAM_DELAY) + 300;
 						}
-						break;
-
-					case ROAMER_BLK:	/* Roamer block animation */
-						if (blockP->nextFrame == frame) 
-						{
-							/* Advance to the next frame of animation */
-							DrawTheBlock(display, window, 
-								blockP->x, blockP->y, 
-								ROAMER_BLK, blockP->bonusSlide, r, c);
-
-							blockP->nextFrame = frame + 
-								(rand() % ROAM_EYES_DELAY) + 50;
-							blockP->bonusSlide = rand() % 5;
-
-						} else if (blockP->lastFrame == frame) 
-						{
-							/* Work out which way to move block if we can */
-							d = blockP->bonusSlide + 1; /* 1 - 4 */
-							switch (d)
-							{
-								case 1: r1 = 0; c1 = -1; break;
-								case 2: r1 = 0; c1 = 1; break;
-								case 3: r1 = -1; c1 = 0; break;
-								case 4: r1 = 1; c1 = 0; break;
-							}
-
-							/* check if we can move the roamer to next block */
-							if (CheckAdjacentBlocks(display, window, 
-								r+r1, c+c1))
-							{
-								/* Ok add a new block one space down */
-								AddNewBlock(display, window, r+r1, c+c1, 
-									ROAMER_BLK, 0, True);
-								blockP = &blocks[r+r1][c+c1];
-								blockP->nextFrame = frame + 
-									(rand() % ROAM_EYES_DELAY) + 50;
-
-								/* Erase the old block */
-								blockP = &blocks[r][c];
-								XClearArea(display, window, 
-									blockP->x, blockP->y,
-									blockP->width, blockP->height, False);
-								ClearBlock(r, c);
-							}
-							else
-							{
-								/* Ok - cannot go so just wait for a while */
-								blockP->lastFrame = frame + 
-									(rand() % ROAM_DELAY) + 300;
-							}
-						}
-						break;
+					}
+					break;
 				}
 
 				/* If it is a random block then change? */
 				if (blockP->random == True)
 				{
-					if (blockP->nextFrame == frame) 
+					if (blockP->nextFrame == frame)
 					{
 						/* Change the block to a new block block. We should
 						 * be allright in just changing the blocktype etc.
@@ -1518,47 +1553,46 @@ void HandlePendingAnimations(Display *display, Window window)
 						blockP->bonusSlide = 0;
 						blockP->explodeAll = False;
 
-						DrawTheBlock(display, window, 
-							blockP->x, blockP->y, 
-							blockP->blockType, blockP->bonusSlide, r, c);
+						DrawTheBlock(display, window,
+									 blockP->x, blockP->y,
+									 blockP->blockType, blockP->bonusSlide, r, c);
 
-						blockP->nextFrame = 
+						blockP->nextFrame =
 							frame + (rand() % RANDOM_DELAY) + 300;
-					}	
-				}	/* random */
+					}
+				} /* random */
 
 				/* Handle the dropping blocks */
 				if (blockP->drop == True)
 				{
 					/* Time to drop down one notch? */
-					if (blockP->nextFrame == frame) 
+					if (blockP->nextFrame == frame)
 					{
 						/* Can the drop block move down */
-						if (CheckAdjacentBlocks(display, window, r+1, c))
+						if (CheckAdjacentBlocks(display, window, r + 1, c))
 						{
 							/* Ok add a new block one space down */
-							AddNewBlock(display, window, r+1, c, 
-								DROP_BLK, 0, True);
-    						blockP = &blocks[r+1][c];
-							blockP->nextFrame = frame + 
-								(rand() % DROP_DELAY) + 200;
+							AddNewBlock(display, window, r + 1, c,
+										DROP_BLK, 0, True);
+							blockP = &blocks[r + 1][c];
+							blockP->nextFrame = frame +
+												(rand() % DROP_DELAY) + 200;
 
 							/* Erase the old block */
-    						blockP = &blocks[r][c];
-							XClearArea(display, window, 
-								blockP->x, blockP->y,
-								blockP->width, blockP->height, False);
+							blockP = &blocks[r][c];
+							XClearArea(display, window,
+									   blockP->x, blockP->y,
+									   blockP->width, blockP->height, False);
 							ClearBlock(r, c);
 						}
 						else
 						{
 							/* Ok - cannot go down so just wait for a while */
-    						blockP = &blocks[r][c];
+							blockP = &blocks[r][c];
 							blockP->nextFrame = frame + DROP_DELAY;
 						}
-					}	
-				}	/* droppers */
-
+					}
+				} /* droppers */
 			}
 		}
 	}
@@ -1571,7 +1605,8 @@ void ExplodeBlocksPending(Display *display, Window window)
 	char str[50];
 
 	/* If none are exploding then bug out */
-	if (blocksExploding == 0) return;
+	if (blocksExploding == 0)
+		return;
 
 	/* Cycle through all blocks exploding pending animation blocks */
 	for (r = 0; r < MAX_ROW; r++)
@@ -1585,7 +1620,7 @@ void ExplodeBlocksPending(Display *display, Window window)
 			if (blockP->explodeStartFrame)
 			{
 				/* Is it time to explode this frame */
-				if (blockP->explodeNextFrame == frame) 
+				if (blockP->explodeNextFrame == frame)
 				{
 					x = blockP->x;
 					y = blockP->y;
@@ -1594,38 +1629,38 @@ void ExplodeBlocksPending(Display *display, Window window)
 					/* Switch on slide of animation */
 					switch (blockP->explodeSlide)
 					{
-						case 1:	/* First frame of animation */
-							ExplodeBlockType(display, window, x, y, r, c, 
-								type, 0);
-							blockP->explodeNextFrame =
-								blockP->explodeStartFrame;
+					case 1: /* First frame of animation */
+						ExplodeBlockType(display, window, x, y, r, c,
+										 type, 0);
+						blockP->explodeNextFrame =
+							blockP->explodeStartFrame;
 
-							/* Explode all of one type if set */
-							if (blockP->explodeAll == True)
-								ExplodeAllOfOneType(display, window, type);
-							break;
-	
-						case 2:	/* Second frame of animation */
-							ExplodeBlockType(display, window, x, y, r, c, 
-								type, 1);
-							break;
-	
-						case 3:	/* Third frame of animation */
-							ExplodeBlockType(display, window, x, y, r, c, 
-								type, 2);
-							break;
-	
-						case 4:	/* Last frame of animation  - clear */
-							XClearArea(display, window, x, y, 
-								blockP->width, 
-								blockP->height, False);
-							break;
+						/* Explode all of one type if set */
+						if (blockP->explodeAll == True)
+							ExplodeAllOfOneType(display, window, type);
+						break;
+
+					case 2: /* Second frame of animation */
+						ExplodeBlockType(display, window, x, y, r, c,
+										 type, 1);
+						break;
+
+					case 3: /* Third frame of animation */
+						ExplodeBlockType(display, window, x, y, r, c,
+										 type, 2);
+						break;
+
+					case 4: /* Last frame of animation  - clear */
+						XClearArea(display, window, x, y,
+								   blockP->width,
+								   blockP->height, False);
+						break;
 					}
-	
+
 					/* procede to next frame in animation */
 					blockP->explodeSlide++;
 					blockP->explodeNextFrame += EXPLODE_DELAY;
-	
+
 					/* last frame so clean up animation and block */
 					if (blockP->explodeSlide > 4)
 					{
@@ -1633,111 +1668,111 @@ void ExplodeBlocksPending(Display *display, Window window)
 						blockP->occupied = 0;
 						blockP->exploding = False;
 
-						AddToScore((u_long) blockP->hitPoints);
+						AddToScore((u_long)blockP->hitPoints);
 						DisplayScore(display, scoreWindow, score);
 
 						switch (blockP->blockType)
 						{
-							case BLACK_BLK:
-							case PAD_SHRINK_BLK:
-							case PAD_EXPAND_BLK:
-								break;
+						case BLACK_BLK:
+						case PAD_SHRINK_BLK:
+						case PAD_EXPAND_BLK:
+							break;
 
-							case BOMB_BLK:
-								/* Explode all the ones around it */
-								SetBlockUpForExplosion(r+1, c, 
-									frame + EXPLODE_DELAY);
-								SetBlockUpForExplosion(r, c+1, 
-									frame + EXPLODE_DELAY);
-								SetBlockUpForExplosion(r-1, c, 
-									frame + EXPLODE_DELAY);
-								SetBlockUpForExplosion(r, c-1, 
-									frame + EXPLODE_DELAY);
-								SetBlockUpForExplosion(r-1, c-1, 
-									frame + EXPLODE_DELAY);
-								SetBlockUpForExplosion(r-1, c+1, 
-									frame + EXPLODE_DELAY);
-								SetBlockUpForExplosion(r+1, c-1, 
-									frame + EXPLODE_DELAY);
-								SetBlockUpForExplosion(r+1, c+1, 
-									frame + EXPLODE_DELAY);
+						case BOMB_BLK:
+							/* Explode all the ones around it */
+							SetBlockUpForExplosion(r + 1, c,
+												   frame + EXPLODE_DELAY);
+							SetBlockUpForExplosion(r, c + 1,
+												   frame + EXPLODE_DELAY);
+							SetBlockUpForExplosion(r - 1, c,
+												   frame + EXPLODE_DELAY);
+							SetBlockUpForExplosion(r, c - 1,
+												   frame + EXPLODE_DELAY);
+							SetBlockUpForExplosion(r - 1, c - 1,
+												   frame + EXPLODE_DELAY);
+							SetBlockUpForExplosion(r - 1, c + 1,
+												   frame + EXPLODE_DELAY);
+							SetBlockUpForExplosion(r + 1, c - 1,
+												   frame + EXPLODE_DELAY);
+							SetBlockUpForExplosion(r + 1, c + 1,
+												   frame + EXPLODE_DELAY);
 
-								/* Special effect where screen shakes 
-								 * during explosion 
-								 */
-								SetSfxEndFrame(frame + 70);
-								changeSfxMode(SFX_SHAKE);
-								break;
+							/* Special effect where screen shakes
+							 * during explosion
+							 */
+							SetSfxEndFrame(frame + 70);
+							changeSfxMode(SFX_SHAKE);
+							break;
 
-							case TIMER_BLK:
-								AddToLevelTimeBonus(display, timeWindow, 
-									EXTRA_TIME);
-								SetCurrentMessage(display, messWindow, 
-									"- Extra Time = 20 seconds -", True);
-								break;
+						case TIMER_BLK:
+							AddToLevelTimeBonus(display, timeWindow,
+												EXTRA_TIME);
+							SetCurrentMessage(display, messWindow,
+											  "- Extra Time = 20 seconds -", True);
+							break;
 
-							case BULLET_BLK:
-								SetCurrentMessage(display, messWindow, 
-									"More ammunition, cool!", True);
-								for (i=0; i < NUMBER_OF_BULLETS_NEW_LEVEL; i++)
-									AddABullet(display);
-								break;
+						case BULLET_BLK:
+							SetCurrentMessage(display, messWindow,
+											  "More ammunition, cool!", True);
+							for (i = 0; i < NUMBER_OF_BULLETS_NEW_LEVEL; i++)
+								AddABullet(display);
+							break;
 
-							case MAXAMMO_BLK:
-								SetCurrentMessage(display, messWindow, 
-									"Unlimited bullets!", True);
-								SetUnlimitedBullets(True);
-								SetNumberBullets(MAX_BULLETS+1);
-								DisplayLevelInfo(display, levelWindow, level);
-								break;
+						case MAXAMMO_BLK:
+							SetCurrentMessage(display, messWindow,
+											  "Unlimited bullets!", True);
+							SetUnlimitedBullets(True);
+							SetNumberBullets(MAX_BULLETS + 1);
+							DisplayLevelInfo(display, levelWindow, level);
+							break;
 
-							case BONUS_BLK:
-								IncNumberBonus();
+						case BONUS_BLK:
+							IncNumberBonus();
 
-								if (GetNumberBonus() <= MAX_BONUS)
-									sprintf(str, 
+							if (GetNumberBonus() <= MAX_BONUS)
+								sprintf(str,
 										"- Bonus #%d -", GetNumberBonus());
-								else
-									sprintf(str, "<<< Super Bonus >>>");
+							else
+								sprintf(str, "<<< Super Bonus >>>");
 
-								SetCurrentMessage(display, messWindow, str, 
-									True);
-								bonusBlock = False;
+							SetCurrentMessage(display, messWindow, str,
+											  True);
+							bonusBlock = False;
 
-								/* Turn on killer mode after 10 bonuses */
-								if (GetNumberBonus() == 10)
-								{
-									/* Turn on killer mode */
-									ToggleKiller(display, True);
-									DrawSpecials(display);
-
-									SetCurrentMessage(display, messWindow, 
-										"- Killer Mode -", True);
-								}
-								break;
-
-							case BONUSX2_BLK:
-								Togglex2Bonus(display, True);
-								Togglex4Bonus(display, False);
+							/* Turn on killer mode after 10 bonuses */
+							if (GetNumberBonus() == 10)
+							{
+								/* Turn on killer mode */
+								ToggleKiller(display, True);
 								DrawSpecials(display);
 
-								bonusBlock = False;
-								SetCurrentMessage(display, messWindow, 
-									"- x2 Bonus -", True);
-								break;
+								SetCurrentMessage(display, messWindow,
+												  "- Killer Mode -", True);
+							}
+							break;
 
-							case BONUSX4_BLK:
-								Togglex2Bonus(display, False);
-								Togglex4Bonus(display, True);
-								DrawSpecials(display);
+						case BONUSX2_BLK:
+							Togglex2Bonus(display, True);
+							Togglex4Bonus(display, False);
+							DrawSpecials(display);
 
-								bonusBlock = False;
-								SetCurrentMessage(display, messWindow, 
-									"- x4 Bonus -", True);
-								break;
+							bonusBlock = False;
+							SetCurrentMessage(display, messWindow,
+											  "- x2 Bonus -", True);
+							break;
 
-							default :
-								break;
+						case BONUSX4_BLK:
+							Togglex2Bonus(display, False);
+							Togglex4Bonus(display, True);
+							DrawSpecials(display);
+
+							bonusBlock = False;
+							SetCurrentMessage(display, messWindow,
+											  "- x4 Bonus -", True);
+							break;
+
+						default:
+							break;
 						}
 
 						/* Reset to a non exploding block */
@@ -1749,8 +1784,8 @@ void ExplodeBlocksPending(Display *display, Window window)
 	}
 }
 
-void DrawTheBlock(Display *display, Window window, int x, int y, 
-	int blockType, int slide, int r, int c)
+void DrawTheBlock(Display *display, Window window, int x, int y,
+				  int blockType, int slide, int r, int c)
 {
 	struct aBlock *blockP;
 	char tmp[10];
@@ -1759,194 +1794,197 @@ void DrawTheBlock(Display *display, Window window, int x, int y,
 	/* Get the pointer to the block we need */
 	blockP = &blocks[r][c];
 
-	switch(blockType)
+	switch (blockType)
 	{
-		case DYNAMITE_BLK:	/* dynamite block block */
-			/* 
-			 * This is not a block type but an image that overlays a block
-			 * when it becomes an explode all block.
-			 */
-			RenderShape(display, window, dynamite,
-				dynamiteM, x, y, 29, 15, False);
-			break;
+	case DYNAMITE_BLK: /* dynamite block block */
+		/*
+		 * This is not a block type but an image that overlays a block
+		 * when it becomes an explode all block.
+		 */
+		RenderShape(display, window, dynamite,
+					dynamiteM, x, y, DYNAMITE_W, DYNAMITE_H, False);
+		break;
 
-		case TIMER_BLK:		/* extra time clock block */
-			RenderShape(display, window, timeblock,
-				timeblockM, x, y, 21, 21, False);
-			break;
+	case TIMER_BLK: /* extra time clock block */
+		RenderShape(display, window, timeblock,
+					timeblockM, x, y, TIMER_BLOCK_W, TIMER_BLOCK_H, False);
+		break;
 
-		case PAD_SHRINK_BLK:	/* Paddle shrink block */
-			RenderShape(display, window, paddleshrink,
-				paddleshrinkM, x, y, 40, 15, False);
-			break;
+	case PAD_SHRINK_BLK: /* Paddle shrink block */
+		RenderShape(display, window, paddleshrink,
+					paddleshrinkM, x, y, PAD_SHRINK_W, PAD_SHRINK_H, False);
+		break;
 
-		case PAD_EXPAND_BLK:	/* Paddle expand block */
-			RenderShape(display, window, paddleexpand,
-				paddleexpandM, x, y, 40, 15, False);
-			break;
+	case PAD_EXPAND_BLK: /* Paddle expand block */
+		RenderShape(display, window, paddleexpand,
+					paddleexpandM, x, y, PAD_SHRINK_W, PAD_SHRINK_H, False);
+		break;
 
-		case BULLET_BLK:	/* Draw a bullet shape */
-			RenderShape(display, window, yellowblock, yellowblockM, 
-				x, y, 40, 20, False);
-			DrawTheBullet(display, window, x+6, y+10);
-			DrawTheBullet(display, window, x+15, y+10);
-			DrawTheBullet(display, window, x+24, y+10);
-			DrawTheBullet(display, window, x+33, y+10);
-			break;
+	case BULLET_BLK: /* Draw a bullet shape */
+		RenderShape(display, window, yellowblock, yellowblockM,
+					x, y, BLOCK_WIDTH, BLOCK_HEIGHT, False);
+		DrawTheBullet(display, window, x + 6, y + 10);
+		DrawTheBullet(display, window, x + 15, y + 10);
+		DrawTheBullet(display, window, x + 24, y + 10);
+		DrawTheBullet(display, window, x + 33, y + 10);
+		break;
 
-		case MAXAMMO_BLK:
-			RenderShape(display, window, unlimitammo, unlimitammoM, 
-				x, y, 40, 20, False);
-			break;
+	case MAXAMMO_BLK:
+		RenderShape(display, window, unlimitammo, unlimitammoM,
+					x, y, BLOCK_WIDTH, BLOCK_HEIGHT, False);
+		break;
 
-		case MULTIBALL_BLK:	/* Draw multiple ball block */
-			RenderShape(display, window, multiball, multiballM, 
-				x, y, 40, 20, False);
-			break;
+	case MULTIBALL_BLK: /* Draw multiple ball block */
+		RenderShape(display, window, multiball, multiballM,
+					x, y, BLOCK_WIDTH, BLOCK_HEIGHT, False);
+		break;
 
-		case STICKY_BLK:	/* Draw sticky block */
-			RenderShape(display, window, sticky, stickyM, 
-				x, y, 32, 27, False);
-			break;
+	case STICKY_BLK: /* Draw sticky block */
+		RenderShape(display, window, sticky, stickyM,
+					x, y, STICKY_WIDTH, SMALL_BLOCK_HEIGHT, False);
+		break;
 
-		case RANDOM_BLK:	/* Draw a red block shape for random */
-			RenderShape(display, window, redblock, redblockM, 
-				x, y, 40, 20, False);
-			strcpy(tmp, "- R -");
-			len = strlen(tmp);
-			w 	= XTextWidth(dataFont, tmp, len);
-			h 	= dataFont->ascent + dataFont->descent;
-			x1 	= x + (20 - w/2);
-			y1  = y + (10 - h/2);
-			DrawText(display, window, x1, y1, dataFont, black, tmp, len);
-			break;
+	case RANDOM_BLK: /* Draw a red block shape for random */
+		RenderShape(display, window, redblock, redblockM,
+					x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		strcpy(tmp, "- R -");
+		len = strlen(tmp);
+		w = XTextWidth(dataFont, tmp, len);
+		h = dataFont->ascent + dataFont->descent;
+		x1 = x + (STANDARD_BLOCK_WIDTH / 2 - w / 2);
+		y1 = y + (STANDARD_BLOCK_HEIGHT / 2 - h / 2);
+		DrawText(display, window, x1, y1, dataFont, black, tmp, len);
+		break;
 
-		case RED_BLK:	/* Draw a red block shape */
-			RenderShape(display, window, redblock, redblockM, 
-				x, y, 40, 20, False);
-			break;
+	case RED_BLK: /* Draw a red block shape */
+		RenderShape(display, window, redblock, redblockM,
+					x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		break;
 
-		case BLACK_BLK:		/* Draw a solid wall block */	
-			RenderShape(display, window, blackblock, blackblockM, 
-				x, y, 50, 30, False);
-			break;
+	case BLACK_BLK: /* Draw a solid wall block */
+		RenderShape(display, window, blackblock, blackblockM,
+					x, y, LARGE_BLOCK_WIDTH, LARGE_BLOCK_HEIGHT, False);
+		break;
 
-		case BLACKHIT_BLK:		/* Draw a solid wall block hit */	
-			RenderShape(display, window, blackhit, blackhitM, 
-				x, y, 50, 30, False);
-			break;
+	case BLACKHIT_BLK: /* Draw a solid wall block hit */
+		RenderShape(display, window, blackhit, blackhitM,
+					x, y, LARGE_BLOCK_WIDTH, LARGE_BLOCK_HEIGHT, False);
+		break;
 
-		case GREEN_BLK:		/* Draw a green block */
-			RenderShape(display, window, greenblock, greenblockM, 
-				x, y, 40, 20, False);
-			break;
+	case GREEN_BLK: /* Draw a green block */
+		RenderShape(display, window, greenblock, greenblockM,
+					x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		break;
 
-		case DROP_BLK:		/* Draw a drop block same as green block */
-			RenderShape(display, window, greenblock, greenblockM, 
-				x, y, 40, 20, False);
-			sprintf(tmp, "%d", blockP->hitPoints);	
-			len = strlen(tmp);
-			w 	= XTextWidth(dataFont, tmp, len);
-			h 	= dataFont->ascent + dataFont->descent;
-			x1 	= x + (20 - w/2);
-			y1  = y + (10 - h/2);
-			DrawText(display, window, x1, y1, dataFont, black, tmp, len);
-			break;
+	case DROP_BLK: /* Draw a drop block same as green block */
+		RenderShape(display, window, greenblock, greenblockM,
+					x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		sprintf(tmp, "%d", blockP->hitPoints);
+		len = strlen(tmp);
+		w = XTextWidth(dataFont, tmp, len);
+		h = dataFont->ascent + dataFont->descent;
+		x1 = x + (STANDARD_BLOCK_WIDTH / 2 - w / 2);
+		y1 = y + (STANDARD_BLOCK_HEIGHT / 2 - h / 2);
+		DrawText(display, window, x1, y1, dataFont, black, tmp, len);
+		break;
 
-		case BLUE_BLK:		/* Draw a blue block */
-			RenderShape(display, window, blueblock, blueblockM, 
-				x, y, 40, 20, False);
-			break;
+	case BLUE_BLK: /* Draw a blue block */
+		RenderShape(display, window, blueblock, blueblockM,
+					x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		break;
 
-		case YELLOW_BLK:	/* Draw a yellow block */
-			RenderShape(display, window, yellowblock, yellowblockM, 
-				x, y, 40, 20, False);
-			break;
+	case YELLOW_BLK: /* Draw a yellow block */
+		RenderShape(display, window, yellowblock, yellowblockM,
+					x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		break;
 
-		case TAN_BLK:		/* Draw a tan block */
-			RenderShape(display, window, tanblock, tanblockM, 
-				x, y, 40, 20, False);
-			break;
+	case TAN_BLK: /* Draw a tan block */
+		RenderShape(display, window, tanblock, tanblockM,
+					x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		break;
 
-		case PURPLE_BLK:	/* Draw a purple block */
-			RenderShape(display, window, purpleblock, purpleblockM, 
-				x, y, 40, 20, False);
-			break;
+	case PURPLE_BLK: /* Draw a purple block */
+		RenderShape(display, window, purpleblock, purpleblockM,
+					x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		break;
 
-		case ROAMER_BLK:	/* Draw a frame of roaming dude block */
-			RenderShape(display, window, roamer[slide], 
-				roamerM[slide], x, y, 25, 27, False);
-			break;
+	case ROAMER_BLK: /* Draw a frame of roaming dude block */
+		RenderShape(display, window, roamer[slide],
+					roamerM[slide], x, y, ROAMER_WIDTH, SMALL_BLOCK_HEIGHT, False);
+		break;
 
-		case COUNTER_BLK:	/* Draw a frame of counter block */
-			RenderShape(display, window, counterblock[slide], 
-				counterblockM[slide], x, y, 40, 20, False);
-			break;
+	case COUNTER_BLK: /* Draw a frame of counter block */
+		RenderShape(display, window, counterblock[slide],
+					counterblockM[slide], x, y, STANDARD_BLOCK_WIDTH, STANDARD_BLOCK_HEIGHT, False);
+		break;
 
-		case BONUSX2_BLK:	/* Draw a bonus x2 coin block */
-			RenderShape(display, window, x2bonus[slide], 
-				x2bonusM[slide], x, y, 27, 27, False);
-			break;
+	case BONUSX2_BLK: /* Draw a bonus x2 coin block */
+		RenderShape(display, window, x2bonus[slide],
+					x2bonusM[slide], x, y, SMALL_BLOCK_WIDTH, SMALL_BLOCK_HEIGHT, False);
+		break;
 
-		case BONUSX4_BLK:	/* Draw a bonus x4 coin block */
-			RenderShape(display, window, x4bonus[slide], 
-				x4bonusM[slide], x, y, 27, 27, False);
-			break;
+	case BONUSX4_BLK: /* Draw a bonus x4 coin block */
+		RenderShape(display, window, x4bonus[slide],
+					x4bonusM[slide], x, y, SMALL_BLOCK_WIDTH, SMALL_BLOCK_HEIGHT, False);
+		break;
 
-		case BONUS_BLK:	/* Draw a bonus coin block */
-			RenderShape(display, window, Bonus[slide], 
-				BonusM[slide], x, y, 27, 27, False);
-			break;
+	case BONUS_BLK: /* Draw a bonus coin block */
+		RenderShape(display, window, Bonus[slide],
+					BonusM[slide], x, y, SMALL_BLOCK_WIDTH, SMALL_BLOCK_HEIGHT, False);
+		break;
 
-		case BOMB_BLK:		/* Draw a bomb block */
-			RenderShape(display, window, bombblock, bombblockM, 
-				x, y, 30, 30, False);
-			break;
+	case BOMB_BLK: /* Draw a bomb block */
+		RenderShape(display, window, bombblock, bombblockM,
+					x, y, SQUARE_BLOCK_SIZE, SQUARE_BLOCK_SIZE, False);
+		break;
 
-		case DEATH_BLK:		/* Draw the pirate death block */
-			RenderShape(display, window, death[slide], deathM[slide], 
-				x, y, 30, 30, False);
-			break;
+	case DEATH_BLK: /* Draw the pirate death block */
+		RenderShape(display, window, death[slide], deathM[slide],
+					x, y, SQUARE_BLOCK_SIZE, SQUARE_BLOCK_SIZE, False);
+		break;
 
-		case REVERSE_BLK:	/* Draw the reverse block */
-			RenderShape(display, window, revblock, revblockM, 
-				x, y, 33, 16, False);
-			break;
+	case REVERSE_BLK: /* Draw the reverse block */
+		RenderShape(display, window, revblock, revblockM,
+					x, y, REVERSE_WIDTH, REVERSE_HEIGHT, False);
+		break;
 
-		case EXTRABALL_BLK:	/* Draw the extra ball block */
-			RenderShape(display, window, extraball[slide], extraballM[slide], 
-				x, y, 30, 19, False);
-			break;
+	case EXTRABALL_BLK: /* Draw the extra ball block */
+		RenderShape(display, window, extraball[slide], extraballM[slide],
+					x, y, SQUARE_BLOCK_SIZE, EXTRABALL_HEIGHT, False);
+		break;
 
-		case HYPERSPACE_BLK:	/* Draw the hyperspace block */
-			RenderShape(display, window, hyperblock, hyperblockM, 
-				x, y, 31, 31, False);
-			break;
+	case HYPERSPACE_BLK: /* Draw the hyperspace block */
+		RenderShape(display, window, hyperblock, hyperblockM,
+					x, y, HYPERSPACE_SIZE, HYPERSPACE_SIZE, False);
+		break;
 
-		case MGUN_BLK:	/* Draw the machine gun block */
-			RenderShape(display, window, mgunblock, mgunblockM, 
-				x, y, 35, 15, False);
-			break;
+	case MGUN_BLK: /* Draw the machine gun block */
+		RenderShape(display, window, mgunblock, mgunblockM,
+					x, y, MGUN_WIDTH, SHORT_BLOCK_HEIGHT, False);
+		break;
 
-		case WALLOFF_BLK:	/* Draw the wall off block */
-			RenderShape(display, window, walloffblock, walloffblockM, 
-				x, y, 27, 23, False);
-			break;
+	case WALLOFF_BLK: /* Draw the wall off block */
+		RenderShape(display, window, walloffblock, walloffblockM,
+					x, y, SMALL_BLOCK_WIDTH, WALLOFF_HEIGHT, False);
+		break;
 	}
 }
 
 static void SetBlockUpForExplosion(int row, int col, int frame)
 {
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 
-	if (row < 0 || row >= MAX_ROW) return;
-	if (col < 0 || col >= MAX_COL) return;
+	if (row < 0 || row >= MAX_ROW)
+		return;
+	if (col < 0 || col >= MAX_COL)
+		return;
 
 	/* Obtain a pointer to the affected block */
 	blockP = &blocks[row][col];
 
 	/* Do not have any effect on a specials block */
-	if (blockP->blockType == HYPERSPACE_BLK) return;
+	if (blockP->blockType == HYPERSPACE_BLK)
+		return;
 
 	/* If it isn't occupied then why blow it up */
 	if (blockP->occupied == 1 && blockP->exploding == False)
@@ -1955,31 +1993,32 @@ static void SetBlockUpForExplosion(int row, int col, int frame)
 		blocksExploding++;
 
 		/* Some special variables used for timing */
-		blockP->explodeStartFrame 	= frame;
-		blockP->explodeNextFrame 	= frame;
-		blockP->explodeSlide 		= 1;
-		blockP->exploding 			= True;
+		blockP->explodeStartFrame = frame;
+		blockP->explodeNextFrame = frame;
+		blockP->explodeSlide = 1;
+		blockP->exploding = True;
 
 		/* If it was poped up then reset bonus or special flag */
-		if (blockP->specialPopup == True) bonusBlock = False;
+		if (blockP->specialPopup == True)
+			bonusBlock = False;
 
 		/* If it is a dropper then make sure it wont keep dropping */
-		if (blockP->drop == True) blockP->drop = False;
+		if (blockP->drop == True)
+			blockP->drop = False;
 	}
 }
-
 
 void DrawBlock(Display *display, Window window, int row, int col, int blockType)
 {
 	struct aBlock *blockP;
 
-	if (row < 0 || row > MAX_ROW) 
+	if (row < 0 || row > MAX_ROW)
 	{
 		ErrorMessage("Block out of bounds row.");
 		return;
 	}
 
-	if (col < 0 || col > MAX_COL) 
+	if (col < 0 || col > MAX_COL)
 	{
 		ErrorMessage("Block out of bounds column.");
 		return;
@@ -1988,17 +2027,17 @@ void DrawBlock(Display *display, Window window, int row, int col, int blockType)
 	/* Pointer to the block in question */
 	blockP = &blocks[row][col];
 
-	switch(blockType)
+	switch (blockType)
 	{
-		case KILL_BLK:		/* Special block - blow it up */
-			PlaySoundForBlock(blockP->blockType);
+	case KILL_BLK: /* Special block - blow it up */
+		PlaySoundForBlock(blockP->blockType);
 
-			SetBlockUpForExplosion(row, col, frame);
-			break;
+		SetBlockUpForExplosion(row, col, frame);
+		break;
 
-		default:			/* Your average block - draw it */
-			DrawTheBlock(display, window, blockP->x, blockP->y, 
-				blockType, blockP->counterSlide, row, col);
+	default: /* Your average block - draw it */
+		DrawTheBlock(display, window, blockP->x, blockP->y,
+					 blockType, blockP->counterSlide, row, col);
 	}
 }
 
@@ -2010,135 +2049,209 @@ void FreeBlockPixmaps(Display *display)
 	ClearBlockArray();
 
 	/* Free the memory associated with the block pixmaps */
-	if (redblock)		XFreePixmap(display, redblock);			
-	if (redblockM)		XFreePixmap(display, redblockM);
-	
-	if (blueblock)		XFreePixmap(display, blueblock);		
-	if (blueblockM)		XFreePixmap(display, blueblockM);
+	if (redblock)
+		XFreePixmap(display, redblock);
+	if (redblockM)
+		XFreePixmap(display, redblockM);
 
-	if (greenblock)		XFreePixmap(display, greenblock);		
-	if (greenblockM)	XFreePixmap(display, greenblockM);
+	if (blueblock)
+		XFreePixmap(display, blueblock);
+	if (blueblockM)
+		XFreePixmap(display, blueblockM);
 
-	if (tanblock)		XFreePixmap(display, tanblock);			
-	if (tanblockM)		XFreePixmap(display, tanblockM);
+	if (greenblock)
+		XFreePixmap(display, greenblock);
+	if (greenblockM)
+		XFreePixmap(display, greenblockM);
 
-	if (yellowblock)	XFreePixmap(display, yellowblock);		
-	if (yellowblockM)	XFreePixmap(display, yellowblockM);
+	if (tanblock)
+		XFreePixmap(display, tanblock);
+	if (tanblockM)
+		XFreePixmap(display, tanblockM);
 
-	if (purpleblock)	XFreePixmap(display, purpleblock);		
-	if (purpleblockM)	XFreePixmap(display, purpleblockM);
+	if (yellowblock)
+		XFreePixmap(display, yellowblock);
+	if (yellowblockM)
+		XFreePixmap(display, yellowblockM);
 
-	if (blackblock)		XFreePixmap(display, blackblock);		
-	if (blackblockM)	XFreePixmap(display, blackblockM);
+	if (purpleblock)
+		XFreePixmap(display, purpleblock);
+	if (purpleblockM)
+		XFreePixmap(display, purpleblockM);
 
-	if (blackhit)		XFreePixmap(display, blackhit);		
-	if (blackhitM)		XFreePixmap(display, blackhitM);		
+	if (blackblock)
+		XFreePixmap(display, blackblock);
+	if (blackblockM)
+		XFreePixmap(display, blackblockM);
 
-	if (bombblock)		XFreePixmap(display, bombblock);		
-	if (bombblockM)		XFreePixmap(display, bombblockM);
+	if (blackhit)
+		XFreePixmap(display, blackhit);
+	if (blackhitM)
+		XFreePixmap(display, blackhitM);
 
-	if (revblock)		XFreePixmap(display, revblock);		
-	if (revblockM)		XFreePixmap(display, revblockM);
+	if (bombblock)
+		XFreePixmap(display, bombblock);
+	if (bombblockM)
+		XFreePixmap(display, bombblockM);
 
-	if (hyperblock)		XFreePixmap(display, hyperblock);		
-	if (hyperblockM)	XFreePixmap(display, hyperblockM);
+	if (revblock)
+		XFreePixmap(display, revblock);
+	if (revblockM)
+		XFreePixmap(display, revblockM);
 
-	if (mgunblock)		XFreePixmap(display, mgunblock);		
-	if (mgunblockM)		XFreePixmap(display, mgunblockM);
+	if (hyperblock)
+		XFreePixmap(display, hyperblock);
+	if (hyperblockM)
+		XFreePixmap(display, hyperblockM);
 
-	if (walloffblock)	XFreePixmap(display, walloffblock);		
-	if (walloffblockM)	XFreePixmap(display, walloffblockM);
+	if (mgunblock)
+		XFreePixmap(display, mgunblock);
+	if (mgunblockM)
+		XFreePixmap(display, mgunblockM);
 
-	if (multiball)		XFreePixmap(display, multiball);		
-	if (multiballM)		XFreePixmap(display, multiballM);
+	if (walloffblock)
+		XFreePixmap(display, walloffblock);
+	if (walloffblockM)
+		XFreePixmap(display, walloffblockM);
 
-	if (sticky)			XFreePixmap(display, sticky);		
-	if (stickyM)		XFreePixmap(display, stickyM);
+	if (multiball)
+		XFreePixmap(display, multiball);
+	if (multiballM)
+		XFreePixmap(display, multiballM);
 
-	if (unlimitammo)	XFreePixmap(display, unlimitammo);		
-	if (unlimitammoM)	XFreePixmap(display, unlimitammoM);		
+	if (sticky)
+		XFreePixmap(display, sticky);
+	if (stickyM)
+		XFreePixmap(display, stickyM);
 
-	if (paddleexpand)	XFreePixmap(display, paddleexpand);		
-	if (paddleexpandM)	XFreePixmap(display, paddleexpandM);
+	if (unlimitammo)
+		XFreePixmap(display, unlimitammo);
+	if (unlimitammoM)
+		XFreePixmap(display, unlimitammoM);
 
-	if (paddleshrink)	XFreePixmap(display, paddleshrink);		
-	if (paddleshrinkM)	XFreePixmap(display, paddleshrinkM);
+	if (paddleexpand)
+		XFreePixmap(display, paddleexpand);
+	if (paddleexpandM)
+		XFreePixmap(display, paddleexpandM);
 
-	if (timeblock)		XFreePixmap(display, timeblock);		
-	if (timeblockM)		XFreePixmap(display, timeblockM);
+	if (paddleshrink)
+		XFreePixmap(display, paddleshrink);
+	if (paddleshrinkM)
+		XFreePixmap(display, paddleshrinkM);
 
-	if (dynamite)		XFreePixmap(display, dynamite);
-	if (dynamiteM)		XFreePixmap(display, dynamiteM);
+	if (timeblock)
+		XFreePixmap(display, timeblock);
+	if (timeblockM)
+		XFreePixmap(display, timeblockM);
+
+	if (dynamite)
+		XFreePixmap(display, dynamite);
+	if (dynamiteM)
+		XFreePixmap(display, dynamiteM);
 
 	for (i = 0; i < ROAMER_FRAMES; i++)
 	{
 		/* Free the frames for the roamer block */
-		if (roamer[i])	XFreePixmap(display, roamer[i]); 	
-		if (roamerM[i])	XFreePixmap(display, roamerM[i]);
+		if (roamer[i])
+			XFreePixmap(display, roamer[i]);
+		if (roamerM[i])
+			XFreePixmap(display, roamerM[i]);
 	}
 
 	for (i = 0; i < DEATH_FRAMES; i++)
 	{
 		/* Free the frames for the death block */
-		if (death[i])	XFreePixmap(display, death[i]); 	
-		if (deathM[i])	XFreePixmap(display, deathM[i]);
+		if (death[i])
+			XFreePixmap(display, death[i]);
+		if (deathM[i])
+			XFreePixmap(display, deathM[i]);
 	}
 
 	for (i = 0; i < COUNTERBLOCK_FRAMES; i++)
 	{
-		if (counterblock[i])	XFreePixmap(display, counterblock[i]); 	
-		if (counterblockM[i])	XFreePixmap(display, counterblockM[i]);
+		if (counterblock[i])
+			XFreePixmap(display, counterblock[i]);
+		if (counterblockM[i])
+			XFreePixmap(display, counterblockM[i]);
 	}
 
 	for (i = 0; i < BONUS_FRAMES; i++)
 	{
-		if (x2bonus[i])			XFreePixmap(display, x2bonus[i]); 	
-		if (x2bonusM[i])		XFreePixmap(display, x2bonusM[i]);
+		if (x2bonus[i])
+			XFreePixmap(display, x2bonus[i]);
+		if (x2bonusM[i])
+			XFreePixmap(display, x2bonusM[i]);
 
-		if (x4bonus[i])			XFreePixmap(display, x4bonus[i]); 	
-		if (x4bonusM[i])		XFreePixmap(display, x4bonusM[i]);
+		if (x4bonus[i])
+			XFreePixmap(display, x4bonus[i]);
+		if (x4bonusM[i])
+			XFreePixmap(display, x4bonusM[i]);
 
-		if (Bonus[i])			XFreePixmap(display, Bonus[i]); 	
-		if (BonusM[i])			XFreePixmap(display, BonusM[i]);
+		if (Bonus[i])
+			XFreePixmap(display, Bonus[i]);
+		if (BonusM[i])
+			XFreePixmap(display, BonusM[i]);
 	}
 
 	for (i = 0; i < 2; i++)
 	{
-		if (extraball[i])		XFreePixmap(display, extraball[i]); 	
-		if (extraballM[i])		XFreePixmap(display, extraballM[i]);
+		if (extraball[i])
+			XFreePixmap(display, extraball[i]);
+		if (extraballM[i])
+			XFreePixmap(display, extraballM[i]);
 	}
 
 	for (i = 0; i < EXPLODE_SMALL_FRAMES; i++)
 	{
-		if (exgreenblock[i])   	XFreePixmap(display, exgreenblock[i]); 	
-		if (exgreenblockM[i])   XFreePixmap(display, exgreenblockM[i]);
+		if (exgreenblock[i])
+			XFreePixmap(display, exgreenblock[i]);
+		if (exgreenblockM[i])
+			XFreePixmap(display, exgreenblockM[i]);
 
-		if (exyellowblock[i])   XFreePixmap(display, exyellowblock[i]);
-		if (exyellowblockM[i])  XFreePixmap(display, exyellowblockM[i]);
+		if (exyellowblock[i])
+			XFreePixmap(display, exyellowblock[i]);
+		if (exyellowblockM[i])
+			XFreePixmap(display, exyellowblockM[i]);
 
-		if (exredblock[i])     	XFreePixmap(display, exredblock[i]);
-		if (exredblockM[i])     XFreePixmap(display, exredblockM[i]);
+		if (exredblock[i])
+			XFreePixmap(display, exredblock[i]);
+		if (exredblockM[i])
+			XFreePixmap(display, exredblockM[i]);
 
-		if (exblueblock[i])     XFreePixmap(display, exblueblock[i]);
-		if (exblueblockM[i])    XFreePixmap(display, exblueblockM[i]);
+		if (exblueblock[i])
+			XFreePixmap(display, exblueblock[i]);
+		if (exblueblockM[i])
+			XFreePixmap(display, exblueblockM[i]);
 
-		if (extanblock[i])     	XFreePixmap(display, extanblock[i]);
-		if (extanblockM[i])     XFreePixmap(display, extanblockM[i]);
+		if (extanblock[i])
+			XFreePixmap(display, extanblock[i]);
+		if (extanblockM[i])
+			XFreePixmap(display, extanblockM[i]);
 
-		if (excounterblock[i])  XFreePixmap(display, excounterblock[i]);
-		if (excounterblockM[i]) XFreePixmap(display, excounterblockM[i]);
+		if (excounterblock[i])
+			XFreePixmap(display, excounterblock[i]);
+		if (excounterblockM[i])
+			XFreePixmap(display, excounterblockM[i]);
 
-		if (exbombblock[i])     XFreePixmap(display, exbombblock[i]);
-		if (exbombblockM[i])    XFreePixmap(display, exbombblockM[i]);
-		
-		if (expurpleblock[i])   XFreePixmap(display, expurpleblock[i]);
-		if (expurpleblockM[i])  XFreePixmap(display, expurpleblockM[i]);
-		
-		if (exx2bonus[i])     	XFreePixmap(display, exx2bonus[i]);
-		if (exx2bonusM[i])     	XFreePixmap(display, exx2bonusM[i]);
+		if (exbombblock[i])
+			XFreePixmap(display, exbombblock[i]);
+		if (exbombblockM[i])
+			XFreePixmap(display, exbombblockM[i]);
 
-		if (exdeath[i])			XFreePixmap(display, exdeath[i]); 	
-		if (exdeathM[i])		XFreePixmap(display, exdeathM[i]);
+		if (expurpleblock[i])
+			XFreePixmap(display, expurpleblock[i]);
+		if (expurpleblockM[i])
+			XFreePixmap(display, expurpleblockM[i]);
+
+		if (exx2bonus[i])
+			XFreePixmap(display, exx2bonus[i]);
+		if (exx2bonusM[i])
+			XFreePixmap(display, exx2bonusM[i]);
+
+		if (exdeath[i])
+			XFreePixmap(display, exdeath[i]);
+		if (exdeathM[i])
+			XFreePixmap(display, exdeathM[i]);
 	}
 }
 
@@ -2153,109 +2266,108 @@ static void CalculateBlockGeometry(int row, int col)
 
 	switch (blockP->blockType)
 	{
-		case COUNTER_BLK:
-			blockP->width 			= BLOCK_WIDTH;
-			blockP->height			= BLOCK_HEIGHT;
-			blockP->blockOffsetX	= (colWidth - BLOCK_WIDTH) / 2;
-			blockP->blockOffsetY 	= (rowHeight - BLOCK_HEIGHT) / 2;
-			break;
+	case COUNTER_BLK:
+		blockP->width = BLOCK_WIDTH;
+		blockP->height = BLOCK_HEIGHT;
+		blockP->blockOffsetX = (colWidth - BLOCK_WIDTH) / 2;
+		blockP->blockOffsetY = (rowHeight - BLOCK_HEIGHT) / 2;
+		break;
 
-		case TIMER_BLK:
-			blockP->width 			= 21;
-			blockP->height			= 21;
-			blockP->blockOffsetX	= (colWidth - 21) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 21) / 2;
-			break;
+	case TIMER_BLK:
+		blockP->width = 21;
+		blockP->height = 21;
+		blockP->blockOffsetX = (colWidth - 21) / 2;
+		blockP->blockOffsetY = (rowHeight - 21) / 2;
+		break;
 
-		case ROAMER_BLK:
-			blockP->width 			= 25;
-			blockP->height			= 27;
-			blockP->blockOffsetX	= (colWidth - 25) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 27) / 2;
-			break;
+	case ROAMER_BLK:
+		blockP->width = 25;
+		blockP->height = 27;
+		blockP->blockOffsetX = (colWidth - 25) / 2;
+		blockP->blockOffsetY = (rowHeight - 27) / 2;
+		break;
 
-		case MGUN_BLK:
-			blockP->width 			= 35;
-			blockP->height			= 15;
-			blockP->blockOffsetX	= (colWidth - 35) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 15) / 2;
-			break;
+	case MGUN_BLK:
+		blockP->width = 35;
+		blockP->height = 15;
+		blockP->blockOffsetX = (colWidth - 35) / 2;
+		blockP->blockOffsetY = (rowHeight - 15) / 2;
+		break;
 
-		case WALLOFF_BLK:
-			blockP->width 			= 27;
-			blockP->height			= 23;
-			blockP->blockOffsetX	= (colWidth - 27) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 23) / 2;
-			break;
+	case WALLOFF_BLK:
+		blockP->width = 27;
+		blockP->height = 23;
+		blockP->blockOffsetX = (colWidth - 27) / 2;
+		blockP->blockOffsetY = (rowHeight - 23) / 2;
+		break;
 
-		case REVERSE_BLK:
-			blockP->width 			= 33;
-			blockP->height			= 16;
-			blockP->blockOffsetX	= (colWidth - 33) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 16) / 2;
-			break;
+	case REVERSE_BLK:
+		blockP->width = 33;
+		blockP->height = 16;
+		blockP->blockOffsetX = (colWidth - 33) / 2;
+		blockP->blockOffsetY = (rowHeight - 16) / 2;
+		break;
 
-		case EXTRABALL_BLK:
-			blockP->width 			= 30;
-			blockP->height			= 19;
-			blockP->blockOffsetX	= (colWidth - 30) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 19) / 2;
-			break;
+	case EXTRABALL_BLK:
+		blockP->width = 30;
+		blockP->height = 19;
+		blockP->blockOffsetX = (colWidth - 30) / 2;
+		blockP->blockOffsetY = (rowHeight - 19) / 2;
+		break;
 
-		case HYPERSPACE_BLK:
-			blockP->width 			= 31;
-			blockP->height			= 31;
-			blockP->blockOffsetX	= (colWidth - 31) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 31) / 2;
-			break;
+	case HYPERSPACE_BLK:
+		blockP->width = 31;
+		blockP->height = 31;
+		blockP->blockOffsetX = (colWidth - 31) / 2;
+		blockP->blockOffsetY = (rowHeight - 31) / 2;
+		break;
 
-		case BOMB_BLK:
-		case DEATH_BLK:
-			blockP->width 			= 30;
-			blockP->height			= 30;
-			blockP->blockOffsetX	= (colWidth - 30) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 30) / 2;
-			break;
+	case BOMB_BLK:
+	case DEATH_BLK:
+		blockP->width = 30;
+		blockP->height = 30;
+		blockP->blockOffsetX = (colWidth - 30) / 2;
+		blockP->blockOffsetY = (rowHeight - 30) / 2;
+		break;
 
-		case STICKY_BLK:
-			blockP->width 			= 32;
-			blockP->height			= 27;
-			blockP->blockOffsetX	= (colWidth - 32) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 27) / 2;
-			break;
+	case STICKY_BLK:
+		blockP->width = 32;
+		blockP->height = 27;
+		blockP->blockOffsetX = (colWidth - 32) / 2;
+		blockP->blockOffsetY = (rowHeight - 27) / 2;
+		break;
 
-		case BLACK_BLK:
-			blockP->width 			= 50;
-			blockP->height			= 30;
-			blockP->blockOffsetX	= (colWidth - 50) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 30) / 2;
-			break;
+	case BLACK_BLK:
+		blockP->width = 50;
+		blockP->height = 30;
+		blockP->blockOffsetX = (colWidth - 50) / 2;
+		blockP->blockOffsetY = (rowHeight - 30) / 2;
+		break;
 
-        case PAD_SHRINK_BLK:
-		case PAD_EXPAND_BLK:
-			blockP->width 			= 40;
-			blockP->height			= 15;
-			blockP->blockOffsetX	= (colWidth - 40) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 15) / 2;
-			break;
+	case PAD_SHRINK_BLK:
+	case PAD_EXPAND_BLK:
+		blockP->width = 40;
+		blockP->height = 15;
+		blockP->blockOffsetX = (colWidth - 40) / 2;
+		blockP->blockOffsetY = (rowHeight - 15) / 2;
+		break;
 
-		case BONUS_BLK:
-		case BONUSX4_BLK:
-		case BONUSX2_BLK:
-			blockP->width 			= 27;
-			blockP->height			= 27;
-			blockP->blockOffsetX	= (colWidth - 27) / 2;
-			blockP->blockOffsetY 	= (rowHeight - 27) / 2;
-			break;
+	case BONUS_BLK:
+	case BONUSX4_BLK:
+	case BONUSX2_BLK:
+		blockP->width = 27;
+		blockP->height = 27;
+		blockP->blockOffsetX = (colWidth - 27) / 2;
+		blockP->blockOffsetY = (rowHeight - 27) / 2;
+		break;
 
-		default:		/* All other blocks */
-			blockP->width 			= BLOCK_WIDTH;
-			blockP->height			= BLOCK_HEIGHT;
-			blockP->blockOffsetX	= (colWidth - BLOCK_WIDTH) / 2;
-			blockP->blockOffsetY 	= (rowHeight - BLOCK_HEIGHT) / 2;
-			break;
-
-	}	
+	default: /* All other blocks */
+		blockP->width = BLOCK_WIDTH;
+		blockP->height = BLOCK_HEIGHT;
+		blockP->blockOffsetX = (colWidth - BLOCK_WIDTH) / 2;
+		blockP->blockOffsetY = (rowHeight - BLOCK_HEIGHT) / 2;
+		break;
+	}
 
 	/* Calculate the offset within the block grid */
 	blockP->x = (col * colWidth) + blockP->blockOffsetX;
@@ -2276,7 +2388,7 @@ static void CalculateBlockGeometry(int row, int col)
 	points[3].y = points[0].y;
 
 	/* Create the top region for the block */
-    blockP->regionTop = XPolygonRegion(points, 4, EvenOddRule);
+	blockP->regionTop = XPolygonRegion(points, 4, EvenOddRule);
 
 	/* Create the XPoint array for the bottom region */
 	points[0].x = blockP->x;
@@ -2289,7 +2401,7 @@ static void CalculateBlockGeometry(int row, int col)
 	points[3].y = points[0].y;
 
 	/* Create the bottom region for the block */
-    blockP->regionBottom = XPolygonRegion(points, 4, EvenOddRule);
+	blockP->regionBottom = XPolygonRegion(points, 4, EvenOddRule);
 
 	/* Create the XPoint array for the left region */
 	points[0].x = blockP->x;
@@ -2302,7 +2414,7 @@ static void CalculateBlockGeometry(int row, int col)
 	points[3].y = points[0].y;
 
 	/* Create the left region for the block */
-    blockP->regionLeft = XPolygonRegion(points, 4, EvenOddRule);
+	blockP->regionLeft = XPolygonRegion(points, 4, EvenOddRule);
 
 	/* Create the XPoint array for the right region */
 	points[0].x = blockP->x + blockP->width;
@@ -2315,7 +2427,7 @@ static void CalculateBlockGeometry(int row, int col)
 	points[3].y = points[0].y;
 
 	/* Create the right region for the block */
-    blockP->regionRight = XPolygonRegion(points, 4, EvenOddRule);
+	blockP->regionRight = XPolygonRegion(points, 4, EvenOddRule);
 }
 
 void EraseVisibleBlock(Display *display, Window window, int row, int col)
@@ -2323,24 +2435,28 @@ void EraseVisibleBlock(Display *display, Window window, int row, int col)
 	/* Actually erase the block from the arena */
 	struct aBlock *blockP;
 
-	if (row > MAX_ROW || row < 0) return;
-	if (col > MAX_COL || col < 0) return;
+	if (row > MAX_ROW || row < 0)
+		return;
+	if (col > MAX_COL || col < 0)
+		return;
 
 	/* Erase the old block */
-   	blockP = &blocks[row][col];
+	blockP = &blocks[row][col];
 
 	if (blockP->occupied)
 		XClearArea(display, window, blockP->x, blockP->y, blockP->width,
-			blockP->height, False);
+				   blockP->height, False);
 }
 
 void AddNewBlock(Display *display, Window window, int row, int col,
-	int blockType, int counterSlide, int drawIt)
+				 int blockType, int counterSlide, int drawIt)
 {
 	struct aBlock *blockP;
 
-	if (row > MAX_ROW || row < 0) return;
-	if (col > MAX_COL || col < 0) return;
+	if (row > MAX_ROW || row < 0)
+		return;
+	if (col > MAX_COL || col < 0)
+		return;
 
 	ClearBlock(row, col);
 
@@ -2348,24 +2464,26 @@ void AddNewBlock(Display *display, Window window, int row, int col,
 	blockP = &blocks[row][col];
 
 	/* Now set the block structure with new values */
-	blockP->blockType 		= blockType;
-	blockP->occupied 		= 1;
-	blockP->counterSlide 	= counterSlide;
-	blockP->lastFrame 		= frame + INFINITE_DELAY;
+	blockP->blockType = blockType;
+	blockP->occupied = 1;
+	blockP->counterSlide = counterSlide;
+	blockP->lastFrame = frame + INFINITE_DELAY;
 
 	/* Handle the special case for a random block */
 	if (blockType == RANDOM_BLK)
 	{
 		/* Setup the random block so it has a next frame and new type */
-		blockP->random 	  = True;
+		blockP->random = True;
 		blockP->blockType = RED_BLK;
 		blockP->nextFrame = frame + 1;
-	} else if (blockType == DROP_BLK)
+	}
+	else if (blockType == DROP_BLK)
 	{
 		/* Setup for a dropping block */
-		blockP->drop 	  = True;
+		blockP->drop = True;
 		blockP->nextFrame = frame + (rand() % DROP_DELAY) + 200;
-	} else if (blockType == ROAMER_BLK)
+	}
+	else if (blockType == ROAMER_BLK)
 	{
 		/* Setup for a roaming block */
 		blockP->nextFrame = frame + (rand() % ROAM_EYES_DELAY) + 50;
@@ -2374,88 +2492,89 @@ void AddNewBlock(Display *display, Window window, int row, int col,
 
 	/* Work out all the block geometry stuff */
 	CalculateBlockGeometry(row, col);
-	
+
 	/* Add the number of points that will be awarded for each block */
-	switch(blockType)
+	switch (blockType)
 	{
-		case BULLET_BLK:
-		case MAXAMMO_BLK:
-			blockP->hitPoints = 50;
-			break;
+	case BULLET_BLK:
+	case MAXAMMO_BLK:
+		blockP->hitPoints = 50;
+		break;
 
-		case RED_BLK:
-			blockP->hitPoints = 100;
-			break;
+	case RED_BLK:
+		blockP->hitPoints = 100;
+		break;
 
-		case GREEN_BLK:
-			blockP->hitPoints = 120;
-			break;
+	case GREEN_BLK:
+		blockP->hitPoints = 120;
+		break;
 
-		case BLUE_BLK:
-			blockP->hitPoints = 110;
-			break;
+	case BLUE_BLK:
+		blockP->hitPoints = 110;
+		break;
 
-		case TAN_BLK:
-			blockP->hitPoints = 130;
-			break;
+	case TAN_BLK:
+		blockP->hitPoints = 130;
+		break;
 
-		case YELLOW_BLK:
-			blockP->hitPoints = 140;
-			break;
+	case YELLOW_BLK:
+		blockP->hitPoints = 140;
+		break;
 
-		case PURPLE_BLK:
-			blockP->hitPoints = 150;
-			break;
+	case PURPLE_BLK:
+		blockP->hitPoints = 150;
+		break;
 
-		case BOMB_BLK:
-			blockP->hitPoints = 50;
-			break;
+	case BOMB_BLK:
+		blockP->hitPoints = 50;
+		break;
 
-		case ROAMER_BLK:
-			blockP->hitPoints = 400;
-			break;
+	case ROAMER_BLK:
+		blockP->hitPoints = 400;
+		break;
 
-		case DROP_BLK:
-			blockP->hitPoints = ((MAX_ROW - row) * 100);
-			break;
+	case DROP_BLK:
+		blockP->hitPoints = ((MAX_ROW - row) * 100);
+		break;
 
-		case COUNTER_BLK:
-			blockP->hitPoints = 200;
-			break;
+	case COUNTER_BLK:
+		blockP->hitPoints = 200;
+		break;
 
-		case EXTRABALL_BLK:
-			blockP->nextFrame = frame + EXTRABALL_DELAY;
-			blockP->hitPoints = 100;
-			break;
+	case EXTRABALL_BLK:
+		blockP->nextFrame = frame + EXTRABALL_DELAY;
+		blockP->hitPoints = 100;
+		break;
 
-		case TIMER_BLK:
-		case HYPERSPACE_BLK:
-		case MGUN_BLK:
-		case WALLOFF_BLK:
-		case REVERSE_BLK:
-		case MULTIBALL_BLK:
-		case STICKY_BLK:
-        case PAD_SHRINK_BLK:
-		case PAD_EXPAND_BLK:
-			blockP->hitPoints = 100;
-			break;
+	case TIMER_BLK:
+	case HYPERSPACE_BLK:
+	case MGUN_BLK:
+	case WALLOFF_BLK:
+	case REVERSE_BLK:
+	case MULTIBALL_BLK:
+	case STICKY_BLK:
+	case PAD_SHRINK_BLK:
+	case PAD_EXPAND_BLK:
+		blockP->hitPoints = 100;
+		break;
 
-		case DEATH_BLK:
-			blockP->hitPoints = 0;
-			blockP->nextFrame = frame + DEATH_DELAY2;
-			break;
+	case DEATH_BLK:
+		blockP->hitPoints = 0;
+		blockP->nextFrame = frame + DEATH_DELAY2;
+		break;
 
-		default:
-			break;
+	default:
+		break;
 	}
 
 	/* Draw the blocks please */
-	if (drawIt) DrawBlock(display, window, row, col, blockType);
+	if (drawIt)
+		DrawBlock(display, window, row, col, blockType);
 }
 
 void SkipToNextLevel(Display *display, Window window)
 {
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 	int r, c;
 
 	/* This will kill all blocks that need to go before next level can
@@ -2469,48 +2588,48 @@ void SkipToNextLevel(Display *display, Window window)
 			/* Pointer to the block we want */
 			blockP = &blocks[r][c];
 
-			if (blockP->occupied == True) 
+			if (blockP->occupied == True)
 			{
 				switch (blockP->blockType)
 				{
-					case BONUSX2_BLK:
-					case TIMER_BLK:
-					case BONUSX4_BLK:
-					case BONUS_BLK:
-					case BLACK_BLK:
-					case BULLET_BLK:
-					case MAXAMMO_BLK:
-					case BOMB_BLK:
-					case DEATH_BLK:
-					case REVERSE_BLK:
-					case HYPERSPACE_BLK:
-					case EXTRABALL_BLK:
-					case MGUN_BLK:
-					case WALLOFF_BLK:
-					case MULTIBALL_BLK:
-					case STICKY_BLK:
-        			case PAD_SHRINK_BLK:
-					case PAD_EXPAND_BLK:
-						break;
+				case BONUSX2_BLK:
+				case TIMER_BLK:
+				case BONUSX4_BLK:
+				case BONUS_BLK:
+				case BLACK_BLK:
+				case BULLET_BLK:
+				case MAXAMMO_BLK:
+				case BOMB_BLK:
+				case DEATH_BLK:
+				case REVERSE_BLK:
+				case HYPERSPACE_BLK:
+				case EXTRABALL_BLK:
+				case MGUN_BLK:
+				case WALLOFF_BLK:
+				case MULTIBALL_BLK:
+				case STICKY_BLK:
+				case PAD_SHRINK_BLK:
+				case PAD_EXPAND_BLK:
+					break;
 
-					default:
-						DrawBlock(display, window, r, c, KILL_BLK);
-						break;
+				default:
+					DrawBlock(display, window, r, c, KILL_BLK);
+					break;
 				}
 			}
 		}
 	}
 
-   	/* Special effect where screen shakes
-     * during explosion
-     */
-    SetSfxEndFrame(frame + 140);
-    changeSfxMode(SFX_SHAKE);
+	/* Special effect where screen shakes
+	 * during explosion
+	 */
+	SetSfxEndFrame(frame + 140);
+	changeSfxMode(SFX_SHAKE);
 }
 
 void RedrawAllBlocks(Display *display, Window window)
 {
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 	int r, c;
 
 	for (r = 0; r < MAX_ROW; r++)
@@ -2523,7 +2642,7 @@ void RedrawAllBlocks(Display *display, Window window)
 			if (blockP->occupied == True)
 				DrawBlock(display, window, r, c, blockP->blockType);
 		}
-	}	
+	}
 }
 
 int StillActiveBlocks(void)
@@ -2532,7 +2651,7 @@ int StillActiveBlocks(void)
 	 * Returns False if level is finished. True otherwise.
 	 */
 
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 	int r, c;
 
 	/* Check all blocks to see if they still are active */
@@ -2544,9 +2663,9 @@ int StillActiveBlocks(void)
 			blockP = &blocks[r][c];
 
 			/* Don't bother me if the block is not occupied */
-			if (blockP->occupied == True) 
+			if (blockP->occupied == True)
 			{
-				/* 
+				/*
 				 * Check the type of block as specials are not needed to be
 				 * killed - only some blocks are required to finish a level.
 				 */
@@ -2554,33 +2673,33 @@ int StillActiveBlocks(void)
 				{
 					/* These blocks don't count */
 
-					case BLACK_BLK:
-					case BULLET_BLK:
-					case ROAMER_BLK:
-					case BOMB_BLK:
-					case TIMER_BLK:
-					case HYPERSPACE_BLK:
-					case STICKY_BLK:
-					case MULTIBALL_BLK:
-					case MAXAMMO_BLK:
-        			case PAD_SHRINK_BLK:
-					case PAD_EXPAND_BLK:
-					case REVERSE_BLK:
-					case MGUN_BLK:
-					case WALLOFF_BLK:
-					case EXTRABALL_BLK:
-					case DEATH_BLK:
-					case BONUSX2_BLK:
-					case BONUSX4_BLK:
-					case BONUS_BLK:
-						break;
+				case BLACK_BLK:
+				case BULLET_BLK:
+				case ROAMER_BLK:
+				case BOMB_BLK:
+				case TIMER_BLK:
+				case HYPERSPACE_BLK:
+				case STICKY_BLK:
+				case MULTIBALL_BLK:
+				case MAXAMMO_BLK:
+				case PAD_SHRINK_BLK:
+				case PAD_EXPAND_BLK:
+				case REVERSE_BLK:
+				case MGUN_BLK:
+				case WALLOFF_BLK:
+				case EXTRABALL_BLK:
+				case DEATH_BLK:
+				case BONUSX2_BLK:
+				case BONUSX4_BLK:
+				case BONUS_BLK:
+					break;
 
-					default:
-						return True;
+				default:
+					return True;
 				}
 			}
-		} 	/* cols */
-	}	/* rows */
+		} /* cols */
+	} /* rows */
 
 	/* Only all done when explosions are finished */
 	if (blocksExploding > 1)
@@ -2592,10 +2711,12 @@ int StillActiveBlocks(void)
 
 void ClearBlock(int row, int col)
 {
-    struct aBlock *blockP;
+	struct aBlock *blockP;
 
-	if (row > MAX_ROW || row < 0) return;
-	if (col > MAX_COL || col < 0) return;
+	if (row > MAX_ROW || row < 0)
+		return;
+	if (col > MAX_COL || col < 0)
+		return;
 
 	/* Pointer to the block we want */
 	blockP = &blocks[row][col];
@@ -2605,61 +2726,60 @@ void ClearBlock(int row, int col)
 		blocksExploding--;
 
 	/* Initialise everything in block */
-	blockP->occupied 			= False;
-	blockP->exploding 			= False;
-	blockP->x 					= 0;
-	blockP->y 					= 0;
-	blockP->width 				= 0;
-	blockP->height 				= 0;
-	blockP->hitPoints 			= 0;
-	blockP->blockType 			= NONE_BLK;
-	blockP->explodeStartFrame 	= 0;
-	blockP->explodeNextFrame 	= 0;
-	blockP->explodeSlide 		= 0;
-	blockP->counterSlide 		= 0;
-	blockP->bonusSlide 			= 0;
-	blockP->blockOffsetY 		= 0;
-	blockP->blockOffsetX 		= 0;
-	blockP->lastFrame 			= INFINITE_DELAY;
-	blockP->nextFrame 			= 0;
-	blockP->currentFrame 		= 0;
-	blockP->random 				= False;
-	blockP->drop 				= False;
-	blockP->ballHitIndex 		= 0;
-	blockP->balldx 				= 0;
-	blockP->balldy 				= 0;
-	blockP->specialPopup 		= False;
-	blockP->explodeAll 			= False;
+	blockP->occupied = False;
+	blockP->exploding = False;
+	blockP->x = 0;
+	blockP->y = 0;
+	blockP->width = 0;
+	blockP->height = 0;
+	blockP->hitPoints = 0;
+	blockP->blockType = NONE_BLK;
+	blockP->explodeStartFrame = 0;
+	blockP->explodeNextFrame = 0;
+	blockP->explodeSlide = 0;
+	blockP->counterSlide = 0;
+	blockP->bonusSlide = 0;
+	blockP->blockOffsetY = 0;
+	blockP->blockOffsetX = 0;
+	blockP->lastFrame = INFINITE_DELAY;
+	blockP->nextFrame = 0;
+	blockP->currentFrame = 0;
+	blockP->random = False;
+	blockP->drop = False;
+	blockP->ballHitIndex = 0;
+	blockP->balldx = 0;
+	blockP->balldy = 0;
+	blockP->specialPopup = False;
+	blockP->explodeAll = False;
 
 	/* Destroy the top region of the block */
-	if (blockP->regionTop != (Region) NULL)
+	if (blockP->regionTop != (Region)NULL)
 	{
 		XDestroyRegion(blockP->regionTop);
-		blockP->regionTop = (Region) NULL;
+		blockP->regionTop = (Region)NULL;
 	}
 
 	/* Destroy the bottom region of the block */
-	if (blockP->regionBottom != (Region) NULL)
+	if (blockP->regionBottom != (Region)NULL)
 	{
 		XDestroyRegion(blockP->regionBottom);
-		blockP->regionBottom = (Region) NULL;
+		blockP->regionBottom = (Region)NULL;
 	}
 
 	/* Destroy the left region of the block */
-	if (blockP->regionLeft != (Region) NULL)
+	if (blockP->regionLeft != (Region)NULL)
 	{
 		XDestroyRegion(blockP->regionLeft);
-		blockP->regionLeft = (Region) NULL;
+		blockP->regionLeft = (Region)NULL;
 	}
 
 	/* Destroy the right region of the block */
-	if (blockP->regionRight != (Region) NULL)
+	if (blockP->regionRight != (Region)NULL)
 	{
 		XDestroyRegion(blockP->regionRight);
-		blockP->regionRight = (Region) NULL;
+		blockP->regionRight = (Region)NULL;
 	}
 }
-
 
 void ClearBlockArray(void)
 {
